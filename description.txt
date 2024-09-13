@@ -1,0 +1,47 @@
+A Quality of Life mod that makes various adjustments and additions across the game to provide information and convenience.
+Adds the Mutant town NPC, who sells boss summons of nearly every mod, along several others.
+Other features include:
+-Infinite ammos, potions, etc at high enough stack
+-Craftable instant builds for common world infrastructure like skybridges, obsidian underworld bridges, hellevators
+-Powerful explosives for clearing out large parts of the world
+-Spawn rate increase/decrease items
+-Helpful extra tooltips, showing things such as which items are sold by which NPCs
+-Several configs for shaping the game and mod to your wishes
+And much more!
+
+Fargo Discord: https://discord.gg/Rgen4Vv
+Fargo Wiki: https://fargosmods.wiki.gg
+
+NEW UPDATE - v3.3.4
+-Non-bomb Insta items now display a rectangular indicator for what they're placing
+-Half Instavator and Instavator are now placed at mouse instead of being bombs
+-New config to disable Tombstones dropping on death
+-Terraformers (Instabridge, City Buster etc) avoiding the vanilla CanPlace check is now dictated by a config (Safe Terraformers), disabled by default.
+-Replaced several Deviantt dialogue lines
+-Boom Shuriken now ONLY affects pickaxe-mined tiles; cannot break hammered tiles such as Altars or axed tiles such as trees
+-Raised Anemometer max wind speed to be usable to be equal to the wind speed it sets (you can always use it if the speed is less)
+-Nuke Boxes no longer stack at 2
+-Squirrel now sells Hand of Creation
+-Adding missing Foods to recipe groups
+-Fixed Rotting Bait name and description being incorrect
+
+
+NEW UPDATE - v3.3.3
+-Fixed Hide Unlimited Buffs only preventing their rendering (and not mousetext and clickability), and made it only affect the buff display under your hotbar, and not the display under the mount/pet tab
+-Insta items now check for vanilla protection areas, such as the spawn
+Instahouse and Grave Buster are exceptions to this
+-Changed tooltips of Insta items alongside above change
+-Following added item recipes and drops are now disabled in Don't Dig Up worlds: Katana, Wand of Sparking, Flower of Fire, Aqua Scepter, Snowball Cannon, Chain Knife.
+-Added permanent Shimmer upgrades to Stat Sheet UI, along with a mod call for other mods adding their permanent upgrades to this system
+-World Token now toggles Journey Mode with right click, and cycles normal modes with left click
+-Changes to permanent buff station feature:
+--Plays their click sound when giving you the effect
+--Tooltip now shows the station item instead of piggy bank
+--Tooltip clarifies that effect takes place when placed
+-Changed Piggy Bank Accessory lists to be completely identical to vanilla's list of accessories that work from inventory, and greatly optimized this feature's code
+-Optimized tile checks, improving the performance of Insta items
+-Disabled decraft for Big Suck Potion
+-Lihzahrd Instactuation Bomb now properly centers on the altar's center
+-Fixed bug where some modded accessory and prefix changes were triggered by Piggy Bank info accessory config
+-Fixed Lumberjack dropping from trees despite the Lumberjack config being disabled
+-Fixed Mutant Toilet duplicating when mined
