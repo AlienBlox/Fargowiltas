@@ -103,11 +103,11 @@ namespace Fargowiltas
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       // ISSUE: method pointer
-      On_Player.HasUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion = new On_Player.hook_HasUnityPotion((object) null, __methodptr(OnHasUnityPotion)));
+      On_Player.HasUnityPotion += OnHasUnityPotion;
       // ISSUE: reference to a compiler-generated field
       // ISSUE: reference to a compiler-generated field
       // ISSUE: method pointer
-      On_Player.TakeUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion = new On_Player.hook_TakeUnityPotion((object) null, __methodptr(OnTakeUnityPotion)));
+      On_Player.TakeUnityPotion += OnTakeUnityPotion;
     }
 
     private static IEnumerable<Item> GetWormholes(Player self)
