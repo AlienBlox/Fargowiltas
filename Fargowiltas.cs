@@ -100,15 +100,15 @@ namespace Fargowiltas
       On_WorldGen.CountTileTypesInArea += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C4\u003E__CountTileTypesInArea_PurityTotemHack ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C4\u003E__CountTileTypesInArea_PurityTotemHack = new On_WorldGen.hook_CountTileTypesInArea((object) null, __methodptr(CountTileTypesInArea_PurityTotemHack)));
       // ISSUE: method pointer
       On_SceneMetrics.ExportTileCountsToMain += new On_SceneMetrics.hook_ExportTileCountsToMain((object) this, __methodptr(ExportTileCountsToMain_PurityTotemHack));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.HasUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion = new On_Player.hook_HasUnityPotion((object) null, __methodptr(OnHasUnityPotion)));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.TakeUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion = new On_Player.hook_TakeUnityPotion((object) null, __methodptr(OnTakeUnityPotion)));
-    }
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: method pointer
+            On_Player.HasUnityPotion += OnHasUnityPotion;
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: method pointer
+            On_Player.TakeUnityPotion += OnTakeUnityPotion;
+        }
 
     private static IEnumerable<Item> GetWormholes(Player self)
     {
