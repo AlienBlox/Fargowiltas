@@ -1,21 +1,18 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.FargoPlayer
-// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
+// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Fargowiltas.Common.Configs;
 using Fargowiltas.Items;
 using Fargowiltas.NPCs;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.GameContent.Events;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -34,13 +31,10 @@ namespace Fargowiltas
     public float ElementalAssemblerNearby;
     public float StatSheetMaxAscentMultiplier;
     public float StatSheetWingSpeed;
-    public bool? CanHover = new bool?();
+    public bool? CanHover;
     public int DeathFruitHealth;
     public bool bigSuck;
-    public int StationSoundCooldown;
     internal Dictionary<string, bool> FirstDyeIngredients = new Dictionary<string, bool>();
-    public bool[] ItemHasBeenOwned;
-    public bool[] ItemHasBeenOwnedAtThirtyStack;
     private readonly string[] tags = new string[13]
     {
       "RedHusk",
@@ -58,12 +52,6 @@ namespace Fargowiltas
       "BlackInk"
     };
 
-    public virtual void Initialize()
-    {
-      this.ItemHasBeenOwned = ItemID.Sets.Factory.CreateBoolSet(false, Array.Empty<int>());
-      this.ItemHasBeenOwnedAtThirtyStack = ItemID.Sets.Factory.CreateBoolSet(false, Array.Empty<int>());
-    }
-
     public virtual void SaveData(TagCompound tag)
     {
       string str = "FargoDyes" + this.Player.name;
@@ -79,30 +67,9 @@ namespace Fargowiltas
       tag.Add("DeathFruitHealth", (object) this.DeathFruitHealth);
       if (this.BattleCry)
         tag.Add("FargoBattleCry" + this.Player.name, (object) true);
-      if (this.CalmingCry)
-        tag.Add("FargoCalmingCry" + this.Player.name, (object) true);
-      List<string> stringList1 = new List<string>();
-      for (int index = 0; index < this.ItemHasBeenOwned.Length; ++index)
-      {
-        if (this.ItemHasBeenOwned[index])
-        {
-          if (index >= (int) ItemID.Count)
-          {
-            ModItem modItem = ItemLoader.GetItem(index);
-            if (modItem != null && modItem != null)
-              stringList1.Add(((ModType) modItem).FullName ?? "");
-          }
-          else
-          {
-            List<string> stringList2 = stringList1;
-            DefaultInterpolatedStringHandler interpolatedStringHandler = new DefaultInterpolatedStringHandler(0, 1);
-            interpolatedStringHandler.AppendFormatted<int>(index);
-            string stringAndClear = interpolatedStringHandler.ToStringAndClear();
-            stringList2.Add(stringAndClear);
-          }
-        }
-      }
-      tag.Add("OwnedItemsList", (object) stringList1);
+      if (!this.CalmingCry)
+        return;
+      tag.Add("FargoCalmingCry" + this.Player.name, (object) true);
     }
 
     public virtual void LoadData(TagCompound tag)
@@ -114,27 +81,11 @@ namespace Fargowiltas
       this.DeathFruitHealth = tag.GetInt("DeathFruitHealth");
       this.BattleCry = tag.ContainsKey("FargoBattleCry" + this.Player.name);
       this.CalmingCry = tag.ContainsKey("FargoCalmingCry" + this.Player.name);
-      this.ItemHasBeenOwned = ItemID.Sets.Factory.CreateBoolSet(false, Array.Empty<int>());
-      foreach (string s in (IEnumerable<string>) tag.GetList<string>("OwnedItemsList"))
-      {
-        int result;
-        if (int.TryParse(s, out result) && result < (int) ItemID.Count)
-        {
-          this.ItemHasBeenOwned[result] = true;
-        }
-        else
-        {
-          ModItem modItem;
-          if (ModContent.TryFind<ModItem>(s, ref modItem))
-            this.ItemHasBeenOwned[modItem.Type] = true;
-        }
-      }
     }
 
     public virtual void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
       ModPacket packet = ((ModType) this).Mod.GetPacket(256);
-      ((BinaryWriter) packet).Write((byte) 9);
       ((BinaryWriter) packet).Write((byte) ((Entity) this.Player).whoAmI);
       ((BinaryWriter) packet).Write((byte) this.DeathFruitHealth);
       packet.Send(toWho, fromWho);
@@ -209,8 +160,6 @@ namespace Fargowiltas
       this.Player.buffImmune[37] = true;
     }
 
-    public virtual void UpdateDead() => this.StationSoundCooldown = 0;
-
     public virtual void PostUpdateMiscEffects()
     {
       if ((double) this.ElementalAssemblerNearby > 0.0)
@@ -218,8 +167,6 @@ namespace Fargowiltas
         --this.ElementalAssemblerNearby;
         this.Player.alchemyTable = true;
       }
-      if (this.StationSoundCooldown > 0)
-        --this.StationSoundCooldown;
       if (this.Player.equippedWings == null)
         this.ResetStatSheetWings();
       this.ForceBiomes();
@@ -230,7 +177,7 @@ namespace Fargowiltas
       FargoServerConfig instance = FargoServerConfig.Instance;
       if ((double) instance.EnemyDamage == 1.0 && (double) instance.BossDamage == 1.0)
         return;
-      if ((double) instance.BossDamage > (double) instance.EnemyDamage && (npc.boss || npc.type == 13 || npc.type == 14 || npc.type == 15 || instance.BossApplyToAllWhenAlive && FargoGlobalNPC.AnyBossAlive()))
+      if (((double) instance.BossDamage <= (double) instance.EnemyDamage ? 0 : (npc.boss || npc.type == 13 || npc.type == 14 || npc.type == 15 ? 1 : (!instance.BossApplyToAllWhenAlive ? 0 : (FargoGlobalNPC.AnyBossAlive() ? 1 : 0)))) != 0)
       {
         ref StatModifier local = ref modifiers.FinalDamage;
         local = StatModifier.op_Multiply(local, instance.BossDamage);
@@ -271,11 +218,9 @@ namespace Fargowiltas
           this.Player.ZoneJungle = true;
           break;
         case 4:
-          if (Main.hardMode)
-          {
-            this.Player.ZoneHallow = true;
+          if (!Main.hardMode)
             break;
-          }
+          this.Player.ZoneHallow = true;
           break;
         case 5:
           this.Player.ZoneSnow = true;
@@ -283,11 +228,9 @@ namespace Fargowiltas
         case 6:
         case 12:
           this.Player.ZoneDesert = true;
-          if ((double) ((Entity) this.Player).Center.Y > 3200.0)
-          {
-            this.Player.ZoneUndergroundDesert = true;
+          if ((double) ((Entity) this.Player).Center.Y <= 3200.0)
             break;
-          }
+          this.Player.ZoneUndergroundDesert = true;
           break;
         case 10:
           this.Player.ZoneCrimson = true;
@@ -309,7 +252,6 @@ namespace Fargowiltas
 
     public void SlimeRainSpawns()
     {
-      int num1 = -3;
       int[] numArray = new int[12]
       {
         535,
@@ -325,14 +267,12 @@ namespace Fargowiltas
         183,
         138
       };
-      int num2 = Main.rand.Next(50);
-      if (num2 == 0)
-        num1 = -4;
-      else if (num2 < 20)
-        num1 = numArray[Main.rand.Next(numArray.Length)];
-      Vector2 vector2;
-      // ISSUE: explicit constructor call
-      ((Vector2) ref vector2).\u002Ector((float) ((int) ((Entity) this.Player).position.X + Main.rand.Next(-800, 800)), (float) ((int) ((Entity) this.Player).position.Y + Main.rand.Next(-800, -250)));
+      int num1 = Main.rand.Next(50);
+      if (num1 != 0 && num1 < 20)
+      {
+        int num2 = numArray[Main.rand.Next(numArray.Length)];
+      }
+      Vector2 vector2 = new Vector2((float) ((int) ((Entity) this.Player).position.X + Main.rand.Next(-800, 800)), (float) ((int) ((Entity) this.Player).position.Y + Main.rand.Next(-800, -250)));
     }
 
     public virtual bool PreModifyLuck(ref float luck)
@@ -406,8 +346,9 @@ namespace Fargowiltas
       this.autoRevertSelectedItem = true;
       this.Player.selectedItem = index;
       this.Player.controlUseItem = true;
-      if (use && CombinedHooks.CanUseItem(this.Player, this.Player.inventory[this.Player.selectedItem]) && ((Entity) this.Player).whoAmI == Main.myPlayer)
-        this.Player.ItemCheck();
+      if (!use || !CombinedHooks.CanUseItem(this.Player, this.Player.inventory[this.Player.selectedItem]) || ((Entity) this.Player).whoAmI != Main.myPlayer)
+        return;
+      this.Player.ItemCheck();
     }
   }
 }

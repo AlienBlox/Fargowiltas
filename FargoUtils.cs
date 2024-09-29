@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.FargoUtils
-// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
+// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Microsoft.Xna.Framework;
@@ -20,20 +20,7 @@ namespace Fargowiltas
 {
   internal static class FargoUtils
   {
-    public static readonly BindingFlags UniversalBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-
-    public static bool EternityMode
-    {
-      get
-      {
-        if (!Fargowiltas.Fargowiltas.ModLoaded["FargowiltasSouls"])
-          return false;
-        return (bool) Terraria.ModLoader.ModLoader.GetMod("FargowiltasSouls").Call(new object[1]
-        {
-          (object) nameof (EternityMode)
-        });
-      }
-    }
+    public static readonly BindingFlags UniversalBindingFlags = (BindingFlags) 60;
 
     public static bool HasAnyItem(this Player player, params int[] itemIDs)
     {
@@ -85,11 +72,9 @@ namespace Fargowiltas
       switch (Main.netMode)
       {
         case 0:
-          if (conditions)
-          {
-            Main.NewText((object) textValue, new Color?(color));
+          if (!conditions)
             break;
-          }
+          Main.NewText((object) textValue, new Color?(color));
           break;
         case 2:
           if (conditions)
