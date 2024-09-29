@@ -1,19 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--Project was exported from assembly: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6B006643-D38B-48C9-891D-D0D6D738CB99}</ProjectGuid>
+    <ProjectGuid>{8303D30A-FA8E-4CA7-B830-8685A82A71C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Fargowiltas</AssemblyName>
-    <ApplicationVersion>0.0.0.0</ApplicationVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
     <RootNamespace>Fargowiltas</RootNamespace>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,14 +36,15 @@
     <Reference Include="System.Collections" />
     <Reference Include="System.Linq" />
     <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.InteropServices" />
     <Reference Include="System.Threading" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fargowilta\UIManager.cs" />
     <Compile Include="DevianttDialogueTracker.cs" />
     <Compile Include="FargoNet.cs" />
     <Compile Include="FargoPlayer.cs" />
     <Compile Include="FargoPlayerBuffDrawLayer.cs" />
+    <Compile Include="FargoSets.cs" />
     <Compile Include="FargoUtils.cs" />
     <Compile Include="Fargowiltas.cs" />
     <Compile Include="FargoWorld.cs" />
@@ -53,23 +52,6 @@
     <Compile Include="MutantSummonTracker.cs" />
     <Compile Include="MutantSummonInfo.cs" />
     <Compile Include="SeasonSelections.cs" />
-    <Compile Include="Tiles\FargoGlobalPylon.cs" />
-    <Compile Include="Tiles\FargoGlobalTile.cs" />
-    <Compile Include="TileEntities\SiblingPylonTileEntity.cs" />
-    <Compile Include="Buffs\FargoGlobalBuff.cs" />
-    <Compile Include="Content\Biomes\SkyBiome.cs" />
-    <Compile Include="Content\Buffs\BigSuckBuff.cs" />
-    <Compile Include="Content\Buffs\Omnistation.cs" />
-    <Compile Include="Content\Buffs\Semistation.cs" />
-    <Compile Include="Content\Buffs\WoodDrop.cs" />
-    <Compile Include="Common\Systems\Recipes\BannerRecipeSystem.cs" />
-    <Compile Include="Common\Systems\Recipes\ContainerRecipeSystem.cs" />
-    <Compile Include="Common\Systems\Recipes\ConversionRecipeSystem.cs" />
-    <Compile Include="Common\Systems\Recipes\MiscRecipeSystem.cs" />
-    <Compile Include="Common\Systems\Recipes\NPCRecipeSystem.cs" />
-    <Compile Include="Common\Systems\Recipes\RecipeGroups.cs" />
-    <Compile Include="Common\Configs\FargoClientConfig.cs" />
-    <Compile Include="Common\Configs\FargoServerConfig.cs" />
     <Compile Include="Utilities\RecipeHelper.cs" />
     <Compile Include="Utilities\Extensions\PlayerExtensions.cs" />
     <Compile Include="UI\StatButton.cs" />
@@ -135,6 +117,8 @@
     <Compile Include="NPCs\SquirrelSellType.cs" />
     <Compile Include="NPCs\SquirrelShopGroup.cs" />
     <Compile Include="NPCs\SuperDummy.cs" />
+    <Compile Include="Tiles\FargoGlobalPylon.cs" />
+    <Compile Include="Tiles\FargoGlobalTile.cs" />
     <Compile Include="Items\FargoGlobalItem.cs" />
     <Compile Include="Items\Weapons\LumberJaxe.cs" />
     <Compile Include="Items\Vanity\AbominationnBody.cs" />
@@ -199,18 +183,18 @@
     <Compile Include="Items\Tiles\WoodenToken.cs" />
     <Compile Include="Items\Tiles\WoodenTokenSheet.cs" />
     <Compile Include="Items\Summons\BaseSummon.cs" />
-    <Compile Include="Items\Summons\Abeemination2.cs" />
-    <Compile Include="Items\Summons\CelestialSigil2.cs" />
-    <Compile Include="Items\Summons\DeerThing2.cs" />
-    <Compile Include="Items\Summons\GoreySpine.cs" />
-    <Compile Include="Items\Summons\MechEye.cs" />
-    <Compile Include="Items\Summons\MechSkull.cs" />
-    <Compile Include="Items\Summons\MechWorm.cs" />
-    <Compile Include="Items\Summons\SlimyCrown.cs" />
-    <Compile Include="Items\Summons\SuspiciousEye.cs" />
-    <Compile Include="Items\Summons\TruffleWorm2.cs" />
-    <Compile Include="Items\Summons\WormyFood.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\Abeemination2.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\CelestialSigil2.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\DeerThing2.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\GoreySpine.cs" />
     <Compile Include="Items\Summons\VanillaCopy\LihzahrdPowerCell2.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\MechEye.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\MechSkull.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\MechWorm.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\SlimyCrown.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\SuspiciousEye.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\TruffleWorm2.cs" />
+    <Compile Include="Items\Summons\VanillaCopy\WormyFood.cs" />
     <Compile Include="Items\Summons\SwarmSummons\OverloadBee.cs" />
     <Compile Include="Items\Summons\SwarmSummons\OverloadBetsy.cs" />
     <Compile Include="Items\Summons\SwarmSummons\OverloadBrain.cs" />
@@ -424,7 +408,28 @@
     <Compile Include="Items\Ammos\Arrows\LuminiteQuiver.cs" />
     <Compile Include="Items\Ammos\Arrows\UnholyQuiver.cs" />
     <Compile Include="Items\Ammos\Arrows\VenomQuiver.cs" />
+    <Compile Include="TileEntities\SiblingPylonTileEntity.cs" />
+    <Compile Include="Buffs\FargoGlobalBuff.cs" />
+    <Compile Include="Content\Biomes\SkyBiome.cs" />
+    <Compile Include="Content\Buffs\BigSuckBuff.cs" />
+    <Compile Include="Content\Buffs\Omnistation.cs" />
+    <Compile Include="Content\Buffs\Semistation.cs" />
+    <Compile Include="Content\Buffs\WoodDrop.cs" />
+    <Compile Include="Common\Systems\InstaDrawPlayer.cs" />
+    <Compile Include="Common\Systems\InstaVisual.cs" />
+    <Compile Include="Common\Systems\Recipes\BannerRecipeSystem.cs" />
+    <Compile Include="Common\Systems\Recipes\ContainerRecipeSystem.cs" />
+    <Compile Include="Common\Systems\Recipes\ConversionRecipeSystem.cs" />
+    <Compile Include="Common\Systems\Recipes\MiscRecipeSystem.cs" />
+    <Compile Include="Common\Systems\Recipes\NPCRecipeSystem.cs" />
+    <Compile Include="Common\Systems\Recipes\RecipeGroups.cs" />
+    <Compile Include="Common\Configs\FargoClientConfig.cs" />
+    <Compile Include="Common\Configs\FargoServerConfig.cs" />
+    <Compile Include="Fargowilta\UIManager.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Content Include="Note.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

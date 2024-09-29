@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.FargoNet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
+// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Microsoft.Xna.Framework;
@@ -18,7 +18,7 @@ namespace Fargowiltas
   public static class FargoNet
   {
     public const byte SummonNPCFromClient = 0;
-    private const bool Debug = true;
+    private const bool Debug = false;
 
     public static void SendData(
       int dataType,
@@ -46,20 +46,23 @@ namespace Fargowiltas
             foreach (byte num in (byte[]) obj)
               ((BinaryWriter) packet).Write(num);
             break;
-          case bool flag:
-            ((BinaryWriter) packet).Write(flag);
+          case bool _:
+            ((BinaryWriter) packet).Write((bool) obj);
             break;
-          case byte num1:
-            ((BinaryWriter) packet).Write(num1);
+          case byte _:
+            ((BinaryWriter) packet).Write((byte) obj);
             break;
-          case short num2:
-            ((BinaryWriter) packet).Write(num2);
+          case short _:
+            ((BinaryWriter) packet).Write((short) obj);
             break;
-          case int num3:
-            ((BinaryWriter) packet).Write(num3);
+          case int _:
+            ((BinaryWriter) packet).Write((int) obj);
             break;
-          case float num4:
-            ((BinaryWriter) packet).Write(num4);
+          case float _:
+            ((BinaryWriter) packet).Write((float) obj);
+            break;
+          case string _:
+            ((BinaryWriter) packet).Write((string) obj);
             break;
         }
       }
@@ -142,10 +145,9 @@ namespace Fargowiltas
 
     public static void HandlePacket(BinaryReader bb, byte msg)
     {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "HANDING MESSAGE: " + msg.ToString()));
       try
       {
-        if (msg != (byte) 0 || Main.netMode != 2)
+        if (msg != (byte) 0)
           return;
         int index = (int) bb.ReadByte();
         int bossType = (int) bb.ReadInt16();
@@ -154,7 +156,8 @@ namespace Fargowiltas
         int num2 = bb.ReadInt32();
         string overrideDisplayName = bb.ReadString();
         bool namePlural = bb.ReadBoolean();
-        Fargowiltas.Fargowiltas.SpawnBoss(Main.player[index], bossType, spawnMessage, new Vector2((float) num1, (float) num2), overrideDisplayName, namePlural);
+        if (Main.netMode == 2)
+          Fargowiltas.Fargowiltas.SpawnBoss(Main.player[index], bossType, spawnMessage, new Vector2((float) num1, (float) num2), overrideDisplayName, namePlural);
       }
       catch (Exception ex)
       {
@@ -166,7 +169,6 @@ namespace Fargowiltas
 
     public static void SyncPlayer(int toWho, int fromWho, bool newPlayer)
     {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "SYNC PLAYER CALLED! NEWPLAYER: " + newPlayer.ToString() + ". TOWHO: " + toWho.ToString() + ". FROMWHO:" + fromWho.ToString()));
       if (Main.netMode != 2 || toWho <= -1 && fromWho <= -1)
         return;
       FargoNet.PlayerConnected();
@@ -174,7 +176,6 @@ namespace Fargowiltas
 
     public static void PlayerConnected()
     {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Info((object) "--SERVER-- PLAYER JOINED!");
     }
 
     public static void SendNetMessage(int msg, params object[] param)

@@ -1,10 +1,9 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.MutantSummonTracker
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
+// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
-using Fargowiltas.Items.Summons;
 using Fargowiltas.Items.Summons.Mutant;
 using Fargowiltas.Items.Summons.VanillaCopy;
 using System;
@@ -37,7 +36,7 @@ namespace Fargowiltas
     public const float Moonlord = 18f;
     internal List<MutantSummonInfo> SortedSummons;
     internal List<MutantSummonInfo> EventSummons;
-    internal bool SummonsFinalized;
+    internal bool SummonsFinalized = false;
 
     public MutantSummonTracker()
     {

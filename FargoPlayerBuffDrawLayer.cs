@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.FargoPlayerBuffDrawLayer
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
+// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Fargowiltas.Common.Configs;
@@ -52,7 +52,7 @@ namespace Fargowiltas
     protected virtual void Draw(ref PlayerDrawSet drawInfo)
     {
       Player drawPlayer = drawInfo.drawPlayer;
-      List<int> list = ((IEnumerable<int>) drawPlayer.buffType).Where<int>((Func<int, bool>) (d => Main.debuff[d] && !((IEnumerable<int>) this.debuffsToIgnore).Contains<int>(d))).ToList<int>();
+      List<int> list = ((IEnumerable<int>) drawPlayer.buffType).Where<int>((Func<int, bool>) (d => Main.debuff[d])).Except<int>((IEnumerable<int>) this.debuffsToIgnore).ToList<int>();
       int num1 = 0;
       for (int index1 = 0; index1 < list.Count; index1 += 10)
       {
@@ -64,10 +64,7 @@ namespace Fargowiltas
           Vector2 vector2_1 = (double) drawPlayer.gravDir > 0.0 ? ((Entity) drawPlayer).Top : ((Entity) drawPlayer).Bottom;
           vector2_1.Y -= (32f + (float) num1) * drawPlayer.gravDir;
           vector2_1.X += (float) (32.0 * ((double) index2 - (double) num3));
-          vector2_1 = Vector2.op_Subtraction(vector2_1, drawPlayer.MountedCenter);
-          vector2_1 = Utils.RotatedBy(vector2_1, -(double) drawPlayer.fullRotation, new Vector2());
-          vector2_1 = Vector2.op_Addition(vector2_1, drawPlayer.MountedCenter);
-          vector2_1 = Vector2.op_Subtraction(vector2_1, Main.screenPosition);
+          Vector2 vector2_2 = Vector2.op_Addition(Vector2.op_Subtraction(Vector2.op_Addition(Utils.RotatedBy(Vector2.op_Subtraction(vector2_1, drawPlayer.MountedCenter), -(double) drawPlayer.fullRotation, new Vector2()), drawPlayer.MountedCenter), Main.screenPosition), Vector2.op_Multiply(Vector2.UnitY, drawPlayer.gfxOffY));
           if (TextureAssets.Buff[debuffID].IsLoaded)
           {
             Texture2D texture2D = TextureAssets.Buff[debuffID].Value;
@@ -103,9 +100,9 @@ namespace Fargowiltas
                   Rectangle rectangle;
                   // ISSUE: explicit constructor call
                   ((Rectangle) ref rectangle).\u002Ector(num8, num9, width, num10);
-                  Vector2 vector2_2 = Vector2.op_Addition(vector2_1, Vector2.op_Multiply((float) num9, Utils.RotatedBy(Vector2.UnitY, (double) num5, new Vector2())));
+                  Vector2 vector2_3 = Vector2.op_Addition(vector2_2, Vector2.op_Multiply((float) num9, Utils.RotatedBy(Vector2.UnitY, (double) num5, new Vector2())));
                   Color.op_Multiply(color, debuffFaderRatio);
-                  drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_2, new Rectangle?(rectangle), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
+                  drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_3, new Rectangle?(rectangle), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
                   color = Color.op_Multiply(color, 1f - debuffFaderRatio);
                   this.memorizedDebuffDurations[debuffID] = new Tuple<int, int>(num4, num6);
                 }
@@ -113,7 +110,7 @@ namespace Fargowiltas
                   this.memorizedDebuffDurations[debuffID] = new Tuple<int, int>(num4, num4);
               }
             }
-            drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_1, new Rectangle?(texture2D.Bounds), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
+            drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_2, new Rectangle?(texture2D.Bounds), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
           }
         }
         num1 += (int) (32.0 * (double) drawPlayer.gravDir);

@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.InputManager
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
+// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Fargowiltas.Common.Configs;
@@ -14,11 +14,11 @@ namespace Fargowiltas
 {
   public class InputManager : ModPlayer
   {
-    public int latestXDirPressed;
-    public int latestXDirReleased;
-    private bool LeftLastPressed;
-    private bool RightLastPressed;
-    private int lastSetBonusTimer;
+    public int latestXDirPressed = 0;
+    public int latestXDirReleased = 0;
+    private bool LeftLastPressed = false;
+    private bool RightLastPressed = false;
+    private int lastSetBonusTimer = 0;
 
     public virtual void ProcessTriggers(TriggersSet triggersSet)
     {
