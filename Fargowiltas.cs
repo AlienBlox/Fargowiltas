@@ -1,7 +1,7 @@
 ﻿// Decompiled with JetBrains decompiler
 // Type: Fargowiltas.Fargowiltas
-// Assembly: Fargowiltas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: D54AAE1B-FAA8-4FB5-AF8B-AFF4A04833B1
+// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
 // Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
 
 using Fargowilta;
@@ -44,7 +44,6 @@ namespace Fargowiltas
     internal static Dictionary<string, bool> ModLoaded;
     internal static Dictionary<int, string> ModRareEnemies = new Dictionary<int, string>();
     public List<StatSheetUI.Stat> ModStats;
-    public List<StatSheetUI.PermaUpgrade> PermaUpgrades;
     private string[] mods;
     internal static Fargowiltas.Fargowiltas Instance;
 
@@ -56,16 +55,6 @@ namespace Fargowiltas
     {
       Fargowiltas.Fargowiltas.Instance = this;
       this.ModStats = new List<StatSheetUI.Stat>();
-      this.PermaUpgrades = new List<StatSheetUI.PermaUpgrade>()
-      {
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5337], (Func<bool>) (() => Main.LocalPlayer.usedAegisCrystal)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5338], (Func<bool>) (() => Main.LocalPlayer.usedAegisFruit)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5339], (Func<bool>) (() => Main.LocalPlayer.usedArcaneCrystal)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5342], (Func<bool>) (() => Main.LocalPlayer.usedAmbrosia)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5341], (Func<bool>) (() => Main.LocalPlayer.usedGummyWorm)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5340], (Func<bool>) (() => Main.LocalPlayer.usedGalaxyPearl)),
-        new StatSheetUI.PermaUpgrade(ContentSamples.ItemsByType[5326], (Func<bool>) (() => Main.LocalPlayer.ateArtisanBread))
-      };
       Fargowiltas.Fargowiltas.summonTracker = new MutantSummonTracker();
       Fargowiltas.Fargowiltas.dialogueTracker = new DevianttDialogueTracker();
       Fargowiltas.Fargowiltas.dialogueTracker.AddVanillaDialogue();
@@ -111,19 +100,15 @@ namespace Fargowiltas
       On_WorldGen.CountTileTypesInArea += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C4\u003E__CountTileTypesInArea_PurityTotemHack ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C4\u003E__CountTileTypesInArea_PurityTotemHack = new On_WorldGen.hook_CountTileTypesInArea((object) null, __methodptr(CountTileTypesInArea_PurityTotemHack)));
       // ISSUE: method pointer
       On_SceneMetrics.ExportTileCountsToMain += new On_SceneMetrics.hook_ExportTileCountsToMain((object) this, __methodptr(ExportTileCountsToMain_PurityTotemHack));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.HasUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C5\u003E__OnHasUnityPotion = new On_Player.hook_HasUnityPotion((object) null, __methodptr(OnHasUnityPotion)));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.TakeUnityPotion += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion = new On_Player.hook_TakeUnityPotion((object) null, __methodptr(OnTakeUnityPotion)));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.DropTombstone += Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C7\u003E__DisableTombstones ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C7\u003E__DisableTombstones = new On_Player.hook_DropTombstone((object) null, __methodptr(DisableTombstones)));
-    }
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: method pointer
+            On_Player.HasUnityPotion += OnHasUnityPotion;
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: reference to a compiler-generated field
+            // ISSUE: method pointer
+            On_Player.TakeUnityPotion += OnTakeUnityPotion;
+        }
 
     private static IEnumerable<Item> GetWormholes(Player self)
     {
@@ -140,18 +125,6 @@ namespace Fargowiltas
       if (obj.stack > 0)
         return;
       obj.SetDefaults(0, false, (ItemVariant) null);
-    }
-
-    private static void DisableTombstones(
-      On_Player.orig_DropTombstone orig,
-      Player self,
-      long coinsOwned,
-      NetworkText deathText,
-      int hitDirection)
-    {
-      if (FargoServerConfig.Instance.DisableTombstones)
-        return;
-      orig.Invoke(self, coinsOwned, deathText, hitDirection);
     }
 
     private static bool OnHasUnityPotion(On_Player.orig_HasUnityPotion orig, Player self)
@@ -194,8 +167,9 @@ namespace Fargowiltas
       self.BloodTileCount = Math.Max(self.BloodTileCount - 9000, 0);
       self.EvilTileCount = Math.Max(self.EvilTileCount - 9000, 0);
       self.GraveyardTileCount = Math.Max(self.GraveyardTileCount - 9000, 0);
-      if (self.GetTileCount((ushort) 27) > 0)
-        self.HasSunflower = true;
+      if (self.GetTileCount((ushort) 27) <= 0)
+        return;
+      self.HasSunflower = true;
     }
 
     public virtual void Unload()
@@ -230,10 +204,6 @@ namespace Fargowiltas
       // ISSUE: reference to a compiler-generated field
       // ISSUE: method pointer
       On_Player.TakeUnityPotion -= Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C6\u003E__OnTakeUnityPotion = new On_Player.hook_TakeUnityPotion((object) null, __methodptr(OnTakeUnityPotion)));
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_Player.DropTombstone -= Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C7\u003E__DisableTombstones ?? (Fargowiltas.Fargowiltas.\u003C\u003EO.\u003C7\u003E__DisableTombstones = new On_Player.hook_DropTombstone((object) null, __methodptr(DisableTombstones)));
       Fargowiltas.Fargowiltas.summonTracker = (MutantSummonTracker) null;
       Fargowiltas.Fargowiltas.dialogueTracker = (DevianttDialogueTracker) null;
       Fargowiltas.Fargowiltas.HomeKey = (ModKeybind) null;
@@ -276,29 +246,6 @@ namespace Fargowiltas
         // ISSUE: reference to a compiler-generated method
         switch (\u003CPrivateImplementationDetails\u003E.ComputeStringHash(s))
         {
-          case 744977731:
-            if (s == "AddPermaUpgrade")
-            {
-              if (args[1].GetType() != typeof (Item))
-                throw new Exception("Call Error (Fargo Mutant Mod AddStat): args[1] must be of type Item");
-              if (args[2].GetType() != typeof (Func<bool>))
-                throw new Exception("Call Error (Fargo Mutant Mod AddStat): args[2] must be of type Func<bool>");
-              this.PermaUpgrades.Add(new StatSheetUI.PermaUpgrade((Item) args[1], (Func<bool>) args[2]));
-              break;
-            }
-            break;
-          case 1512222350:
-            if (s == "AddEvilAltar")
-            {
-              if (args[1].GetType() == typeof (int))
-              {
-                int index = (int) args[1];
-                FargoSets.Tiles.EvilAltars[index] = true;
-                break;
-              }
-              break;
-            }
-            break;
           case 1902122070:
             if (s == "AddStat")
             {
@@ -320,12 +267,8 @@ namespace Fargowiltas
           case 2306174137:
             if (s == "AddIndestructibleWallType")
             {
-              if (args[1].GetType() == typeof (int))
-              {
-                int index = (int) args[1];
-                FargoSets.Walls.InstaCannotDestroy[index] = true;
-                break;
-              }
+              int num = (int) args[1];
+              FargoGlobalProjectile.CannotDestroyWallTypes.Add(num);
               break;
             }
             break;
@@ -387,8 +330,8 @@ namespace Fargowiltas
             {
               if (args[1].GetType() == typeof (int))
               {
-                int index = (int) args[1];
-                FargoSets.Tiles.InstaCannotDestroy[index] = true;
+                int num = (int) args[1];
+                FargoGlobalProjectile.CannotDestroyTileTypes.Add(num);
                 break;
               }
               break;
@@ -456,22 +399,17 @@ namespace Fargowiltas
           NetMessage.SendData(7, -1, -1, (NetworkText) null, 0, 0.0f, 0.0f, 0.0f, 0, 0, 0);
           break;
         case 7:
-          bool isBattle = reader.ReadBoolean();
+          int num2 = reader.ReadBoolean() ? 1 : 0;
           int index3 = reader.ReadInt32();
-          bool cry = reader.ReadBoolean();
-          BattleCry.GenerateText(isBattle, Main.player[index3], cry);
+          bool flag = reader.ReadBoolean();
+          Player player = Main.player[index3];
+          int num3 = flag ? 1 : 0;
+          BattleCry.GenerateText(num2 != 0, player, num3 != 0);
           break;
         case 8:
           int index4 = reader.ReadInt32();
           Main.player[index4].GetModPlayer<FargoPlayer>().BattleCry = reader.ReadBoolean();
           Main.player[index4].GetModPlayer<FargoPlayer>().CalmingCry = reader.ReadBoolean();
-          break;
-        case 9:
-          int index5 = (int) reader.ReadByte();
-          int num2 = (int) reader.ReadByte();
-          if (index5 < 0 || index5 >= (int) byte.MaxValue || !((Entity) Main.player[index5]).active)
-            break;
-          Main.player[index5].GetModPlayer<FargoPlayer>().DeathFruitHealth = num2;
           break;
       }
     }
@@ -612,25 +550,38 @@ namespace Fargowiltas
           string str = !string.IsNullOrEmpty(Main.npc[index].GivenName) ? Main.npc[index].GivenName : overrideDisplayName;
           if (namePlural)
           {
-            if (Main.netMode == 0)
-              Main.NewText(Language.GetTextValue("Mods.Fargowiltas.MessageInfo.HaveAwoken", (object) str), (byte) 175, (byte) 75, byte.MaxValue);
-            else if (Main.netMode == 2)
-              ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.Fargowiltas.MessageInfo.HaveAwoken", new object[1]
-              {
-                (object) str
-              }), new Color(175, 75, (int) byte.MaxValue), -1);
-          }
-          else if (Main.netMode == 0)
-            Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) str), (byte) 175, (byte) 75, byte.MaxValue);
-          else if (Main.netMode == 2)
-            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", new object[1]
+            switch (Main.netMode)
             {
-              (object) str
-            }), new Color(175, 75, (int) byte.MaxValue), -1);
+              case 0:
+                Main.NewText(Language.GetTextValue("Mods.Fargowiltas.MessageInfo.HaveAwoken", (object) str), (byte) 175, (byte) 75, byte.MaxValue);
+                break;
+              case 2:
+                ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.Fargowiltas.MessageInfo.HaveAwoken", new object[1]
+                {
+                  (object) str
+                }), new Color(175, 75, (int) byte.MaxValue), -1);
+                break;
+            }
+          }
+          else
+          {
+            switch (Main.netMode)
+            {
+              case 0:
+                Main.NewText(Language.GetTextValue("Announcement.HasAwoken", (object) str), (byte) 175, (byte) 75, byte.MaxValue);
+                break;
+              case 2:
+                ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasAwoken", new object[1]
+                {
+                  (object) str
+                }), new Color(175, 75, (int) byte.MaxValue), -1);
+                break;
+            }
+          }
         }
       }
       else
-        FargoNet.SendNetMessage(0, (object) (byte) ((Entity) player).whoAmI, (object) (short) bossType, (object) spawnMessage, (object) (int) npcCenter.X, (object) (int) npcCenter.Y, (object) overrideDisplayName, (object) namePlural);
+        FargoNet.SendNetMessage(0, (object) (byte) ((Entity) player).whoAmI, (object) (short) bossType, (object) spawnMessage, (object) npcCenter.X, (object) npcCenter.Y, (object) overrideDisplayName, (object) namePlural);
       return 200;
     }
 
@@ -670,15 +621,9 @@ namespace Fargowiltas
         dashing = true;
         player.dashTime = 0;
         player.timeSinceLastDashStarted = 0;
-        switch (dashStartAction)
-        {
-          case null:
-          case null:
-            break;
-          default:
-            dashStartAction.Invoke(dir);
-            goto case null;
-        }
+        if (dashStartAction == null || dashStartAction == null)
+          return;
+        dashStartAction.Invoke(dir);
       }
     }
 
