@@ -1,16 +1,32 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Deviantt.JungleChest
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
+using Terraria.ID;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.Deviantt
 {
-  public class JungleChest : BaseSummon
-  {
-    public override int NPCType => 476;
-
-    public override void SetStaticDefaults() => base.SetStaticDefaults();
-  }
+    public class JungleChest : BaseSummon
+    {
+        public override int NPCType => NPCID.BigMimicJungle;
+        
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            // DisplayName.SetDefault("Jungle Chest");
+            // Tooltip.SetDefault("Summons Jungle Mimic");
+        }
+        /*
+        public override void AddRecipes()
+        {
+            if (ModContent.TryFind("Fargowiltas/Deviantt", out ModItem modItem))
+            {
+                CreateRecipe()
+                  .AddIngredient(ItemID.SoulofLight, 7)
+                  .AddIngredient(ItemID.SoulofNight, 7)
+                  .AddIngredient(ItemID.GoldCoin, 30)
+                  .AddIngredient(modItem.Type)
+                  .AddTile(TileID.MythrilAnvil)
+                  .Register();
+            }
+        }
+        */
+    }
 }

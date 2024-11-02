@@ -1,28 +1,27 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.SwarmSummons.OverloadWall
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+﻿using Fargowiltas.NPCs;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.SwarmSummons
 {
-  public class OverloadWall : SwarmSummonBase
-  {
-    public OverloadWall()
-      : base(113, nameof (OverloadWall), 10, "FleshyDoll")
+    public class OverloadWall : SwarmSummonBase
     {
-    }
+        public OverloadWall() : base(NPCID.WallofFlesh, nameof(OverloadWall), 10, "FleshyDoll")
+        {
+        }
 
-    public virtual void SetStaticDefaults()
-    {
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Bundle of Dolls");
+            // Tooltip.SetDefault("Summons several Walls of Flesh\nOnly Treasure Bags will be dropped");
+        }
 
-    public virtual bool CanUseItem(Player player)
-    {
-      return !Fargowiltas.Fargowiltas.SwarmActive && player.ZoneUnderworldHeight;
+        public override bool CanUseItem(Player player)
+        {
+            return !Fargowiltas.SwarmActive && player.ZoneUnderworldHeight;
+        }
     }
-  }
 }

@@ -1,35 +1,35 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Vanity.MutantPants
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Terraria;
-using Terraria.GameContent.Creative;
+﻿using Terraria.GameContent.Creative;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Vanity
 {
-  [AutoloadEquip]
-  public class MutantPants : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    [AutoloadEquip(EquipType.Legs)]
+    public class MutantPants : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Mutant Pants");
+            CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 18;
-      ((Entity) this.Item).height = 18;
-      this.Item.vanity = true;
-      this.Item.rare = 1;
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 18;
+            Item.height = 18;
+            Item.vanity = true;
+            Item.rare = ItemRarityID.Blue;
+        }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(2108, 1).AddIngredient(2109, 1).AddIngredient(2493, 1).AddIngredient(4959, 1).AddTile(114).Register();
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.BeeMask)
+                .AddIngredient(ItemID.PlanteraMask)
+                .AddIngredient(ItemID.KingSlimeMask)
+                .AddIngredient(ItemID.QueenSlimeMask)
+                .AddTile(TileID.TinkerersWorkbench)
+                .Register();
+        }
     }
-  }
 }

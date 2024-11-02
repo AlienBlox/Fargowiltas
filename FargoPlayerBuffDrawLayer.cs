@@ -1,10 +1,4 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.FargoPlayerBuffDrawLayer
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Common.Configs;
+﻿using Fargowiltas.Common.Configs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,111 +7,154 @@ using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI.Chat;
 
-#nullable disable
 namespace Fargowiltas
 {
-  public class FargoPlayerBuffDrawLayer : PlayerDrawLayer
-  {
-    private readonly int[] debuffsToIgnore = new int[12]
+    public class FargoPlayerBuffDrawLayer : PlayerDrawLayer
     {
-      87,
-      89,
-      146,
-      157,
-      158,
-      25,
-      147,
-      28,
-      34,
-      215,
-      321,
-      332
-    };
-    private Dictionary<int, Tuple<int, int>> memorizedDebuffDurations = new Dictionary<int, Tuple<int, int>>();
+        public override bool IsHeadLayer => false;
 
-    public virtual bool IsHeadLayer => false;
+        private readonly int[] debuffsToIgnore = [
+            BuffID.Campfire,
+            BuffID.HeartLamp,
+            BuffID.Sunflower,
+            BuffID.PeaceCandle,
+            BuffID.StarInBottle,
+            BuffID.Tipsy,
+            BuffID.MonsterBanner,
+            BuffID.Werewolf,
+            BuffID.Merfolk,
+            BuffID.CatBast,
+            BuffID.BrainOfConfusionBuff,
+            BuffID.NeutralHunger
+        ];
 
-    public virtual bool GetDefaultVisibility(PlayerDrawSet drawInfo)
-    {
-      return !Main.hideUI && ((Entity) drawInfo.drawPlayer).whoAmI == Main.myPlayer && ((Entity) drawInfo.drawPlayer).active && !drawInfo.drawPlayer.dead && !drawInfo.drawPlayer.ghost && (double) drawInfo.shadow == 0.0 && (double) FargoClientConfig.Instance.DebuffOpacity > 0.0 && ((IEnumerable<int>) drawInfo.drawPlayer.buffType).Count<int>((Func<int, bool>) (d => Main.debuff[d] && !((IEnumerable<int>) this.debuffsToIgnore).Contains<int>(d))) > 0;
-    }
+        public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
+            => !Main.hideUI 
+            && drawInfo.drawPlayer.whoAmI == Main.myPlayer 
+            && drawInfo.drawPlayer.active 
+            && !drawInfo.drawPlayer.dead 
+            && !drawInfo.drawPlayer.ghost
+            && drawInfo.shadow == 0 
+            && FargoClientConfig.Instance.DebuffOpacity > 0 
+            && drawInfo.drawPlayer.buffType.Count(d => Main.debuff[d] && !debuffsToIgnore.Contains(d)) > 0;
 
-    public virtual PlayerDrawLayer.Position GetDefaultPosition()
-    {
-      return (PlayerDrawLayer.Position) new PlayerDrawLayer.Between();
-    }
+        public override Position GetDefaultPosition() => new Between();
 
-    protected virtual void Draw(ref PlayerDrawSet drawInfo)
-    {
-      Player drawPlayer = drawInfo.drawPlayer;
-      List<int> list = ((IEnumerable<int>) drawPlayer.buffType).Where<int>((Func<int, bool>) (d => Main.debuff[d] && !((IEnumerable<int>) this.debuffsToIgnore).Contains<int>(d))).ToList<int>();
-      int num1 = 0;
-      for (int index1 = 0; index1 < list.Count; index1 += 10)
-      {
-        int num2 = Math.Min(10, list.Count - index1);
-        float num3 = (float) ((double) num2 / 2.0 - 0.5);
-        for (int index2 = 0; index2 < num2; ++index2)
+        //key is buff id
+        //value is <old duration, max duration>
+        //purpose of knowing old duration: get debuffed for 15sec, it decrease to 4sec, debuffed again for 10sec, recalculate ratio to match
+        private Dictionary<int, Tuple<int, int>> memorizedDebuffDurations = new Dictionary<int, Tuple<int, int>>();
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
         {
-          int debuffID = list[index1 + index2];
-          Vector2 vector2_1 = (double) drawPlayer.gravDir > 0.0 ? ((Entity) drawPlayer).Top : ((Entity) drawPlayer).Bottom;
-          vector2_1.Y -= (32f + (float) num1) * drawPlayer.gravDir;
-          vector2_1.X += (float) (32.0 * ((double) index2 - (double) num3));
-          vector2_1 = Vector2.op_Subtraction(vector2_1, drawPlayer.MountedCenter);
-          vector2_1 = Utils.RotatedBy(vector2_1, -(double) drawPlayer.fullRotation, new Vector2());
-          vector2_1 = Vector2.op_Addition(vector2_1, drawPlayer.MountedCenter);
-          vector2_1 = Vector2.op_Subtraction(vector2_1, Main.screenPosition);
-          if (TextureAssets.Buff[debuffID].IsLoaded)
-          {
-            Texture2D texture2D = TextureAssets.Buff[debuffID].Value;
-            Color color = Color.op_Multiply(Color.White, FargoClientConfig.Instance.DebuffOpacity);
-            int index3 = Array.FindIndex<int>(drawPlayer.buffType, (Predicate<int>) (id => id == debuffID));
-            int num4 = drawPlayer.buffTime[index3];
-            float num5 = ((double) drawPlayer.gravDir > 0.0 ? 0.0f : 3.14159274f) - drawPlayer.fullRotation;
-            SpriteEffects spriteEffects = (double) drawPlayer.gravDir > 0.0 ? (SpriteEffects) 0 : (SpriteEffects) 1;
-            float debuffFaderRatio = FargoClientConfig.Instance.DebuffFaderRatio;
-            if ((double) debuffFaderRatio > 0.0 && !Main.buffNoTimeDisplay[debuffID])
+            Player player = drawInfo.drawPlayer;
+            List<int> debuffs = player.buffType.Where(d => Main.debuff[d]).Except(debuffsToIgnore).ToList();
+            const int maxPerLine = 10;
+            int yOffset = 0;
+            for (int j = 0; j < debuffs.Count; j += maxPerLine)
             {
-              if (num4 <= 1)
-              {
-                if (this.memorizedDebuffDurations.TryGetValue(debuffID, out Tuple<int, int> _))
+                int maxForThisLine = Math.Min(maxPerLine, debuffs.Count - j);
+                float midpoint = maxForThisLine / 2f - 0.5f;
+                for (int i = 0; i < maxForThisLine; i++)
                 {
-                  this.memorizedDebuffDurations.Remove(debuffID);
-                  color = Color.op_Multiply(color, 1f - debuffFaderRatio);
+                    int debuffID = debuffs[j + i];
+
+                    Vector2 drawPos = (player.gravDir > 0 ? player.Top : player.Bottom);
+                    drawPos.Y -= (32f + yOffset) * player.gravDir;
+                    drawPos.X += 32f * (i - midpoint);
+
+                    drawPos -= player.MountedCenter; //turn it into just the offset from player center
+                    drawPos = drawPos.RotatedBy(-player.fullRotation); //correct for player rotation????
+                    drawPos += player.MountedCenter;
+                    drawPos -= Main.screenPosition;
+                    drawPos += Vector2.UnitY * player.gfxOffY;
+
+                    if (!TextureAssets.Buff[debuffID].IsLoaded)
+                        continue;
+
+                    Texture2D buffIcon = TextureAssets.Buff[debuffID].Value;
+                    Color buffColor = Color.White * FargoClientConfig.Instance.DebuffOpacity;
+
+
+                    int index = Array.FindIndex(player.buffType, id => id == debuffID);
+                    int currentDuration = player.buffTime[index];
+
+                    float rotation = (player.gravDir > 0 ? 0 : MathHelper.Pi) - player.fullRotation;
+                    SpriteEffects effects = player.gravDir > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+                    float faderRatio = FargoClientConfig.Instance.DebuffFaderRatio;
+                    if (faderRatio > 0 && !Main.buffNoTimeDisplay[debuffID])
+                    {
+                        if (currentDuration <= 1) //probably either a persistent debuff or one that will clear soon
+                        {
+                            if (memorizedDebuffDurations.TryGetValue(debuffID, out Tuple<int, int> knownDurations))
+                            {
+                                memorizedDebuffDurations.Remove(debuffID); //remove it
+                                buffColor *= 1f - faderRatio; //like drawing 0% ratio so it doesnt jumpscare full opacity for 1 tick
+                            }
+                        }
+                        else //is longer
+                        {
+                            //draw part of the rectangle to represent time remaining
+                            if (memorizedDebuffDurations.TryGetValue(debuffID, out Tuple<int, int> knownDurations)
+                                && knownDurations.Item1 >= currentDuration && knownDurations.Item2 > currentDuration)
+                            {
+                                int maxDuration = knownDurations.Item2;
+                                float ratio = (float)currentDuration / maxDuration;
+                                
+                                int x = 0;
+                                int y = (int)(buffIcon.Bounds.Height * (1f - ratio));
+                                int width = buffIcon.Bounds.Width;
+                                int height = (int)(buffIcon.Bounds.Height * ratio);
+                                if (y + height > buffIcon.Bounds.Height) //just in case
+                                    y = buffIcon.Bounds.Height - height;
+
+                                Rectangle buffIconPortion = new Rectangle(x, y, width, height);
+                                Vector2 drawPortion = drawPos + y * Vector2.UnitY.RotatedBy(rotation);
+                                Color portionColor = buffColor * faderRatio;
+
+                                drawInfo.DrawDataCache.Add(new DrawData(
+                                    buffIcon, drawPortion, buffIconPortion, buffColor,
+                                    rotation, buffIcon.Bounds.Size() / 2,
+                                    1f, effects, 0));
+
+                                buffColor *= 1f - faderRatio;
+
+                                //update known duration
+                                memorizedDebuffDurations[debuffID] = new Tuple<int, int>(currentDuration, maxDuration);
+                            }
+                            else //if just got this debuff for the first time or it reapplied for longer, update max duration and draw at 100% opacity ratio
+                            {
+                                memorizedDebuffDurations[debuffID] = new Tuple<int, int>(currentDuration, currentDuration);
+                            }
+                        }
+                    }
+
+                    drawInfo.DrawDataCache.Add(new DrawData(
+                        buffIcon, drawPos, buffIcon.Bounds, buffColor,
+                        rotation, buffIcon.Bounds.Size() / 2,
+                        1f, effects, 0));
+
+                    //if (ModContent.GetInstance<FargoConfig>().DebuffCountdown)
+                    //{
+                    //    Vector2 textPos = drawPos;
+                    //    ChatManager.DrawColorCodedStringWithShadow(
+                    //        Main.spriteBatch, 
+                    //        FontAssets.ItemStack.Value, 
+                    //        Math.Round(currentDuration / 60.0, MidpointRounding.AwayFromZero).ToString(), 
+                    //        textPos,
+                    //        Color.White, 
+                    //        0f,
+                    //        Vector2.Zero,
+                    //        Vector2.One);
+                    //}
                 }
-              }
-              else
-              {
-                Tuple<int, int> tuple;
-                if (this.memorizedDebuffDurations.TryGetValue(debuffID, out tuple) && tuple.Item1 >= num4 && tuple.Item2 > num4)
-                {
-                  int num6 = tuple.Item2;
-                  float num7 = (float) num4 / (float) num6;
-                  int num8 = 0;
-                  int num9 = (int) ((double) texture2D.Bounds.Height * (1.0 - (double) num7));
-                  int width = texture2D.Bounds.Width;
-                  int num10 = (int) ((double) texture2D.Bounds.Height * (double) num7);
-                  if (num9 + num10 > texture2D.Bounds.Height)
-                    num9 = texture2D.Bounds.Height - num10;
-                  Rectangle rectangle;
-                  // ISSUE: explicit constructor call
-                  ((Rectangle) ref rectangle).\u002Ector(num8, num9, width, num10);
-                  Vector2 vector2_2 = Vector2.op_Addition(vector2_1, Vector2.op_Multiply((float) num9, Utils.RotatedBy(Vector2.UnitY, (double) num5, new Vector2())));
-                  Color.op_Multiply(color, debuffFaderRatio);
-                  drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_2, new Rectangle?(rectangle), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
-                  color = Color.op_Multiply(color, 1f - debuffFaderRatio);
-                  this.memorizedDebuffDurations[debuffID] = new Tuple<int, int>(num4, num6);
-                }
-                else
-                  this.memorizedDebuffDurations[debuffID] = new Tuple<int, int>(num4, num4);
-              }
+                yOffset += (int)(32 * player.gravDir);
             }
-            drawInfo.DrawDataCache.Add(new DrawData(texture2D, vector2_1, new Rectangle?(texture2D.Bounds), color, num5, Vector2.op_Division(Utils.Size(texture2D.Bounds), 2f), 1f, spriteEffects, 0.0f));
-          }
         }
-        num1 += (int) (32.0 * (double) drawPlayer.gravDir);
-      }
     }
-  }
 }

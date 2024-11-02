@@ -1,623 +1,577 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Common.Systems.Recipes.BannerRecipeSystem
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Common.Configs;
+﻿using Fargowiltas.Common.Configs;
 using Fargowiltas.Utilities;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Common.Systems.Recipes
 {
-  public class BannerRecipeSystem : ModSystem
-  {
-    private static int AnyPirateBanner;
-    private static int AnyArmoredBonesBanner;
-    private static int AnySlimesBanner;
-    private static int AnyBatBanner;
-    private static int AnyHallowBanner;
-    private static int AnyCorruptBanner;
-    private static int AnyCrimsonBanner;
-    private static int AnyJungleBanner;
-    private static int AnySnowBanner;
-    private static int AnyDesertBanner;
-
-    public virtual bool IsLoadingEnabled(Mod mod) => FargoServerConfig.Instance.BannerRecipes;
-
-    public virtual void AddRecipeGroups()
+    public class BannerRecipeSystem : ModSystem
     {
-      BannerRecipeSystem.AnyPirateBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyPirateBanner", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("NPCName.Pirate")), new int[4]
-      {
-        3442,
-        3443,
-        3444,
-        1676
-      }));
-      BannerRecipeSystem.AnyArmoredBonesBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyArmoredBonesBanner", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyItemRecipeGroupText("ArmoredBonesBanner")), new int[3]
-      {
-        2900,
-        2930,
-        2970
-      }));
-      BannerRecipeSystem.AnySlimesBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnySlimes", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyItemRecipeGroupText(1683)), new int[20]
-      {
-        1683,
-        2928,
-        2968,
-        2964,
-        2992,
-        2899,
-        2935,
-        3593,
-        2940,
-        2980,
-        2981,
-        2955,
-        1690,
-        1689,
-        2908,
-        2976,
-        2910,
-        1651,
-        2938,
-        2966
-      }));
-      BannerRecipeSystem.AnyHallowBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyHallows", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Adjective.Hallowed")), new int[10]
-      {
-        1677,
-        1691,
-        2966,
-        1651,
-        3450,
-        2937,
-        2938,
-        1629,
-        1642,
-        4975
-      }));
-      BannerRecipeSystem.AnyCorruptBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyCorrupts", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("CLI.Corrupt")), new int[10]
-      {
-        1641,
-        2909,
-        2908,
-        2976,
-        2913,
-        1697,
-        3449,
-        1637,
-        2905,
-        4973
-      }));
-      BannerRecipeSystem.AnyCrimsonBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyCrimsons", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("CLI.Crimson")), new int[12]
-      {
-        1626,
-        1644,
-        1635,
-        1660,
-        2910,
-        1625,
-        1624,
-        4966,
-        1636,
-        2936,
-        1645,
-        4974
-      }));
-      BannerRecipeSystem.AnyJungleBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyJungles", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Location.Jungle")), new int[17]
-      {
-        1675,
-        2977,
-        2939,
-        2940,
-        2915,
-        1615,
-        1619,
-        1688,
-        2897,
-        1640,
-        2925,
-        1661,
-        2981,
-        1666,
-        1670,
-        1668,
-        4976
-      }));
-      BannerRecipeSystem.AnySnowBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnySnows", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Noun.Snow")), new int[13]
-      {
-        2935,
-        1643,
-        1662,
-        1696,
-        2934,
-        2933,
-        1684,
-        2980,
-        2988,
-        2898,
-        3452,
-        1663,
-        1674
-      }));
-      BannerRecipeSystem.AnyDesertBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyDeserts", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Location.Desert")), new int[23]
-      {
-        1693,
-        1671,
-        4966,
-        3449,
-        3450,
-        3413,
-        3414,
-        4969,
-        1618,
-        3593,
-        3411,
-        3418,
-        3419,
-        3416,
-        3415,
-        3417,
-        3412,
-        3780,
-        3789,
-        3790,
-        3791,
-        3792,
-        3793
-      }));
-      BannerRecipeSystem.AnyBatBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyBats", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Noun.Bats")), new int[9]
-      {
-        1621,
-        2923,
-        2925,
-        2933,
-        2937,
-        2939,
-        1659,
-        2943,
-        4968
-      }));
-    }
+        private static int AnyPirateBanner, AnyArmoredBonesBanner, AnySlimesBanner, AnyBatBanner;
+        private static int AnyHallowBanner, AnyCorruptBanner, AnyCrimsonBanner, AnyJungleBanner, AnySnowBanner, AnyDesertBanner;
 
-    public virtual void AddRecipes()
-    {
-      BannerRecipeSystem.AddBannerToAccessoryRecipes();
-      BannerRecipeSystem.AddBannerToArmorRecipes();
-      BannerRecipeSystem.AddBannerToCritterRecipes();
-      BannerRecipeSystem.AddBannerToFoodRecipes();
-      BannerRecipeSystem.AddBannerToFurnitureRecipes();
-      BannerRecipeSystem.AddBannerToMaterialRecipes();
-      BannerRecipeSystem.AddBannerToMiscItemRecipes();
-      BannerRecipeSystem.AddBannerToMountOrPetRecipes();
-      BannerRecipeSystem.AddBannerToWeaponRecipes();
-    }
-
-    private static void AddBannerToAccessoryRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3409, 3212, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3410, 3212, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1664, 1323, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1665, 1303, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3447, 1303, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1659, 1322, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1678, 216, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1701, 216, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1643, 216, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1680, 268, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3448, 1303, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3452, 1253, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2973, 1321, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1695, 485, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 536, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 535, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 554, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 532, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 854, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 3033, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 855, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerToItemRecipe(3395, 497, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(2943, 1322, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(1692, 900, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(2904, 963, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2904, 977, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2975, 1300, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3397, 2770, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2958, 938, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(1636, 891, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1637, 891, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2911, 891, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1642, 891, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2924, 891, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1661, 887, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4976, 887, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1689, 887, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1615, 885, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1695, 885, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 888, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2908, 888, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2910, 888, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 888, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1620, 886, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1631, 893, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2923, 893, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3450, 893, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2909, 892, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1645, 892, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 890, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 890, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3448, 890, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1677, 890, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1671, 889, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1677, 889, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1699, 889, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3405, 3781, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2970, 885, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2900, 886, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3451, 3095, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2911, 3095, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1682, 3095, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2898, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3393, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3392, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2955, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1675, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3391, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1684, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2988, 393, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1621, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3393, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2923, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3392, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2933, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2939, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3391, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4968, 18, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1694, 3102, 1, 1);
-    }
-
-    private static void AddBannerToArmorRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3451, 959, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1641, 958, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1641, 956, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1641, 957, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3407, 3109, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3408, 3109, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3406, 3188, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3406, 3187, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3406, 3189, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1661, 961, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1661, 960, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1661, 962, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1681, 955, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1681, 954, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1682, 959, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2987, 411, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2987, 410, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2988, 879, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2898, 879, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1675, 263, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1632, 243, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4970, 243, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4965, 4761, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1690, 1243, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2907, 3757, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2907, 3758, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2907, 3759, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4972, 3757, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4972, 3758, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4972, 3759, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1678, 1136, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1678, 1135, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1643, 803, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1643, 804, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1643, 805, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1615, 263, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3417, 3770, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3416, 3786, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3416, 3785, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3416, 3784, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3416, 2801, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3416, 2802, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1671, 870, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1671, 871, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1671, 872, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 870, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 871, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 872, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 870, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 871, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 872, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3450, 870, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3450, 871, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3450, 872, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 1277, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 1279, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 1280, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerToItemRecipe(2984, 1514, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2994, 1943, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2994, 1944, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2994, 1945, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3400, 4740, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3400, 4741, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3400, 4742, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3396, 4738, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3396, 4739, 1, 1, Condition.DownedPlantera);
-    }
-
-    private static void AddBannerToCritterRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(1622, 2015, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1622, 2016, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1622, 2017, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1628, 2019, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1657, 261, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(2959, 2205, 1, 100);
-    }
-
-    private static void AddBannerToFoodRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3391, 4030, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3393, 4030, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3392, 4030, 1, 1);
-      BannerRecipeSystem.AddBannerSetToItemRecipe(NPCID.Sets.Skeletons, 5041);
-      BannerRecipeSystem.AddBannerToItemRecipe(1646, 4021, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1658, 4016, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1618, 4012, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3413, 4012, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3414, 4012, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2911, 4018, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2935, 4026, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2933, 4026, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2980, 4026, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1668, 5042, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2977, 5042, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3793, 4028, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1680, 4035, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1634, 4035, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1685, 4020, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1651, 4017, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2925, 4023, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1640, 4023, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2897, 5042, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3789, 4028, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3790, 4028, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3791, 4028, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3792, 4028, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1623, 4020, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3419, 4020, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2904, 5042, 1, 5, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2924, 4018, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3406, 4029, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3405, 4029, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(2987, 4037, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(1627, 4025, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1674, 3532, 1, 2, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1629, 4011, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2938, 4011, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2937, 4011, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1641, 4015, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3408, 4036, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3407, 4036, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1663, 4027, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3452, 4027, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3446, 4025, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(3399, 4037, 1, 2, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(2974, 4013, 1, 2, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2975, 4013, 1, 2, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2984, 4013, 1, 2, Condition.DownedPlantera);
-    }
-
-    private static void AddBannerToFurnitureRecipes()
-    {
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyCorruptBanner, 996, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyCrimsonBanner, 996, 1, 5, Condition.Hardmode);
-    }
-
-    private static void AddBannerToMaterialRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3451, 154, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(2911, 154, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1682, 154, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(1681, 154, 1, 100);
-      BannerRecipeSystem.AddBannerToItemRecipe(4844, 999, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4838, 181, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4843, 182, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4841, 179, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4842, 178, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4840, 177, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4839, 180, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4837, 999, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4831, 181, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4836, 182, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4834, 179, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4835, 178, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4833, 177, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(4832, 180, 1, 5);
-      BannerRecipeSystem.AddBannerToItemRecipe(1639, 236, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1669, 116, 1, 25);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnySlimesBanner, 23, 200, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4977, 236, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3415, 527, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4966, 527, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3449, 527, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3790, 527, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3791, 527, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1658, 1516, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3415, 528, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3450, 528, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3792, 528, 1, 5, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1677, 501, 1, 100, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1688, 1328, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3417, 3795, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 1517, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4976, 1521, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(1670, 1611, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(3446, 1518, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(1692, 1520, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(2917, 1508, 1, 50, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3397, 1570, 1, 1, Condition.DownedPlantera);
-    }
-
-    private static void AddBannerToMiscItemRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3410, 3213, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1646, 4057, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1682, 932, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4543, 4325, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1698, 215, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4542, 4325, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4602, 4054, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1629, 1326, 4, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 437, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1691, 856, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyCorruptBanner, 1534, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyCrimsonBanner, 1535, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyDesertBanner, 4714, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyHallowBanner, 1536, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyJungleBanner, 1533, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnySnowBanner, 1537, 1, 10, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1627, 4610, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1628, 4612, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1632, 4670, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4970, 4671, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1657, 4674, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1665, 4649, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1668, 4648, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3447, 4650, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2968, 4369, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1680, 4651, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1683, 4367, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2992, 4371, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2897, 4675, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1674, 4613, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3789, 4669, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1691, 4684, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(4977, 4683, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1697, 4611, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1700, 4379, 1, 1, Condition.Hardmode);
-    }
-
-    private static void AddBannerToMountOrPetRecipes()
-    {
-      BannerRecipeSystem.AddBannerToItemRecipe(3418, 3771, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1651, 3260, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 1312, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1674, 4428, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2920, 1311, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 1183, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(1667, 1172, 1, 1, Condition.DownedGolem);
-      BannerRecipeSystem.AddBannerToItemRecipe(2952, 2771, 1, 1, Condition.DownedMartians);
-      BannerRecipeSystem.AddBannerToItemRecipe(2972, 2771, 1, 1, Condition.DownedMartians);
-    }
-
-    private static void AddBannerToWeaponRecipes()
-    {
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyBatBanner, 5097, 1, 1);
-      if (!Main.zenithWorld && !Main.remixWorld)
-        BannerRecipeSystem.AddBannerToItemRecipe(1621, 1325, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1626, 5094, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3393, 3285, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1635, 5094, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1638, 272, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1641, 5094, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4543, 4381, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4543, 4273, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1644, 5094, 2, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3392, 3285, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2927, 160, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3406, 4463, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3391, 3285, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1681, 1166, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1684, 951, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4968, 4764, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2987, 1320, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(3414, 3772, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(1701, 1304, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4542, 4381, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(4542, 4273, 1, 1);
-      BannerRecipeSystem.AddBannerToItemRecipe(2944, 3282, 1, 1, Condition.DownedSkeletron);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnySnowBanner, 3289, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1616, 1244, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2897, 1265, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1620, 723, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2898, 1306, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1623, 1308, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3409, 1314, 4, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1631, 1314, 4, 1, Condition.Hardmode);
-      if (!Main.zenithWorld && !Main.remixWorld)
-        BannerRecipeSystem.AddBannerToItemRecipe(2923, 1325, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1663, 726, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(3405, 3269, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 1264, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 676, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 725, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1630, 517, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(1674, 5096, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerToItemRecipe(2973, 682, 1, 1, Condition.Hardmode);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 672, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyPirateBanner, 2584, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerToItemRecipe(3441, 905, 1, 1, Condition.DownedPirates);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyJungleBanner, 3286, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(2943, 3290, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(3446, 683, 1, 1, Condition.DownedMechBossAny);
-      BannerRecipeSystem.AddBannerToItemRecipe(1679, 1327, 1, 1, Condition.DownedMechBossAll);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 671, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 3291, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 4679, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerGroupToItemRecipe(BannerRecipeSystem.AnyArmoredBonesBanner, 1266, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3400, 3098, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3402, 3249, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2914, 1445, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3396, 3105, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2924, 4789, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3397, 3292, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3403, 3107, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2956, 1444, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2958, 1513, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(3401, 3106, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2965, 1446, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2974, 759, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2975, 1254, 1, 1, Condition.DownedPlantera);
-      BannerRecipeSystem.AddBannerToItemRecipe(2984, 679, 1, 1, Condition.DownedPlantera);
-    }
-
-    private static void AddBannerGroupToItemRecipe(
-      int recipeGroupID,
-      int resultID,
-      int resultAmount = 1,
-      int groupAmount = 1,
-      params Condition[] conditions)
-    {
-      RecipeHelper.CreateSimpleRecipe(recipeGroupID, resultID, 220, groupAmount, resultAmount, true, true, conditions);
-    }
-
-    private static void AddBannerToItemRecipe(
-      int bannerItemID,
-      int resultID,
-      int bannerAmount = 1,
-      int resultAmount = 1,
-      params Condition[] conditions)
-    {
-      RecipeHelper.CreateSimpleRecipe(bannerItemID, resultID, 220, bannerAmount, resultAmount, true, false, conditions);
-    }
-
-    private static void AddBannerSetToItemRecipe(bool[] set, int resultID)
-    {
-      for (int index = 0; index < (int) NPCID.Count; ++index)
-      {
-        if (set[index])
+        public override bool IsLoadingEnabled(Mod mod)
         {
-          int num = Item.NPCtoBanner(index);
-          if (num > 0)
-            RecipeHelper.CreateSimpleRecipe(Item.BannerToItem(num), resultID, 220, 1, 1, true, false);
+            return FargoServerConfig.Instance.BannerRecipes;
         }
-      }
+
+        public override void AddRecipeGroups()
+        {
+            RecipeGroup group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("NPCName.Pirate"), ItemID.PirateDeadeyeBanner, ItemID.PirateCorsairBanner, ItemID.PirateCrossbowerBanner, ItemID.PirateBanner);
+            AnyPirateBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyPirateBanner", group);
+
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyItemRecipeGroupText("ArmoredBonesBanner"), ItemID.BlueArmoredBonesBanner, ItemID.HellArmoredBonesBanner, ItemID.RustyArmoredBonesBanner);
+            AnyArmoredBonesBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyArmoredBonesBanner", group);
+
+            // Slimes (excluding ones that don't drop gel)
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyItemRecipeGroupText(ItemID.SlimeBanner),
+                ItemID.SlimeBanner, ItemID.GreenSlimeBanner, ItemID.RedSlimeBanner, ItemID.PurpleSlimeBanner,
+                ItemID.YellowSlimeBanner, ItemID.BlackSlimeBanner, ItemID.IceSlimeBanner, ItemID.SandSlimeBanner,
+                ItemID.JungleSlimeBanner, ItemID.SpikedIceSlimeBanner, ItemID.SpikedJungleSlimeBanner, ItemID.MotherSlimeBanner,
+                ItemID.UmbrellaSlimeBanner, ItemID.ToxicSludgeBanner, ItemID.CorruptSlimeBanner, ItemID.SlimerBanner,
+                ItemID.CrimslimeBanner, ItemID.GastropodBanner, ItemID.IlluminantSlimeBanner, ItemID.RainbowSlimeBanner
+            );
+            AnySlimesBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnySlimes", group);
+
+            // Any Hallow enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Adjective.Hallowed"),
+                ItemID.PixieBanner, ItemID.UnicornBanner, ItemID.RainbowSlimeBanner, ItemID.GastropodBanner,
+                ItemID.LightMummyBanner, ItemID.IlluminantBatBanner, ItemID.IlluminantSlimeBanner, ItemID.ChaosElementalBanner,
+                ItemID.EnchantedSwordBanner, ItemID.BigMimicHallowBanner
+            );
+            AnyHallowBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyHallows", group);
+
+            // Any Corruption enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("CLI.Corrupt"),
+                ItemID.EaterofSoulsBanner, ItemID.CorruptorBanner, ItemID.CorruptSlimeBanner, ItemID.SlimerBanner,
+                ItemID.DevourerBanner, ItemID.WorldFeederBanner, ItemID.DarkMummyBanner, ItemID.CursedHammerBanner,
+                ItemID.ClingerBanner, ItemID.BigMimicCorruptionBanner
+            );
+            AnyCorruptBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyCorrupts", group);
+
+            // Any Crimson enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("CLI.Crimson"),
+                ItemID.BloodCrawlerBanner, ItemID.FaceMonsterBanner, ItemID.CrimeraBanner, ItemID.HerplingBanner,
+                ItemID.CrimslimeBanner, ItemID.BloodJellyBanner, ItemID.BloodFeederBanner, ItemID.BloodMummyBanner,
+                ItemID.CrimsonAxeBanner, ItemID.IchorStickerBanner, ItemID.FloatyGrossBanner, ItemID.BigMimicCrimsonBanner
+            );
+            AnyCrimsonBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyCrimsons", group);
+
+            // Any Jungle enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Location.Jungle"),
+                ItemID.PiranhaBanner, ItemID.SnatcherBanner, ItemID.JungleBatBanner, ItemID.JungleSlimeBanner,
+                ItemID.DoctorBonesBanner, ItemID.AnglerFishBanner, ItemID.ArapaimaBanner, ItemID.TortoiseBanner,
+                ItemID.AngryTrapperBanner, ItemID.DerplingBanner, ItemID.GiantFlyingFoxBanner, ItemID.HornetBanner,
+                ItemID.SpikedJungleSlimeBanner, ItemID.JungleCreeperBanner, ItemID.MothBanner, ItemID.ManEaterBanner,
+                ItemID.MossHornetBanner
+            );
+            AnyJungleBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyJungles", group);
+
+            // Any Snow enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Noun.Snow"),
+                ItemID.IceSlimeBanner, ItemID.ZombieEskimoBanner, ItemID.IceElementalBanner, ItemID.WolfBanner,
+                ItemID.IceGolemBanner, ItemID.IceBatBanner, ItemID.SnowFlinxBanner, ItemID.SpikedIceSlimeBanner,
+                ItemID.UndeadVikingBanner, ItemID.ArmoredVikingBanner, ItemID.IceTortoiseBanner, ItemID.IcyMermanBanner,
+                ItemID.PigronBanner
+            );
+            AnySnowBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnySnows", group);
+
+            // Any desert enemy
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Location.Desert"),
+                ItemID.VultureBanner, ItemID.MummyBanner, ItemID.BloodMummyBanner, ItemID.DarkMummyBanner,
+                ItemID.LightMummyBanner, ItemID.FlyingAntlionBanner, ItemID.WalkingAntlionBanner, ItemID.LarvaeAntlionBanner,
+                ItemID.AntlionBanner, ItemID.SandSlimeBanner, ItemID.TombCrawlerBanner, ItemID.DesertBasiliskBanner,
+                ItemID.RavagerScorpionBanner, ItemID.DesertLamiaBanner, ItemID.DesertGhoulBanner, ItemID.DesertDjinnBanner,
+                ItemID.DuneSplicerBanner, ItemID.SandElementalBanner, ItemID.SandsharkBanner, ItemID.SandsharkCorruptBanner,
+                ItemID.SandsharkCrimsonBanner, ItemID.SandsharkHallowedBanner, ItemID.TumbleweedBanner
+            );
+            AnyDesertBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyDeserts", group);
+
+            // Any bats
+            group = new RecipeGroup(() => RecipeHelper.GenerateAnyBannerRecipeGroupText("RandomWorldName_Noun.Bats"),
+                ItemID.BatBanner, ItemID.GiantBatBanner, ItemID.GiantFlyingFoxBanner, ItemID.IceBatBanner,
+                ItemID.IlluminantBatBanner, ItemID.JungleBatBanner, ItemID.HellbatBanner, ItemID.LavaBatBanner,
+                ItemID.SporeBatBanner
+            );
+            AnyBatBanner = RecipeGroup.RegisterGroup("Fargowiltas:AnyBats", group);
+        }
+
+        public override void AddRecipes()
+        {
+            AddBannerToAccessoryRecipes();
+            AddBannerToArmorRecipes();
+            AddBannerToCritterRecipes();
+            AddBannerToFoodRecipes();
+            AddBannerToFurnitureRecipes();
+            AddBannerToMaterialRecipes();
+            AddBannerToMiscItemRecipes();
+            AddBannerToMountOrPetRecipes();
+            AddBannerToWeaponRecipes();
+        }
+
+        private static void AddBannerToAccessoryRecipes()
+        {
+            AddBannerToItemRecipe(ItemID.BloodZombieBanner, ItemID.SharkToothNecklace);
+            AddBannerToItemRecipe(ItemID.DripplerBanner, ItemID.SharkToothNecklace);
+            AddBannerToItemRecipe(ItemID.FireImpBanner, ItemID.ObsidianRose);
+            AddBannerToItemRecipe(ItemID.JellyfishBanner, ItemID.JellyfishNecklace);
+            AddBannerToItemRecipe(ItemID.PinkJellyfishBanner, ItemID.JellyfishNecklace);
+            AddBannerToItemRecipe(ItemID.HellbatBanner, ItemID.MagmaStone);
+            AddBannerToItemRecipe(ItemID.RaincoatZombieBanner, ItemID.Shackle);
+            AddBannerToItemRecipe(ItemID.ZombieBanner, ItemID.Shackle);
+            AddBannerToItemRecipe(ItemID.ZombieEskimoBanner, ItemID.Shackle);
+            AddBannerToItemRecipe(ItemID.SharkBanner, ItemID.DivingHelmet);
+
+            // Hardmode
+            AddBannerToItemRecipe(ItemID.GreenJellyfishBanner, ItemID.JellyfishNecklace, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.IceTortoiseBanner, ItemID.FrozenTurtleShell, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SkeletonArcherBanner, ItemID.MagicQuiver, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WerewolfBanner, ItemID.MoonCharm, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.TitanGlove, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.PhilosophersStone, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.CrossNecklace, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.StarCloak, conditions: Condition.Hardmode);
+
+            // Downed Pirates
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.DiscountCard, conditions: Condition.DownedPirates);
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.GoldRing, conditions: Condition.DownedPirates);
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.LuckyCoin, conditions: Condition.DownedPirates);
+
+            // Downed Any Mech Boss
+            AddBannerToItemRecipe(ItemID.CreatureFromTheDeepBanner, ItemID.NeptunesShell, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.LavaBatBanner, ItemID.MagmaStone, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.VampireBanner, ItemID.MoonStone, conditions: Condition.DownedMechBossAny);
+
+            // Downed Plantera
+            AddBannerToItemRecipe(ItemID.BoneLeeBanner, ItemID.BlackBelt, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.BoneLeeBanner, ItemID.Tabi, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.SkeletonSniperBanner, ItemID.RifleScope, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.MothronBanner, ItemID.MothronWings, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.PaladinBanner, ItemID.PaladinsShield, conditions: Condition.DownedPlantera);
+
+            // Ankh Shield
+            AddBannerToItemRecipe(ItemID.CrimsonAxeBanner, ItemID.Nazar);
+            AddBannerToItemRecipe(ItemID.CursedHammerBanner, ItemID.Nazar);
+            AddBannerToItemRecipe(ItemID.CursedSkullBanner, ItemID.Nazar);
+            AddBannerToItemRecipe(ItemID.EnchantedSwordBanner, ItemID.Nazar);
+            AddBannerToItemRecipe(ItemID.GiantCursedSkullBanner, ItemID.Nazar);
+            AddBannerToItemRecipe(ItemID.HornetBanner, ItemID.Bezoar);
+            AddBannerToItemRecipe(ItemID.MossHornetBanner, ItemID.Bezoar);
+            AddBannerToItemRecipe(ItemID.ToxicSludgeBanner, ItemID.Bezoar);
+
+            AddBannerToItemRecipe(ItemID.AnglerFishBanner, ItemID.AdhesiveBandage, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WerewolfBanner, ItemID.AdhesiveBandage, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.Blindfold, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.CorruptSlimeBanner, ItemID.Blindfold, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.CrimslimeBanner, ItemID.Blindfold, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.Blindfold, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ArmoredSkeletonBanner, ItemID.ArmorPolish, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ClownBanner, ItemID.TrifoldMap, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GiantBatBanner, ItemID.TrifoldMap, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.LightMummyBanner, ItemID.TrifoldMap, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.CorruptorBanner, ItemID.Vitamins, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.FloatyGrossBanner, ItemID.Vitamins, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.Megaphone, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.Megaphone, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GreenJellyfishBanner, ItemID.Megaphone, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PixieBanner, ItemID.Megaphone, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MummyBanner, ItemID.FastClock, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PixieBanner, ItemID.FastClock, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WraithBanner, ItemID.FastClock, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MedusaBanner, ItemID.PocketMirror, conditions: Condition.Hardmode);
+
+            AddBannerToItemRecipe(ItemID.RustyArmoredBonesBanner, ItemID.AdhesiveBandage, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.BlueArmoredBonesBanner, ItemID.ArmorPolish, conditions: Condition.DownedPlantera);
+
+            // Shellphone
+            AddBannerToItemRecipe(ItemID.AngryBonesBanner, ItemID.TallyCounter);
+            AddBannerToItemRecipe(ItemID.CursedSkullBanner, ItemID.TallyCounter);
+            AddBannerToItemRecipe(ItemID.SkeletonMageBanner, ItemID.TallyCounter);
+            AddBannerToItemRecipe(ItemID.ArmoredVikingBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.CrawdadBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.GiantShellyBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.MotherSlimeBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.PiranhaBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.SalamanderBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.SnowFlinxBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.UndeadVikingBanner, ItemID.Compass);
+            AddBannerToItemRecipe(ItemID.BatBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.CrawdadBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.GiantBatBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.GiantShellyBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.IceBatBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.JungleBatBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.SalamanderBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.SporeBatBanner, ItemID.DepthMeter);
+            AddBannerToItemRecipe(ItemID.NypmhBanner, ItemID.MetalDetector);
+        }
+
+        private static void AddBannerToArmorRecipes()
+        {
+            // Armor
+            AddBannerToItemRecipe(ItemID.AngryBonesBanner, ItemID.AncientNecroHelmet, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.EaterofSoulsBanner, ItemID.AncientShadowGreaves, 2);
+            AddBannerToItemRecipe(ItemID.EaterofSoulsBanner, ItemID.AncientShadowHelmet, 2);
+            AddBannerToItemRecipe(ItemID.EaterofSoulsBanner, ItemID.AncientShadowScalemail, 2);
+            AddBannerToItemRecipe(ItemID.GraniteFlyerBanner, ItemID.NightVisionHelmet);
+            AddBannerToItemRecipe(ItemID.GraniteGolemBanner, ItemID.NightVisionHelmet);
+            AddBannerToItemRecipe(ItemID.GreekSkeletonBanner, ItemID.GladiatorBreastplate);
+            AddBannerToItemRecipe(ItemID.GreekSkeletonBanner, ItemID.GladiatorHelmet);
+            AddBannerToItemRecipe(ItemID.GreekSkeletonBanner, ItemID.GladiatorLeggings);
+            AddBannerToItemRecipe(ItemID.HornetBanner, ItemID.AncientCobaltBreastplate, 2);
+            AddBannerToItemRecipe(ItemID.HornetBanner, ItemID.AncientCobaltHelmet, 2);
+            AddBannerToItemRecipe(ItemID.HornetBanner, ItemID.AncientCobaltLeggings, 2);
+            AddBannerToItemRecipe(ItemID.SkeletonBanner, ItemID.AncientGoldHelmet, 2);
+            AddBannerToItemRecipe(ItemID.SkeletonBanner, ItemID.AncientIronHelmet, 2);
+            AddBannerToItemRecipe(ItemID.SkeletonMageBanner, ItemID.AncientNecroHelmet, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.UndeadMinerBanner, ItemID.MiningPants);
+            AddBannerToItemRecipe(ItemID.UndeadMinerBanner, ItemID.MiningShirt);
+            AddBannerToItemRecipe(ItemID.UndeadVikingBanner, ItemID.VikingHelmet);
+            AddBannerToItemRecipe(ItemID.ArmoredVikingBanner, ItemID.VikingHelmet);
+
+            // Vanity
+            AddBannerToItemRecipe(ItemID.PiranhaBanner, ItemID.RobotHat);
+            AddBannerToItemRecipe(ItemID.CorruptBunnyBanner, ItemID.BunnyHood);
+            AddBannerToItemRecipe(ItemID.CrimsonBunnyBanner, ItemID.BunnyHood);
+            AddBannerToItemRecipe(ItemID.RockGolemBanner, ItemID.RockGolemHead);
+            AddBannerToItemRecipe(ItemID.UmbrellaSlimeBanner, ItemID.UmbrellaHat);
+            AddBannerToItemRecipe(ItemID.CorruptPenguinBanner, ItemID.PedguinHat);
+            AddBannerToItemRecipe(ItemID.CorruptPenguinBanner, ItemID.PedguinShirt);
+            AddBannerToItemRecipe(ItemID.CorruptPenguinBanner, ItemID.PedguinPants);
+            AddBannerToItemRecipe(ItemID.CrimsonPenguinBanner, ItemID.PedguinHat);
+            AddBannerToItemRecipe(ItemID.CrimsonPenguinBanner, ItemID.PedguinShirt);
+            AddBannerToItemRecipe(ItemID.CrimsonPenguinBanner, ItemID.PedguinPants);
+            AddBannerToItemRecipe(ItemID.RaincoatZombieBanner, ItemID.RainCoat);
+            AddBannerToItemRecipe(ItemID.RaincoatZombieBanner, ItemID.RainHat);
+            AddBannerToItemRecipe(ItemID.ZombieEskimoBanner, ItemID.EskimoHood);
+            AddBannerToItemRecipe(ItemID.ZombieEskimoBanner, ItemID.EskimoCoat);
+            AddBannerToItemRecipe(ItemID.ZombieEskimoBanner, ItemID.EskimoPants);
+
+            AddBannerToItemRecipe(ItemID.AnglerFishBanner, ItemID.RobotHat, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertDjinnBanner, ItemID.DjinnsCurse, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertLamiaBanner, ItemID.LamiaHat, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertLamiaBanner, ItemID.LamiaShirt, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertLamiaBanner, ItemID.LamiaPants, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertLamiaBanner, ItemID.MoonMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertLamiaBanner, ItemID.SunMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MummyBanner, ItemID.MummyMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MummyBanner, ItemID.MummyShirt, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MummyBanner, ItemID.MummyPants, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.MummyMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.MummyShirt, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.MummyPants, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.MummyMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.MummyShirt, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.MummyPants, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.LightMummyBanner, ItemID.MummyMask, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.LightMummyBanner, ItemID.MummyShirt, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.LightMummyBanner, ItemID.MummyPants, conditions: Condition.Hardmode);
+
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.SailorHat, conditions: Condition.DownedPirates);
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.SailorShirt, conditions: Condition.DownedPirates);
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.SailorPants, conditions: Condition.DownedPirates);
+
+            AddBannerToItemRecipe(ItemID.TacticalSkeletonBanner, ItemID.SWATHelmet, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ZombieElfBanner, ItemID.ElfHat, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ZombieElfBanner, ItemID.ElfShirt, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ZombieElfBanner, ItemID.ElfPants, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ButcherBanner, ItemID.ButcherMask, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ButcherBanner, ItemID.ButcherApron, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ButcherBanner, ItemID.ButcherPants, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.DrManFlyBanner, ItemID.DrManFlyMask, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.DrManFlyBanner, ItemID.DrManFlyLabCoat, conditions: Condition.DownedPlantera);
+        }
+
+        private static void AddBannerToCritterRecipes()
+        {
+            AddBannerToItemRecipe(ItemID.BirdBanner, ItemID.Bird, resultAmount: 100);
+            AddBannerToItemRecipe(ItemID.BirdBanner, ItemID.BlueJay, resultAmount: 100);
+            AddBannerToItemRecipe(ItemID.BirdBanner, ItemID.Cardinal, resultAmount: 100);
+            AddBannerToItemRecipe(ItemID.BunnyBanner, ItemID.Bunny, resultAmount: 100);
+            AddBannerToItemRecipe(ItemID.GoldfishBanner, ItemID.Goldfish, resultAmount: 100);
+            AddBannerToItemRecipe(ItemID.PenguinBanner, ItemID.Penguin, resultAmount: 100);
+        }
+
+        private static void AddBannerToFoodRecipes()
+        {
+            // Well Fed
+            AddBannerToItemRecipe(ItemID.SalamanderBanner, ItemID.PotatoChips);
+            AddBannerToItemRecipe(ItemID.CrawdadBanner, ItemID.PotatoChips);
+            AddBannerToItemRecipe(ItemID.GiantShellyBanner, ItemID.PotatoChips);
+            AddBannerSetToItemRecipe(NPCID.Sets.Skeletons, ItemID.MilkCarton);
+
+            // Plenty Satisfied
+            AddBannerToItemRecipe(ItemID.FlyingFishBanner, ItemID.Fries);
+            AddBannerToItemRecipe(ItemID.HarpyBanner, ItemID.ChickenNugget);
+            AddBannerToItemRecipe(ItemID.AntlionBanner, ItemID.BananaSplit);
+            AddBannerToItemRecipe(ItemID.FlyingAntlionBanner, ItemID.BananaSplit);
+            AddBannerToItemRecipe(ItemID.WalkingAntlionBanner, ItemID.BananaSplit);
+            AddBannerToItemRecipe(ItemID.CursedSkullBanner, ItemID.CreamSoda);
+            AddBannerToItemRecipe(ItemID.IceSlimeBanner, ItemID.IceCream);
+            AddBannerToItemRecipe(ItemID.IceBatBanner, ItemID.IceCream);
+            AddBannerToItemRecipe(ItemID.SpikedIceSlimeBanner, ItemID.IceCream);
+            AddBannerToItemRecipe(ItemID.ManEaterBanner, ItemID.CoffeeCup);
+            AddBannerToItemRecipe(ItemID.SnatcherBanner, ItemID.CoffeeCup);
+            AddBannerToItemRecipe(ItemID.TumbleweedBanner, ItemID.Nachos);
+            AddBannerToItemRecipe(ItemID.SharkBanner, ItemID.ShrimpPoBoy);
+            AddBannerToItemRecipe(ItemID.CrabBanner, ItemID.ShrimpPoBoy);
+            AddBannerToItemRecipe(ItemID.SpiderBanner, ItemID.FriedEgg);
+
+            AddBannerToItemRecipe(ItemID.GastropodBanner, ItemID.ChocolateChipCookie, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GiantFlyingFoxBanner, ItemID.Grapes, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DerplingBanner, ItemID.Grapes, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.AngryTrapperBanner, ItemID.CoffeeCup, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkBanner, ItemID.Nachos, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkCorruptBanner, ItemID.Nachos, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkCrimsonBanner, ItemID.Nachos, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkHallowedBanner, ItemID.Nachos, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BlackRecluseBanner, ItemID.FriedEgg, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.RavagerScorpionBanner, ItemID.FriedEgg, conditions: Condition.Hardmode);
+
+            AddBannerToItemRecipe(ItemID.BoneLeeBanner, ItemID.CoffeeCup, resultAmount: 5, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.GiantCursedSkullBanner, ItemID.CreamSoda, conditions: Condition.DownedPlantera);
+
+            // Exquisitely Stuffed
+            AddBannerToItemRecipe(ItemID.GreekSkeletonBanner, ItemID.Pizza);
+            AddBannerToItemRecipe(ItemID.MedusaBanner, ItemID.Pizza, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.UndeadMinerBanner, ItemID.Steak, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.BoneSerpentBanner, ItemID.Hotdog);
+
+            AddBannerToItemRecipe(ItemID.PigronBanner, ItemID.Bacon, resultAmount: 2, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ChaosElementalBanner, ItemID.ApplePie, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.IlluminantSlimeBanner, ItemID.ApplePie, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.IlluminantBatBanner, ItemID.ApplePie, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.EaterofSoulsBanner, ItemID.Burger, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GraniteGolemBanner, ItemID.Spaghetti, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GraniteFlyerBanner, ItemID.Spaghetti, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.IcyMermanBanner, ItemID.Milkshake, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.IceTortoiseBanner, ItemID.Milkshake, conditions: Condition.Hardmode);
+
+            AddBannerToItemRecipe(ItemID.RedDevilBanner, ItemID.Hotdog, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.ThePossessedBanner, ItemID.Steak, resultAmount: 2, conditions: Condition.DownedMechBossAny);
+
+            AddBannerToItemRecipe(ItemID.SkeletonCommandoBanner, ItemID.BBQRibs, resultAmount: 2, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.SkeletonSniperBanner, ItemID.BBQRibs, resultAmount: 2, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.TacticalSkeletonBanner, ItemID.BBQRibs, resultAmount: 2, conditions: Condition.DownedPlantera);
+        }
+
+        private static void AddBannerToFurnitureRecipes()
+        {
+            AddBannerGroupToItemRecipe(AnyCorruptBanner, ItemID.MeatGrinder, groupAmount: 5, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyCrimsonBanner, ItemID.MeatGrinder, groupAmount: 5, conditions: Condition.Hardmode);
+        }
+
+        private static void AddBannerToMaterialRecipes()
+        {
+            AddBannerToItemRecipe(ItemID.AngryBonesBanner, ItemID.Bone, resultAmount: 100, conditions: Condition.DownedSkeletron);
+            AddBannerToItemRecipe(ItemID.CursedSkullBanner, ItemID.Bone, resultAmount: 100, conditions: Condition.DownedSkeletron);
+            AddBannerToItemRecipe(ItemID.SkeletonMageBanner, ItemID.Bone, resultAmount: 100, conditions: Condition.DownedSkeletron);
+            //AddBannerToItemRecipe(ItemID.SkeletonBanner, ItemID.Bone, resultAmount: 100, conditions: Condition.DownedSkeletron);
+            AddBannerToItemRecipe(ItemID.GemBunnyAmber, ItemID.Amber, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnyAmethyst, ItemID.Amethyst, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnyDiamond, ItemID.Diamond, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnyEmerald, ItemID.Emerald, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnyRuby, ItemID.Ruby, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnySapphire, ItemID.Sapphire, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemBunnyTopaz, ItemID.Topaz, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelAmber, ItemID.Amber, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelAmethyst, ItemID.Amethyst, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelDiamond, ItemID.Diamond, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelEmerald, ItemID.Emerald, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelRuby, ItemID.Ruby, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelSapphire, ItemID.Sapphire, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.GemSquirrelTopaz, ItemID.Topaz, resultAmount: 5);
+            AddBannerToItemRecipe(ItemID.DemonEyeBanner, ItemID.BlackLens);
+            AddBannerToItemRecipe(ItemID.MeteorHeadBanner, ItemID.Meteorite, resultAmount: 25);
+            AddBannerGroupToItemRecipe(AnySlimesBanner, ItemID.Gel, resultAmount: 200);
+
+            AddBannerToItemRecipe(ItemID.WanderingEyeBanner, ItemID.BlackLens, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertGhoulBanner, ItemID.DarkShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodMummyBanner, ItemID.DarkShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DarkMummyBanner, ItemID.DarkShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkCorruptBanner, ItemID.DarkShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkCrimsonBanner, ItemID.DarkShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.HarpyBanner, ItemID.GiantHarpyFeather, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertGhoulBanner, ItemID.LightShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.LightMummyBanner, ItemID.LightShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkHallowedBanner, ItemID.LightShard, resultAmount: 5, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PixieBanner, ItemID.PixieDust, resultAmount: 100, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.TortoiseBanner, ItemID.TurtleShell, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.DesertDjinnBanner, ItemID.DjinnLamp, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.BoneFeather, conditions: Condition.Hardmode);
+
+            AddBannerToItemRecipe(ItemID.MossHornetBanner, ItemID.TatteredBeeWing, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.MothBanner, ItemID.ButterflyDust, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.RedDevilBanner, ItemID.FireFeather, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.VampireBanner, ItemID.BrokenBatWing, conditions: Condition.DownedMechBossAny);
+
+            AddBannerToItemRecipe(ItemID.DungeonSpiritBanner, ItemID.Ectoplasm, resultAmount: 50, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.MothronBanner, ItemID.BrokenHeroSword, conditions: Condition.DownedPlantera);
+        }
+
+        private static void AddBannerToMiscItemRecipes()
+        {
+            AddBannerToItemRecipe(ItemID.DripplerBanner, ItemID.MoneyTrough);
+            AddBannerToItemRecipe(ItemID.FlyingFishBanner, ItemID.CarbonGuitar);
+            AddBannerToItemRecipe(ItemID.SkeletonMageBanner, ItemID.BoneWand);
+            AddBannerToItemRecipe(ItemID.EyeballFlyingFishBanner, ItemID.BloodFishingRod);
+            AddBannerToItemRecipe(ItemID.WormBanner, ItemID.WhoopieCushion);
+            AddBannerToItemRecipe(ItemID.ZombieMermanBanner, ItemID.BloodFishingRod);
+
+            AddBannerToItemRecipe(ItemID.BloodNautilusBanner, ItemID.BloodMoonMonolith, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ChaosElementalBanner, ItemID.RodofDiscord, bannerAmount: 4, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.DualHook, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.UnicornBanner, ItemID.UnicornonaStick, conditions: Condition.Hardmode);
+
+            // Biome Keys
+            AddBannerGroupToItemRecipe(AnyCorruptBanner, ItemID.CorruptionKey, groupAmount: 10, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyCrimsonBanner, ItemID.CrimsonKey, groupAmount: 10, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyDesertBanner, ItemID.DungeonDesertKey, groupAmount: 10, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyHallowBanner, ItemID.HallowedKey, groupAmount: 10, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnyJungleBanner, ItemID.JungleKey, groupAmount: 10, conditions: Condition.Hardmode);
+            AddBannerGroupToItemRecipe(AnySnowBanner, ItemID.FrozenKey, groupAmount: 10, conditions: Condition.Hardmode);
+
+            // Kites
+            AddBannerToItemRecipe(ItemID.BoneSerpentBanner, ItemID.KiteBoneSerpent);
+            AddBannerToItemRecipe(ItemID.BunnyBanner, ItemID.KiteBunny);
+            AddBannerToItemRecipe(ItemID.CorruptBunnyBanner, ItemID.KiteBunnyCorrupt);
+            AddBannerToItemRecipe(ItemID.CrimsonBunnyBanner, ItemID.KiteBunnyCrimson);
+            AddBannerToItemRecipe(ItemID.GoldfishBanner, ItemID.KiteGoldfish);
+            AddBannerToItemRecipe(ItemID.JellyfishBanner, ItemID.KiteJellyfishBlue);
+            AddBannerToItemRecipe(ItemID.ManEaterBanner, ItemID.KiteManEater);
+            AddBannerToItemRecipe(ItemID.PinkJellyfishBanner, ItemID.KiteJellyfishPink);
+            AddBannerToItemRecipe(ItemID.RedSlimeBanner, ItemID.KiteRed);
+            AddBannerToItemRecipe(ItemID.SharkBanner, ItemID.KiteShark);
+            AddBannerToItemRecipe(ItemID.SlimeBanner, ItemID.KiteBlue);
+            AddBannerToItemRecipe(ItemID.YellowSlimeBanner, ItemID.KiteYellow);
+
+            AddBannerToItemRecipe(ItemID.AngryTrapperBanner, ItemID.KiteAngryTrapper, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PigronBanner, ItemID.KitePigron, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SandsharkBanner, ItemID.KiteSandShark, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.UnicornBanner, ItemID.KiteUnicorn, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WanderingEyeBanner, ItemID.KiteWanderingEye, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WorldFeederBanner, ItemID.KiteWorldFeeder, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.WyvernBanner, ItemID.KiteWyvern, conditions: Condition.Hardmode);
+        }
+
+        private static void AddBannerToMountOrPetRecipes()
+        {
+            AddBannerToItemRecipe(ItemID.DesertBasiliskBanner, ItemID.AncientHorn, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GastropodBanner, ItemID.BlessedApple, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.ToySled, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PigronBanner, ItemID.PigronMinecart, conditions: Condition.Hardmode);
+
+            AddBannerToItemRecipe(ItemID.EyezorBanner, ItemID.EyeSpring, conditions: Condition.DownedMechBossAny);
+
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.WispinaBottle, conditions: Condition.DownedPlantera);
+
+            AddBannerToItemRecipe(ItemID.LihzahrdBanner, ItemID.LizardEgg, conditions: Condition.DownedGolem);
+
+            AddBannerToItemRecipe(ItemID.MartianScutlixGunnerBanner, ItemID.BrainScrambler, conditions: Condition.DownedMartians);
+            AddBannerToItemRecipe(ItemID.ScutlixBanner, ItemID.BrainScrambler, conditions: Condition.DownedMartians);
+        }
+
+        private static void AddBannerToWeaponRecipes()
+        {
+            AddBannerGroupToItemRecipe(AnyBatBanner, ItemID.BatBat);
+            AddBannerToItemRecipe(ItemID.BatBanner, ItemID.ChainKnife, conditions: Condition.NotRemixWorld);
+            AddBannerToItemRecipe(ItemID.BloodCrawlerBanner, ItemID.TentacleSpike, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.CrawdadBanner, ItemID.Rally);
+            AddBannerToItemRecipe(ItemID.CrimeraBanner, ItemID.TentacleSpike, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.DemonBanner, ItemID.DemonScythe);
+            AddBannerToItemRecipe(ItemID.EaterofSoulsBanner, ItemID.TentacleSpike, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.EyeballFlyingFishBanner, ItemID.BloodRainBow);
+            AddBannerToItemRecipe(ItemID.EyeballFlyingFishBanner, ItemID.VampireFrogStaff);
+            AddBannerToItemRecipe(ItemID.FaceMonsterBanner, ItemID.TentacleSpike, bannerAmount: 2);
+            AddBannerToItemRecipe(ItemID.GiantShellyBanner, ItemID.Rally);
+            AddBannerToItemRecipe(ItemID.GoblinArcherBanner, ItemID.Harpoon);
+            AddBannerToItemRecipe(ItemID.GreekSkeletonBanner, ItemID.Gladius);
+            AddBannerToItemRecipe(ItemID.SalamanderBanner, ItemID.Rally);
+            AddBannerToItemRecipe(ItemID.SkeletonBanner, ItemID.BoneSword);
+            AddBannerToItemRecipe(ItemID.SnowFlinxBanner, ItemID.SnowballLauncher);
+            AddBannerToItemRecipe(ItemID.SporeBatBanner, ItemID.Shroomerang);
+            AddBannerToItemRecipe(ItemID.UndeadMinerBanner, ItemID.BonePickaxe);
+            AddBannerToItemRecipe(ItemID.WalkingAntlionBanner, ItemID.AntlionClaw);
+            AddBannerToItemRecipe(ItemID.ZombieBanner, ItemID.ZombieArm);
+            AddBannerToItemRecipe(ItemID.ZombieMermanBanner, ItemID.BloodRainBow);
+            AddBannerToItemRecipe(ItemID.ZombieMermanBanner, ItemID.VampireFrogStaff);
+
+            AddBannerToItemRecipe(ItemID.LavaSlimeBanner, ItemID.Cascade, conditions: Condition.DownedSkeletron);
+
+            AddBannerGroupToItemRecipe(AnySnowBanner, ItemID.Amarok, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.AngryNimbusBanner, ItemID.NimbusRod, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.AngryTrapperBanner, ItemID.Uzi, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ArmoredSkeletonBanner, ItemID.BeamSword, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ArmoredVikingBanner, ItemID.IceSickle, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BlackRecluseBanner, ItemID.PoisonStaff, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.BloodZombieBanner, ItemID.KOCannon, bannerAmount: 4, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.ClownBanner, ItemID.KOCannon, bannerAmount: 4, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.GiantBatBanner, ItemID.ChainKnife, conditions: [Condition.Hardmode, Condition.NotRemixWorld]);
+            AddBannerToItemRecipe(ItemID.IcyMermanBanner, ItemID.FrostStaff, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MedusaBanner, ItemID.MedusaHead, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.FlowerofFrost, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.Frostbrand, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.IceBow, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.MimicBanner, ItemID.MagicDagger, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.PigronBanner, ItemID.HamBat, conditions: Condition.Hardmode);
+            AddBannerToItemRecipe(ItemID.SkeletonArcherBanner, ItemID.Marrow, conditions: Condition.Hardmode);
+
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.Cutlass, conditions: Condition.DownedPirates);
+            AddBannerGroupToItemRecipe(AnyPirateBanner, ItemID.PirateStaff, conditions: Condition.DownedPirates);
+            AddBannerToItemRecipe(ItemID.PirateCaptainBanner, ItemID.CoinGun, conditions: Condition.DownedPirates);
+
+            //AddBannerToItemRecipe(ItemID.EnchantedSwordBanner, ItemID.Smolstar, conditions: Condition.DownedQueenSlime);
+
+            AddBannerGroupToItemRecipe(AnyJungleBanner, ItemID.Yelets, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.LavaBatBanner, ItemID.HelFire, conditions: Condition.DownedMechBossAny);
+            AddBannerToItemRecipe(ItemID.RedDevilBanner, ItemID.UnholyTrident, conditions: Condition.DownedMechBossAny);
+
+            AddBannerToItemRecipe(ItemID.ReaperBanner, ItemID.DeathSickle, conditions: Condition.DownedMechBossAll);
+
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.Keybrand, conditions: Condition.DownedPlantera);
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.Kraken, conditions: Condition.DownedPlantera);
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.MaceWhip, conditions: Condition.DownedPlantera);
+            AddBannerGroupToItemRecipe(AnyArmoredBonesBanner, ItemID.MagnetSphere, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.ButcherBanner, ItemID.ButchersChainsaw, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.DeadlySphereBanner, ItemID.DeadlySphereStaff, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.DiablolistBanner, ItemID.InfernoFork, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.DrManFlyBanner, ItemID.ToxicFlask, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.GiantCursedSkullBanner, ItemID.ShadowJoustingLance, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.MothronBanner, ItemID.TheEyeOfCthulhu, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.NailheadBanner, ItemID.NailGun, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.NecromancerBanner, ItemID.ShadowbeamStaff, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.PaladinBanner, ItemID.PaladinsHammer, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.PsychoBanner, ItemID.PsychoKnife, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.RaggedCasterBanner, ItemID.SpectreStaff, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.SkeletonCommandoBanner, ItemID.RocketLauncher, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.SkeletonSniperBanner, ItemID.SniperRifle, conditions: Condition.DownedPlantera);
+            AddBannerToItemRecipe(ItemID.TacticalSkeletonBanner, ItemID.TacticalShotgun, conditions: Condition.DownedPlantera);
+        }
+
+        private static void AddBannerGroupToItemRecipe(int recipeGroupID, int resultID, int resultAmount = 1, int groupAmount = 1, params Condition[] conditions)
+        {
+            RecipeHelper.CreateSimpleRecipe(recipeGroupID, resultID, TileID.Solidifier, groupAmount, resultAmount, true, true, conditions);
+        }
+
+        private static void AddBannerToItemRecipe(int bannerItemID, int resultID, int bannerAmount = 1, int resultAmount = 1, params Condition[] conditions)
+        {
+            RecipeHelper.CreateSimpleRecipe(bannerItemID, resultID, TileID.Solidifier, bannerAmount, resultAmount, true, conditions: conditions);
+        }
+
+        private static void AddBannerSetToItemRecipe(bool[] set, int resultID)
+        {
+            for (int i = 0; i < NPCID.Count; i++)
+            {
+                if (set[i])
+                {
+                    int bannerId = Item.NPCtoBanner(i);
+                    if (bannerId > 0)
+                    {
+                        RecipeHelper.CreateSimpleRecipe(Item.BannerToItem(bannerId), resultID, TileID.Solidifier, disableDecraft: true);
+                    }
+                }
+            }
+        }
     }
-  }
 }

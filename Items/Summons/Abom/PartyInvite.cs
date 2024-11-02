@@ -1,60 +1,61 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Abom.PartyInvite
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 using System.Linq;
 using Terraria;
-using Terraria.GameContent.Creative;
+using Terraria.Audio;
 using Terraria.GameContent.Events;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.Abom
 {
-  public class PartyInvite : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class PartyInvite : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 3;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Party Cone");
+            // Tooltip.SetDefault("Starts a Party!\nNeeds at least 5 town NPCs to use");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 3;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 20;
-      ((Entity) this.Item).height = 20;
-      this.Item.maxStack = 20;
-      this.Item.value = Item.sellPrice(0, 0, 2, 0);
-      this.Item.rare = 1;
-      this.Item.useAnimation = 30;
-      this.Item.useTime = 30;
-      this.Item.useStyle = 5;
-      this.Item.consumable = true;
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 20;
+            Item.height = 20;
+            Item.maxStack = 20;
+            Item.value = Item.sellPrice(0, 0, 2);
+            Item.rare = ItemRarityID.Blue;
+            Item.useAnimation = 30;
+            Item.useTime = 30;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.consumable = true;
+        }
 
-    public virtual bool CanUseItem(Player player)
-    {
-      return Main.dayTime && !BirthdayParty.PartyIsUp && ((IEnumerable<NPC>) Main.npc).Count<NPC>((Func<NPC, bool>) (n => ((Entity) n).active && n.townNPC && n.aiStyle != 0 && n.type != 37 && n.type != 453 && n.type != 441 && !NPCID.Sets.IsTownPet[n.type])) >= 5;
-    }
+        public override bool CanUseItem(Player player)
+        {
+            return (Main.dayTime || Main.remixWorld) && !BirthdayParty.PartyIsUp && Main.npc.Count(n => n.active && n.townNPC && n.aiStyle != 0 && n.type != NPCID.OldMan && n.type != NPCID.SkeletonMerchant && n.type != NPCID.TaxCollector && !NPCID.Sets.IsTownPet[n.type]) >= 5;
+        }
 
-    public virtual bool? UseItem(Player player)
-    {
-      if (!NPC.AnyNPCs(208))
-        NPC.SpawnOnPlayer(((Entity) player).whoAmI, 208);
-      BirthdayParty.PartyDaysOnCooldown = 0;
-      if (Main.netMode != 1)
-      {
-        for (int index = 0; index < 100 && !BirthdayParty.PartyIsUp; ++index)
-          BirthdayParty.CheckMorning();
-      }
-      if (Main.netMode == 2)
-        NetMessage.SendData(7, -1, -1, (NetworkText) null, 0, 0.0f, 0.0f, 0.0f, 0, 0, 0);
-      return new bool?(true);
+        public override bool? UseItem(Player player)
+        {
+            if (!NPC.AnyNPCs(NPCID.PartyGirl))
+                NPC.SpawnOnPlayer(player.whoAmI, NPCID.PartyGirl);
+
+            BirthdayParty.PartyDaysOnCooldown = 0;
+
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    if (BirthdayParty.PartyIsUp)
+                        break;
+                    BirthdayParty.CheckMorning();
+                }
+            }
+
+            if (Main.netMode == NetmodeID.Server)
+                NetMessage.SendData(MessageID.WorldData);
+
+            return true;
+        }
     }
-  }
 }

@@ -1,84 +1,90 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.MechEyeProjectile
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class MechEyeProjectile : ModProjectile
-  {
-    private float HomingCooldown
+    public class MechEyeProjectile : ModProjectile
     {
-      get => this.Projectile.ai[0];
-      set => this.Projectile.ai[0] = value;
-    }
-
-    public virtual void SetStaticDefaults()
-    {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 8;
-      ((Entity) this.Projectile).height = 12;
-      this.Projectile.aiStyle = 1;
-      this.Projectile.friendly = true;
-      this.Projectile.npcProj = true;
-      this.Projectile.penetrate = 5;
-      this.Projectile.timeLeft = 600;
-      this.AIType = 14;
-    }
-
-    public virtual void AI()
-    {
-      ++this.HomingCooldown;
-      if ((double) this.HomingCooldown <= 10.0)
-        return;
-      this.HomingCooldown = 10f;
-      int index = this.HomeOnTarget();
-      if (index == -1)
-        return;
-      NPC npc = Main.npc[index];
-      if ((double) ((Entity) this.Projectile).Distance(((Entity) npc).Center) <= (double) Math.Max(((Entity) npc).width, ((Entity) npc).height))
-        return;
-      ((Entity) this.Projectile).velocity = Vector2.Lerp(((Entity) this.Projectile).velocity, Vector2.op_Multiply(((Entity) this.Projectile).DirectionTo(((Entity) npc).Center), 60f), 0.05f);
-    }
-
-    public virtual void OnKill(int timeLeft)
-    {
-      for (int index1 = 0; index1 < 20; ++index1)
-      {
-        int index2 = Dust.NewDust(new Vector2(((Entity) this.Projectile).Center.X, ((Entity) this.Projectile).Center.Y), ((Entity) this.Projectile).width, ((Entity) this.Projectile).height, 11, (float) (-(double) ((Entity) this.Projectile).velocity.X * 0.20000000298023224), (float) (-(double) ((Entity) this.Projectile).velocity.Y * 0.20000000298023224), 100, new Color(), 1.5f);
-        Main.dust[index2].noGravity = true;
-        Dust dust1 = Main.dust[index2];
-        dust1.velocity = Vector2.op_Multiply(dust1.velocity, 2f);
-        int index3 = Dust.NewDust(new Vector2(((Entity) this.Projectile).Center.X, ((Entity) this.Projectile).Center.Y), ((Entity) this.Projectile).width, ((Entity) this.Projectile).height, 11, (float) (-(double) ((Entity) this.Projectile).velocity.X * 0.20000000298023224), (float) (-(double) ((Entity) this.Projectile).velocity.Y * 0.20000000298023224), 100, new Color(), 0.75f);
-        Dust dust2 = Main.dust[index3];
-        dust2.velocity = Vector2.op_Multiply(dust2.velocity, 2f);
-      }
-    }
-
-    private int HomeOnTarget()
-    {
-      int index1 = -1;
-      for (int index2 = 0; index2 < Main.maxNPCs; ++index2)
-      {
-        NPC npc = Main.npc[index2];
-        if (npc.CanBeChasedBy((object) this.Projectile, false) && Collision.CanHitLine(((Entity) this.Projectile).Center, 0, 0, ((Entity) npc).Center, 0, 0))
+        private float HomingCooldown
         {
-          float num = ((Entity) this.Projectile).Distance(((Entity) npc).Center);
-          if ((double) num <= 500.0 && (index1 == -1 || (double) ((Entity) this.Projectile).Distance(((Entity) Main.npc[index1]).Center) > (double) num))
-            index1 = index2;
+            get => Projectile.ai[0];
+            set => Projectile.ai[0] = value;
         }
-      }
-      return index1;
+
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("MechEyeProjectile");
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 8;
+            Projectile.height = 12;
+            Projectile.aiStyle = 1;
+            Projectile.friendly = true;
+            Projectile.npcProj = true;
+            Projectile.penetrate = 5;
+            Projectile.timeLeft = 600;
+            AIType = ProjectileID.Bullet;
+        }
+
+        public override void AI()
+        {
+            const int homingDelay = 10;
+            const float flySpeed = 60; // fly speed in pixels per frame
+            const int lerpFrameAmount = 20; // minimum of 1
+
+            HomingCooldown++;
+            if (HomingCooldown > homingDelay)
+            {
+                HomingCooldown = homingDelay; // cap this value
+
+                int foundTarget = HomeOnTarget();
+                if (foundTarget != -1)
+                {
+                    NPC n = Main.npc[foundTarget];
+                    if (Projectile.Distance(n.Center) > System.Math.Max(n.width, n.height))
+                    {
+                        Vector2 desiredVelocity = Projectile.DirectionTo(n.Center) * flySpeed;
+                        Projectile.velocity = Vector2.Lerp(Projectile.velocity, desiredVelocity, 1f / lerpFrameAmount);
+                    }
+                }
+            }
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            for (int num468 = 0; num468 < 20; num468++)
+            {
+                int num469 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width, Projectile.height, DustID.Silver, -Projectile.velocity.X * 0.2f, -Projectile.velocity.Y * 0.2f, 100, default(Color), 1.5f);
+                Main.dust[num469].noGravity = true;
+                Main.dust[num469].velocity *= 2f;
+                num469 = Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y), Projectile.width, Projectile.height, DustID.Silver, -Projectile.velocity.X * 0.2f, -Projectile.velocity.Y * 0.2f, 100, default(Color), .75f);
+                Main.dust[num469].velocity *= 2f;
+            }
+        }
+
+        private int HomeOnTarget()
+        {
+            const float HOMING_MAXIMUM_RANGE_IN_PIXELS = 500;
+
+            int selectedTarget = -1;
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC n = Main.npc[i];
+                if (n.CanBeChasedBy(Projectile) && Collision.CanHitLine(Projectile.Center, 0, 0, n.Center, 0, 0))
+                {
+                    float distance = Projectile.Distance(n.Center);
+                    if (distance <= HOMING_MAXIMUM_RANGE_IN_PIXELS && (selectedTarget == -1 || Projectile.Distance(Main.npc[selectedTarget].Center) > distance))
+                    {
+                        selectedTarget = i;
+                    }
+                }
+            }
+
+            return selectedTarget;
+        }
     }
-  }
 }

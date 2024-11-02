@@ -1,108 +1,147 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.FakeHeart2Deviantt
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+﻿using System;
 using Microsoft.Xna.Framework;
-using System;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class FakeHeart2Deviantt : ModProjectile
-  {
-    public virtual string Texture => "Fargowiltas/Projectiles/FakeHeartDeviantt";
-
-    public virtual void SetStaticDefaults()
+    public class FakeHeart2Deviantt : ModProjectile
     {
-      ProjectileID.Sets.TrailCacheLength[this.Projectile.type] = 7;
-      ProjectileID.Sets.TrailingMode[this.Projectile.type] = 2;
-    }
+        public override string Texture => "Fargowiltas/Projectiles/FakeHeartDeviantt";
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 12;
-      ((Entity) this.Projectile).height = 12;
-      this.Projectile.timeLeft = 600;
-      this.Projectile.friendly = true;
-      this.Projectile.aiStyle = -1;
-      this.Projectile.penetrate = 2;
-      this.Projectile.tileCollide = false;
-      this.Projectile.ignoreWater = true;
-      this.Projectile.extraUpdates = 1;
-    }
-
-    public virtual void AI()
-    {
-      float num1 = (float) ((double) Main.rand.Next(90, 111) * 0.0099999997764825821 * ((double) Main.essScale * 0.5));
-      Lighting.AddLight(((Entity) this.Projectile).Center, 0.5f * num1, 0.1f * num1, 0.1f * num1);
-      if ((double) ++this.Projectile.localAI[0] == 30.0)
-      {
-        this.Projectile.localAI[1] = Utils.ToRotation(((Entity) this.Projectile).velocity);
-        ((Entity) this.Projectile).velocity = Vector2.Zero;
-      }
-      if ((double) --this.Projectile.ai[1] == 0.0)
-        ((Entity) this.Projectile).velocity = Vector2.op_Multiply(Utils.ToRotationVector2(this.Projectile.localAI[1]), -12.5f);
-      else if ((double) this.Projectile.ai[1] < 0.0)
-      {
-        if ((double) this.Projectile.ai[0] >= 0.0 && (double) this.Projectile.ai[0] < 200.0)
+        public override void SetStaticDefaults()
         {
-          int index = (int) this.Projectile.ai[0];
-          if (Main.npc[index].CanBeChasedBy((object) null, false))
-          {
-            double num2 = (double) Utils.ToRotation(Vector2.op_Subtraction(((Entity) Main.npc[index]).Center, ((Entity) this.Projectile).Center)) - (double) Utils.ToRotation(((Entity) this.Projectile).velocity);
-            if (num2 > Math.PI)
-              num2 -= 2.0 * Math.PI;
-            if (num2 < -1.0 * Math.PI)
-              num2 += 2.0 * Math.PI;
-            ((Entity) this.Projectile).velocity = Utils.RotatedBy(((Entity) this.Projectile).velocity, num2 * ((double) ((Entity) this.Projectile).Distance(((Entity) Main.npc[index]).Center) > 100.0 ? 0.60000002384185791 : 0.20000000298023224), new Vector2());
-          }
-          else
-          {
-            this.Projectile.ai[0] = -1f;
-            this.Projectile.netUpdate = true;
-          }
+            // DisplayName.SetDefault("Fake Heart");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
-        else if ((double) ++this.Projectile.localAI[1] > 12.0)
+
+        public override void SetDefaults()
         {
-          this.Projectile.localAI[1] = 0.0f;
-          float num3 = 700f;
-          int num4 = -1;
-          for (int index = 0; index < Main.maxNPCs; ++index)
-          {
-            NPC npc = Main.npc[index];
-            if (npc.CanBeChasedBy((object) null, false))
+            Projectile.width = 12;
+            Projectile.height = 12;
+            Projectile.timeLeft = 600;
+            Projectile.friendly = true;
+            Projectile.aiStyle = -1;
+            Projectile.penetrate = 2;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            //Projectile.usesLocalNPCImmunity = true;
+            //Projectile.localNPCHitCooldown = 20;
+            Projectile.extraUpdates = 1;
+        }
+
+        public override void AI()
+        {
+            float rand = Main.rand.Next(90, 111) * 0.01f * (Main.essScale * 0.5f);
+            Lighting.AddLight(Projectile.Center, 0.5f * rand, 0.1f * rand, 0.1f * rand);
+
+            if (++Projectile.localAI[0] == 30)
             {
-              float num5 = ((Entity) this.Projectile).Distance(((Entity) npc).Center);
-              if ((double) num5 < (double) num3)
-              {
-                num3 = num5;
-                num4 = index;
-              }
+                Projectile.localAI[1] = Projectile.velocity.ToRotation();
+                Projectile.velocity = Vector2.Zero;
             }
-          }
-          this.Projectile.ai[0] = (float) num4;
-          this.Projectile.netUpdate = true;
+
+            if (--Projectile.ai[1] == 0)
+            {
+                Projectile.velocity = Projectile.localAI[1].ToRotationVector2() * -12.5f;
+            }
+            else if (Projectile.ai[1] < 0)
+            {
+                if (Projectile.ai[0] >= 0 && Projectile.ai[0] < 200)
+                {
+                    int ai0 = (int)Projectile.ai[0];
+                    if (Main.npc[ai0].CanBeChasedBy())
+                    {
+                        double num4 = (Main.npc[ai0].Center - Projectile.Center).ToRotation() - Projectile.velocity.ToRotation();
+                        if (num4 > Math.PI)
+                        {
+                            num4 -= 2.0 * Math.PI;
+                        }
+
+                        if (num4 < -1.0 * Math.PI)
+                        {
+                            num4 += 2.0 * Math.PI;
+                        }
+
+                        Projectile.velocity = Projectile.velocity.RotatedBy(num4 * (Projectile.Distance(Main.npc[ai0].Center) > 100 ? 0.6f : 0.2f));
+                    }
+                    else
+                    {
+                        Projectile.ai[0] = -1f;
+                        Projectile.netUpdate = true;
+                    }
+                }
+                else
+                {
+                    if (++Projectile.localAI[1] > 12f)
+                    {
+                        Projectile.localAI[1] = 0f;
+                        float maxDistance = 700f;
+                        int possibleTarget = -1;
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            NPC npc = Main.npc[i];
+                            if (npc.CanBeChasedBy())
+                            {
+                                float npcDistance = Projectile.Distance(npc.Center);
+                                if (npcDistance < maxDistance)
+                                {
+                                    maxDistance = npcDistance;
+                                    possibleTarget = i;
+                                }
+                            }
+                        }
+
+                        Projectile.ai[0] = possibleTarget;
+                        Projectile.netUpdate = true;
+                    }
+                }
+            }
+
+            if (Projectile.velocity != Vector2.Zero)
+            {
+                Projectile.rotation = Projectile.velocity.ToRotation();
+            }
+
+            Projectile.rotation -= (float)Math.PI / 2;
         }
-      }
-      if (Vector2.op_Inequality(((Entity) this.Projectile).velocity, Vector2.Zero))
-        this.Projectile.rotation = Utils.ToRotation(((Entity) this.Projectile).velocity);
-      this.Projectile.rotation -= 1.57079637f;
-    }
 
-    public virtual void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-    {
-      target.immune[this.Projectile.owner] = 5;
-      target.AddBuff(119, 600, false);
-    }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            target.immune[Projectile.owner] = 5;
+            target.AddBuff(BuffID.Lovestruck, 600);
+        }
 
-    public virtual Color? GetAlpha(Color lightColor)
-    {
-      return new Color?(new Color((int) byte.MaxValue, (int) ((Color) ref lightColor).G, (int) ((Color) ref lightColor).B, (int) ((Color) ref lightColor).A));
+        public override Color? GetAlpha(Color lightColor)
+        {
+            return new Color(255, lightColor.G, lightColor.B, lightColor.A);
+        }
+
+        //public override bool PreDraw(ref Color lightColor)
+        //{
+        //    Texture2D texture2D13 = Main.ProjectileTexture[Projectile.type];
+        //    int num156 = Main.ProjectileTexture[Projectile.type].Height / Main.projFrames[Projectile.type]; // Y-pos of lower right corner of sprite to draw
+        //    int y3 = num156 * Projectile.frame; // Y-pos of upper left corner of sprite to draw
+        //    Rectangle rectangle = new Rectangle(0, y3, texture2D13.Width, num156);
+        //    Vector2 origin2 = rectangle.Size() / 2f;
+
+        //    Color color26 = lightColor;
+        //    color26 = Projectile.GetAlpha(color26);
+
+        //    for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
+        //    {
+        //        Color color27 = color26;
+        //        color27 *= (float)(ProjectileID.Sets.TrailCacheLength[Projectile.type] - i) / ProjectileID.Sets.TrailCacheLength[Projectile.type];
+        //        Vector2 value4 = Projectile.oldPos[i];
+        //        float num165 = Projectile.oldRot[i];
+        //        Main.spriteBatch.Draw(texture2D13, value4 + Projectile.Size / 2f - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color27, num165, origin2, Projectile.scale, SpriteEffects.None, 0f);
+        //    }
+
+        //    Main.spriteBatch.Draw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin2, Projectile.scale, SpriteEffects.None, 0f);
+        //    return false;
+        //}
     }
-  }
 }

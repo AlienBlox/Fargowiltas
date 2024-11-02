@@ -1,471 +1,530 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Common.Systems.Recipes.NPCRecipeSystem
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Items.CaughtNPCs;
-using Fargowiltas.NPCs;
+﻿using Fargowiltas.Items.CaughtNPCs;
 using Fargowiltas.Utilities;
-using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Common.Systems.Recipes
 {
-  public class NPCRecipeSystem : ModSystem
-  {
-    internal static int AnyCaughtNPC;
-
-    public virtual void AddRecipeGroups()
+    public class NPCRecipeSystem : ModSystem
     {
-      NPCRecipeSystem.AnyCaughtNPC = RecipeGroup.RegisterGroup("Fargowiltas:AnyCaughtNPC", new RecipeGroup((Func<string>) (() => RecipeHelper.GenerateAnyItemRecipeGroupText("CaughtNPC")), CaughtNPCItem.CaughtTownies.Values.ToArray<int>()));
-    }
+        internal static int AnyCaughtNPC;
 
-    public virtual void AddRecipes()
-    {
-      NPCRecipeSystem.AddNPCRecipes();
-      NPCRecipeSystem.AddSkeletonMerchantNPCRecipes();
-      NPCRecipeSystem.AddTravellingMerchantNPCRecipes();
-    }
+        public override void AddRecipeGroups()
+        {
+            var group = new RecipeGroup(() => RecipeHelper.GenerateAnyItemRecipeGroupText("CaughtNPC"), CaughtNPCItem.CaughtTownies.Values.ToArray());
+            AnyCaughtNPC = RecipeGroup.RegisterGroup("Fargowiltas:AnyCaughtNPC", group);
+        }
 
-    private static void AddNPCRecipes()
-    {
-      Recipe recipe1 = Recipe.Create(763, 25);
-      recipe1.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe1.AddTile(218);
-      recipe1.DisableDecraft();
-      recipe1.Register();
-      Recipe recipe2 = Recipe.Create(1085, 20);
-      recipe2.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe2.AddTile(228);
-      recipe2.DisableDecraft();
-      recipe2.Register();
-      Recipe recipe3 = Recipe.Create(4663, 2);
-      recipe3.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe3.AddTile(228);
-      recipe3.DisableDecraft();
-      recipe3.Register();
-      Recipe recipe4 = Recipe.Create(1376, 1);
-      recipe4.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe4.AddTile(300);
-      recipe4.DisableDecraft();
-      recipe4.Register();
-      Recipe recipe5 = Recipe.Create(1377, 1);
-      recipe5.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe5.AddTile(300);
-      recipe5.DisableDecraft();
-      recipe5.Register();
-      Recipe recipe6 = Recipe.Create(1417, 1);
-      recipe6.AddRecipeGroup(NPCRecipeSystem.AnyCaughtNPC, 1);
-      recipe6.AddTile(300);
-      recipe6.DisableDecraft();
-      recipe6.Register();
-      Recipe recipe7 = Recipe.Create(1081, 20);
-      recipe7.AddIngredient(CaughtNPCItem.CaughtTownies[160], 1);
-      recipe7.AddTile(228);
-      recipe7.DisableDecraft();
-      recipe7.Register();
-      Recipe recipe8 = Recipe.Create(CaughtNPCItem.CaughtTownies[ModContent.NPCType<Squirrel>()], 1);
-      recipe8.AddRecipeGroup(RecipeGroups.AnySquirrel, 1);
-      recipe8.AddIngredient(239, 1);
-      recipe8.AddTile(26);
-      recipe8.DisableDecraft();
-      recipe8.Register();
-      Recipe recipe9 = Recipe.Create(CaughtNPCItem.CaughtTownies[368], 1);
-      recipe9.AddIngredient((Mod) null, "Merchant", 1);
-      recipe9.AddIngredient(73, 50);
-      recipe9.AddIngredient(1015, 1);
-      recipe9.AddTile(228);
-      recipe9.DisableDecraft();
-      recipe9.Register();
-      Recipe recipe10 = Recipe.Create(933, 1);
-      recipe10.AddIngredient((Mod) null, "Dryad", 1);
-      recipe10.AddTile(304);
-      recipe10.DisableDecraft();
-      recipe10.Register();
-      Recipe recipe11 = Recipe.Create(2673, 1);
-      recipe11.AddIngredient((Mod) null, "Truffle", 1);
-      recipe11.AddIngredient(3191, 1);
-      recipe11.AddTile(247);
-      recipe11.DisableDecraft();
-      recipe11.Register();
-      Recipe recipe12 = Recipe.Create(3349, 1);
-      recipe12.AddIngredient((Mod) null, "DyeTrader", 1);
-      recipe12.AddIngredient(24, 1);
-      recipe12.AddTile(26);
-      recipe12.DisableDecraft();
-      recipe12.Register();
-      Recipe recipe13 = Recipe.Create(3821, 1);
-      recipe13.AddIngredient((Mod) null, "Tavernkeep", 1);
-      recipe13.AddIngredient(353, 5);
-      recipe13.AddTile(26);
-      recipe13.DisableDecraft();
-      recipe13.Register();
-      Recipe recipe14 = Recipe.Create(3352, 1);
-      recipe14.AddIngredient((Mod) null, "Stylist", 1);
-      recipe14.AddIngredient(24, 1);
-      recipe14.AddTile(26);
-      recipe14.DisableDecraft();
-      recipe14.Register();
-      Recipe recipe15 = Recipe.Create(3350, 1);
-      recipe15.AddIngredient((Mod) null, "Painter", 1);
-      recipe15.AddIngredient(39, 1);
-      recipe15.AddTile(26);
-      recipe15.DisableDecraft();
-      recipe15.Register();
-      Recipe recipe16 = Recipe.Create(3351, 1);
-      recipe16.AddIngredient((Mod) null, "TaxCollector", 1);
-      recipe16.AddIngredient(24, 1);
-      recipe16.AddTile(26);
-      recipe16.DisableDecraft();
-      recipe16.Register();
-      Recipe recipe17 = Recipe.Create(5065, 1);
-      recipe17.AddIngredient((Mod) null, "Princess", 1);
-      recipe17.AddIngredient(1508, 1);
-      recipe17.AddTile(26);
-      recipe17.DisableDecraft();
-      recipe17.Register();
-      Recipe recipe18 = Recipe.Create(4818, 1);
-      recipe18.AddIngredient((Mod) null, "Mechanic", 1);
-      recipe18.AddIngredient(284, 1);
-      recipe18.AddTile(26);
-      recipe18.DisableDecraft();
-      recipe18.Register();
-      Recipe recipe19 = Recipe.Create(3120, 1);
-      recipe19.AddIngredient((Mod) null, "Angler", 1);
-      recipe19.AddTile(114);
-      recipe19.DisableDecraft();
-      recipe19.Register();
-      Recipe recipe20 = Recipe.Create(3037, 1);
-      recipe20.AddIngredient((Mod) null, "Angler", 1);
-      recipe20.AddTile(114);
-      recipe20.DisableDecraft();
-      recipe20.Register();
-      Recipe recipe21 = Recipe.Create(3096, 1);
-      recipe21.AddIngredient((Mod) null, "Angler", 1);
-      recipe21.AddTile(114);
-      recipe21.DisableDecraft();
-      recipe21.Register();
-      Recipe recipe22 = Recipe.Create(3750, 1);
-      recipe22.AddIngredient(4326, 1);
-      recipe22.AddIngredient((Mod) null, "PartyGirl", 1);
-      recipe22.AddTile(17);
-      recipe22.DisableDecraft();
-      recipe22.Register();
-    }
+        public override void AddRecipes()
+        {
+            AddNPCRecipes();
+            AddSkeletonMerchantNPCRecipes();
+            AddTravellingMerchantNPCRecipes();
+        }
 
-    private static void AddSkeletonMerchantNPCRecipes()
-    {
-      Recipe recipe1 = Recipe.Create(CaughtNPCItem.CaughtTownies[368], 1);
-      recipe1.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe1.AddTile(218);
-      recipe1.DisableDecraft();
-      recipe1.Register();
-      Recipe recipe2 = Recipe.Create(154, 25);
-      recipe2.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe2.AddTile(300);
-      recipe2.DisableDecraft();
-      recipe2.Register();
-      Recipe recipe3 = Recipe.Create(3310, 1);
-      recipe3.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe3.AddIngredient(73, 10);
-      recipe3.AddIngredient(1015, 1);
-      recipe3.AddTile(114);
-      recipe3.DisableDecraft();
-      recipe3.Register();
-      Recipe recipe4 = Recipe.Create(3313, 1);
-      recipe4.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe4.AddIngredient(73, 10);
-      recipe4.AddIngredient(1007, 1);
-      recipe4.AddTile(114);
-      recipe4.DisableDecraft();
-      recipe4.Register();
-      Recipe recipe5 = Recipe.Create(3312, 1);
-      recipe5.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe5.AddIngredient(73, 10);
-      recipe5.AddIngredient(1016, 1);
-      recipe5.AddTile(114);
-      recipe5.DisableDecraft();
-      recipe5.Register();
-      Recipe recipe6 = Recipe.Create(3311, 1);
-      recipe6.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe6.AddIngredient(73, 10);
-      recipe6.AddIngredient(1011, 1);
-      recipe6.AddTile(114);
-      recipe6.DisableDecraft();
-      recipe6.Register();
-      Recipe recipe7 = Recipe.Create(3316, 1);
-      recipe7.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe7.AddIngredient(73, 40);
-      recipe7.AddTile(114);
-      recipe7.AddCondition(Condition.Hardmode);
-      recipe7.DisableDecraft();
-      recipe7.Register();
-      Recipe recipe8 = Recipe.Create(3315, 1);
-      recipe8.AddIngredient((Mod) null, "SkeletonMerchant", 1);
-      recipe8.AddIngredient(73, 40);
-      recipe8.AddTile(114);
-      recipe8.AddCondition(Condition.Hardmode);
-      recipe8.DisableDecraft();
-      recipe8.Register();
-      Recipe recipe9 = Recipe.Create(3043, 1);
-      recipe9.AddIngredient((Mod) null, "SkeletonMerchant", 2);
-      recipe9.AddIngredient(73, 20);
-      recipe9.AddTile(114);
-      recipe9.DisableDecraft();
-      recipe9.Register();
-    }
+        private static void AddNPCRecipes()
+        {
+            var recipe = Recipe.Create(ItemID.FleshBlock, 25);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.MeatGrinder);
+            recipe.DisableDecraft();
+            recipe.Register();
 
-    private static void AddTravellingMerchantNPCRecipes()
-    {
-      Recipe recipe1 = Recipe.Create(CaughtNPCItem.CaughtTownies[453], 1);
-      recipe1.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe1.AddIngredient(154, 5);
-      recipe1.AddTile(300);
-      recipe1.DisableDecraft();
-      recipe1.Register();
-      Recipe recipe2 = Recipe.Create(2260, 500);
-      recipe2.AddIngredient(9, 500);
-      recipe2.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe2.AddTile(96);
-      recipe2.DisableDecraft();
-      recipe2.Register();
-      Recipe recipe3 = Recipe.Create(2274, 200);
-      recipe3.AddIngredient(8, 200);
-      recipe3.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe3.AddTile(114);
-      recipe3.DisableDecraft();
-      recipe3.Register();
-      Recipe recipe4 = Recipe.Create(3099, 1);
-      recipe4.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe4.AddIngredient(73, 10);
-      recipe4.AddRecipeGroup(RecipeGroupID.IronBar, 5);
-      recipe4.AddTile(114);
-      recipe4.DisableDecraft();
-      recipe4.Register();
-      Recipe recipe5 = Recipe.Create(3118, 1);
-      recipe5.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe5.AddIngredient(73, 10);
-      recipe5.AddRecipeGroup(RecipeGroupID.IronBar, 5);
-      recipe5.AddTile(114);
-      recipe5.DisableDecraft();
-      recipe5.Register();
-      Recipe recipe6 = Recipe.Create(3119, 1);
-      recipe6.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe6.AddIngredient(73, 10);
-      recipe6.AddRecipeGroup(RecipeGroupID.IronBar, 5);
-      recipe6.AddTile(114);
-      recipe6.DisableDecraft();
-      recipe6.Register();
-      if (!Main.zenithWorld && !Main.remixWorld)
-      {
-        Recipe recipe7 = Recipe.Create(2273, 1);
-        recipe7.AddIngredient((Mod) null, "TravellingMerchant", 1);
-        recipe7.AddIngredient(73, 20);
-        recipe7.AddRecipeGroup(RecipeGroupID.IronBar, 5);
-        recipe7.AddTile(114);
-        recipe7.DisableDecraft();
-        recipe7.Register();
-      }
-      Recipe recipe8 = Recipe.Create(3624, 1);
-      recipe8.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe8.AddIngredient(73, 20);
-      recipe8.AddIngredient(849, 10);
-      recipe8.AddTile(114);
-      recipe8.DisableDecraft();
-      recipe8.Register();
-      Recipe recipe9 = Recipe.Create(2217, 1);
-      recipe9.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe9.AddIngredient(73, 20);
-      recipe9.AddIngredient(2325, 1);
-      recipe9.AddTile(114);
-      recipe9.DisableDecraft();
-      recipe9.Register();
-      Recipe recipe10 = Recipe.Create(2216, 1);
-      recipe10.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe10.AddIngredient(73, 20);
-      recipe10.AddIngredient(2325, 1);
-      recipe10.AddTile(114);
-      recipe10.DisableDecraft();
-      recipe10.Register();
-      Recipe recipe11 = Recipe.Create(2215, 1);
-      recipe11.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe11.AddIngredient(73, 20);
-      recipe11.AddIngredient(2325, 1);
-      recipe11.AddTile(114);
-      recipe11.DisableDecraft();
-      recipe11.Register();
-      Recipe recipe12 = Recipe.Create(2214, 1);
-      recipe12.AddIngredient((Mod) null, "TravellingMerchant", 1);
-      recipe12.AddIngredient(73, 20);
-      recipe12.AddIngredient(2325, 1);
-      recipe12.AddTile(114);
-      recipe12.DisableDecraft();
-      recipe12.Register();
-      Recipe recipe13 = Recipe.Create(3262, 1);
-      recipe13.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe13.AddIngredient(73, 10);
-      recipe13.AddTile(114);
-      recipe13.AddCondition(Condition.DownedEyeOfCthulhu);
-      recipe13.DisableDecraft();
-      recipe13.Register();
-      Recipe recipe14 = Recipe.Create(3284, 1);
-      recipe14.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe14.AddIngredient(73, 50);
-      recipe14.AddIngredient(3262, 1);
-      recipe14.AddTile(114);
-      recipe14.AddCondition(Condition.DownedMechBossAny);
-      recipe14.DisableDecraft();
-      recipe14.Register();
-      Recipe recipe15 = Recipe.Create(4347, 1);
-      recipe15.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe15.AddIngredient(73, 34);
-      recipe15.AddIngredient((int) sbyte.MaxValue, 1);
-      recipe15.AddTile(114);
-      recipe15.DisableDecraft();
-      recipe15.Register();
-      Recipe recipe16 = Recipe.Create(4348, 1);
-      recipe16.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe16.AddIngredient(74, 1);
-      recipe16.AddIngredient(4347, 1);
-      recipe16.AddTile(114);
-      recipe16.AddCondition(Condition.Hardmode);
-      recipe16.DisableDecraft();
-      recipe16.Register();
-      Recipe recipe17 = Recipe.Create(4365, 1);
-      recipe17.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe17.AddIngredient(74, 2);
-      recipe17.AddIngredient(109, 1);
-      recipe17.AddTile(114);
-      recipe17.DisableDecraft();
-      recipe17.Register();
-      Recipe recipe18 = Recipe.Create(2277, 1);
-      recipe18.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe18.AddIngredient(73, 4);
-      recipe18.AddTile(114);
-      recipe18.DisableDecraft();
-      recipe18.Register();
-      Recipe recipe19 = Recipe.Create(2279, 1);
-      recipe19.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe19.AddIngredient(73, 7);
-      recipe19.AddTile(114);
-      recipe19.DisableDecraft();
-      recipe19.Register();
-      Recipe recipe20 = Recipe.Create(2275, 1);
-      recipe20.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe20.AddIngredient(73, 6);
-      recipe20.AddTile(114);
-      recipe20.DisableDecraft();
-      recipe20.Register();
-      Recipe recipe21 = Recipe.Create(2269, 1);
-      recipe21.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe21.AddIngredient(73, 20);
-      recipe21.AddTile(114);
-      recipe21.AddCondition(Condition.DownedEowOrBoc);
-      recipe21.DisableDecraft();
-      recipe21.Register();
-      Recipe recipe22 = Recipe.Create(4550, 1);
-      recipe22.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe22.AddIngredient(74, 2);
-      recipe22.AddIngredient(4564, 25);
-      recipe22.AddTile(114);
-      recipe22.DisableDecraft();
-      recipe22.Register();
-      Recipe recipe23 = Recipe.Create(4605, 1);
-      recipe23.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe23.AddIngredient(74, 2);
-      recipe23.AddIngredient(1999, 1);
-      recipe23.AddTile(114);
-      recipe23.DisableDecraft();
-      recipe23.Register();
-      Recipe recipe24 = Recipe.Create(4604, 1);
-      recipe24.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe24.AddIngredient(74, 2);
-      recipe24.AddIngredient(276, 50);
-      recipe24.AddTile(114);
-      recipe24.DisableDecraft();
-      recipe24.Register();
-      Recipe recipe25 = Recipe.Create(4603, 1);
-      recipe25.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe25.AddIngredient(74, 2);
-      recipe25.AddIngredient(320, 10);
-      recipe25.AddTile(114);
-      recipe25.DisableDecraft();
-      recipe25.Register();
-      Recipe recipe26 = Recipe.Create(3628, 1);
-      recipe26.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe26.AddIngredient(74, 10);
-      recipe26.AddTile(114);
-      recipe26.DisableDecraft();
-      recipe26.Register();
-      Recipe recipe27 = Recipe.Create(2296, 1);
-      recipe27.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe27.AddIngredient(73, 70);
-      recipe27.AddRecipeGroup(RecipeGroups.AnyDuck, 1);
-      recipe27.AddTile(114);
-      recipe27.AddCondition(Condition.DownedSkeletron);
-      recipe27.DisableDecraft();
-      recipe27.Register();
-      Recipe recipe28 = Recipe.Create(2276, 1);
-      recipe28.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe28.AddIngredient(74, 4);
-      recipe28.AddIngredient(182, 1);
-      recipe28.AddTile(114);
-      recipe28.DisableDecraft();
-      recipe28.Register();
-      Recipe recipe29 = Recipe.Create(2272, 1);
-      recipe29.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe29.AddIngredient(73, 3);
-      recipe29.AddIngredient(206, 1);
-      recipe29.AddTile(114);
-      recipe29.DisableDecraft();
-      recipe29.Register();
-      Recipe recipe30 = Recipe.Create(2223, 1);
-      recipe30.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe30.AddIngredient(73, 90);
-      recipe30.AddTile(114);
-      recipe30.AddCondition(Condition.DownedMechBossAll);
-      recipe30.DisableDecraft();
-      recipe30.Register();
-      Recipe recipe31 = Recipe.Create(3314, 1);
-      recipe31.AddIngredient((Mod) null, "TravellingMerchant", 2);
-      recipe31.AddIngredient(73, 10);
-      recipe31.AddIngredient(1009, 1);
-      recipe31.AddTile(114);
-      recipe31.DisableDecraft();
-      recipe31.Register();
-      Recipe recipe32 = Recipe.Create(4760, 1);
-      recipe32.AddIngredient((Mod) null, "TravellingMerchant", 4);
-      recipe32.AddIngredient(73, 70);
-      recipe32.AddTile(114);
-      recipe32.AddCondition(Condition.Hardmode);
-      recipe32.DisableDecraft();
-      recipe32.Register();
-      Recipe recipe33 = Recipe.Create(2270, 1);
-      recipe33.AddIngredient((Mod) null, "TravellingMerchant", 4);
-      recipe33.AddIngredient(73, 70);
-      recipe33.AddTile(114);
-      recipe33.AddCondition(Condition.Hardmode);
-      recipe33.DisableDecraft();
-      recipe33.Register();
-      Recipe recipe34 = Recipe.Create(3309, 1);
-      recipe34.AddIngredient((Mod) null, "TravellingMerchant", 4);
-      recipe34.AddIngredient(73, 10);
-      recipe34.AddIngredient(1050, 1);
-      recipe34.AddTile(114);
-      recipe34.DisableDecraft();
-      recipe34.Register();
-      Recipe recipe35 = Recipe.Create(1987, 1);
-      recipe35.AddIngredient((Mod) null, "TravellingMerchant", 5);
-      recipe35.AddIngredient(73, 80);
-      recipe35.AddIngredient(19, 5);
-      recipe35.AddTile(114);
-      recipe35.DisableDecraft();
-      recipe35.Register();
+            recipe = Recipe.Create(ItemID.DeepRedPaint, 20);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BloodbathDye, 2);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.WallSkeleton);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.BoneWelder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.HangingSkeleton);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.BoneWelder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Catacomb);
+            recipe.AddRecipeGroup(AnyCaughtNPC);
+            recipe.AddTile(TileID.BoneWelder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BluePaint, 20);
+            recipe.AddIngredient(CaughtNPCItem.CaughtTownies[NPCID.Truffle]);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(CaughtNPCItem.CaughtTownies[ModContent.NPCType<NPCs.Squirrel>()]);
+            recipe.AddRecipeGroup(RecipeGroups.AnySquirrel);
+            recipe.AddIngredient(ItemID.TopHat);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(CaughtNPCItem.CaughtTownies[NPCID.TravellingMerchant]);
+            recipe.AddIngredient(null, "Merchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 50);
+            recipe.AddIngredient(ItemID.BlueDye);
+            recipe.AddTile(TileID.DyeVat);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.LeafWand);
+            recipe.AddIngredient(null, "Dryad");
+            recipe.AddTile(TileID.LivingLoom);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.TruffleWorm);
+            recipe.AddIngredient(null, "Truffle");
+            recipe.AddIngredient(ItemID.EnchantedNightcrawler);
+            recipe.AddTile(TileID.Autohammer);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.DyeTradersScimitar);
+            recipe.AddIngredient(null, "DyeTrader");
+            recipe.AddIngredient(ItemID.WoodenSword);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.AleThrowingGlove);
+            recipe.AddIngredient(null, "Tavernkeep");
+            recipe.AddIngredient(ItemID.Ale, 5);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.StylistKilLaKillScissorsIWish);
+            recipe.AddIngredient(null, "Stylist");
+            recipe.AddIngredient(ItemID.WoodenSword);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PainterPaintballGun);
+            recipe.AddIngredient(null, "Painter");
+            recipe.AddIngredient(ItemID.WoodenBow);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.TaxCollectorsStickOfDoom);
+            recipe.AddIngredient(null, "TaxCollector");
+            recipe.AddIngredient(ItemID.WoodenSword);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PrincessWeapon);
+            recipe.AddIngredient(null, "Princess");
+            recipe.AddIngredient(ItemID.Ectoplasm);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.CombatWrench);
+            recipe.AddIngredient(null, "Mechanic");
+            recipe.AddIngredient(ItemID.WoodenBoomerang);
+            recipe.AddTile(TileID.DemonAltar);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.FishermansGuide);
+            recipe.AddIngredient(null, "Angler");
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.WeatherRadio);
+            recipe.AddIngredient(null, "Angler");
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Sextant);
+            recipe.AddIngredient(null, "Angler");
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.SliceOfCake);
+            recipe.AddIngredient(ItemID.FoodPlatter);
+            recipe.AddIngredient(null, "PartyGirl");
+            recipe.AddTile(TileID.Furnaces);
+            recipe.DisableDecraft();
+            recipe.Register();
+        }
+
+        private static void AddSkeletonMerchantNPCRecipes()
+        {
+            var recipe = Recipe.Create(CaughtNPCItem.CaughtTownies[NPCID.TravellingMerchant]);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddTile(TileID.MeatGrinder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Bone, 25);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddTile(TileID.BoneWelder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BlueCounterweight);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.BlueDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.RedCounterweight);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.RedDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PurpleCounterweight);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.PurpleDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.GreenCounterweight);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.GreenDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Gradient);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 40);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.Hardmode);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.FormatC);
+            recipe.AddIngredient(null, "SkeletonMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 40);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.Hardmode);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.MagicLantern);
+            recipe.AddIngredient(null, "SkeletonMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+        }
+
+        private static void AddTravellingMerchantNPCRecipes()
+        {
+            var recipe = Recipe.Create(CaughtNPCItem.CaughtTownies[NPCID.SkeletonMerchant]);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.Bone, 5);
+            recipe.AddTile(TileID.BoneWelder);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.DynastyWood, 500);
+            recipe.AddIngredient(ItemID.Wood, 500);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddTile(TileID.CookingPots);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.UltrabrightTorch, 200);
+            recipe.AddIngredient(ItemID.Torch, 200);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Common items - 1 merchant, 2x price
+            recipe = Recipe.Create(ItemID.Stopwatch);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.LifeformAnalyzer);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.DPSMeter);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Uncommon - 1 merchant, 2x price
+            recipe = Recipe.Create(ItemID.Katana);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.NotRemixWorld);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ActuationAccessory);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddIngredient(ItemID.Actuator, 10);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PortableCementMixer);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddIngredient(ItemID.BuilderPotion);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PaintSprayer);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddIngredient(ItemID.BuilderPotion);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ExtendoGrip);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddIngredient(ItemID.BuilderPotion);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BrickLayer);
+            recipe.AddIngredient(null, "TravellingMerchant");
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddIngredient(ItemID.BuilderPotion);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Rare - 2 merchant, 2x price
+            recipe = Recipe.Create(ItemID.Code1);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.DownedEyeOfCthulhu);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Code2);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 50);
+            recipe.AddIngredient(ItemID.Code1);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.DownedMechBossAny);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ZapinatorGray);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 34);
+            recipe.AddIngredient(ItemID.SpaceGun);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ZapinatorOrange);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin);
+            recipe.AddIngredient(ItemID.ZapinatorGray);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.Hardmode);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.CelestialWand);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 2);
+            recipe.AddIngredient(ItemID.ManaCrystal);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Gi);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 4);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.GypsyRobe);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 7);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.MagicHat);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 6);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Revolver);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 20);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.DownedEowOrBoc);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Very rare - 2 merchant, 2x price
+            recipe = Recipe.Create(ItemID.BambooLeaf);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 2);
+            recipe.AddIngredient(ItemID.BambooBlock, 25);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BedazzledNectar);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 2);
+            recipe.AddIngredient(ItemID.TreeNymphButterfly);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.ExoticEasternChewToy);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 2);
+            recipe.AddIngredient(ItemID.Cactus, 50);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BirdieRattle);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 2);
+            recipe.AddIngredient(ItemID.Feather, 10);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.CompanionCube);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 10);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.SittingDucksFishingRod);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 70);
+            recipe.AddRecipeGroup(RecipeGroups.AnyDuck);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.DownedSkeletron);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.DiamondRing);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.PlatinumCoin, 4);
+            recipe.AddIngredient(ItemID.Diamond);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.WaterGun);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 3);
+            recipe.AddIngredient(ItemID.WaterBucket);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.PulseBow);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 90);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.DownedMechBossAll);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.YellowCounterweight);
+            recipe.AddIngredient(null, "TravellingMerchant", 2);
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.YellowDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Extremely rare - 4 merchant, 2x price
+            recipe = Recipe.Create(ItemID.BouncingShield);
+            recipe.AddIngredient(null, "TravellingMerchant", 4);
+            recipe.AddIngredient(ItemID.GoldCoin, 70);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.Hardmode);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.Gatligator);
+            recipe.AddIngredient(null, "TravellingMerchant", 4);
+            recipe.AddIngredient(ItemID.GoldCoin, 70);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.AddCondition(Condition.Hardmode);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            recipe = Recipe.Create(ItemID.BlackCounterweight);
+            recipe.AddIngredient(null, "TravellingMerchant", 4);
+            recipe.AddIngredient(ItemID.GoldCoin, 10);
+            recipe.AddIngredient(ItemID.BlackDye);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+
+            // Extraordinarily rare - 5 merchant, 2x price
+            recipe = Recipe.Create(ItemID.AngelHalo);
+            recipe.AddIngredient(null, "TravellingMerchant", 5);
+            recipe.AddIngredient(ItemID.GoldCoin, 80);
+            recipe.AddIngredient(ItemID.GoldBar, 5);
+            recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.DisableDecraft();
+            recipe.Register();
+        }
     }
-  }
 }

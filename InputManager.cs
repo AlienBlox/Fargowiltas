@@ -1,49 +1,56 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.InputManager
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Common.Configs;
-using Terraria;
 using Terraria.GameInput;
+using Terraria;
 using Terraria.ModLoader;
+using Fargowiltas.Common.Configs;
 
-#nullable disable
 namespace Fargowiltas
 {
-  public class InputManager : ModPlayer
-  {
-    public int latestXDirPressed;
-    public int latestXDirReleased;
-    private bool LeftLastPressed;
-    private bool RightLastPressed;
-    private int lastSetBonusTimer;
-
-    public virtual void ProcessTriggers(TriggersSet triggersSet)
+    public class InputManager : ModPlayer
     {
-      int index = Main.ReversedUpDownArmorSetBonuses ? 1 : 0;
-      if (Fargowiltas.Fargowiltas.SetBonusKey.JustPressed)
-        Main.LocalPlayer.KeyDoubleTap(index);
-      if (Fargowiltas.Fargowiltas.SetBonusKey.Current)
-      {
-        if (Main.LocalPlayer.holdDownCardinalTimer[index] != this.lastSetBonusTimer + 1)
-          ++Main.LocalPlayer.holdDownCardinalTimer[index];
-        Main.LocalPlayer.KeyHoldDown(index, Main.LocalPlayer.holdDownCardinalTimer[index]);
-        this.lastSetBonusTimer = Main.LocalPlayer.holdDownCardinalTimer[index];
-      }
-      else if (FargoClientConfig.Instance.DoubleTapSetBonusDisabled)
-        Main.LocalPlayer.doubleTapCardinalTimer[0] = Main.LocalPlayer.doubleTapCardinalTimer[1] = 0;
-      if (Main.LocalPlayer.controlLeft && !this.LeftLastPressed)
-        this.latestXDirPressed = -1;
-      if (Main.LocalPlayer.controlRight && !this.RightLastPressed)
-        this.latestXDirPressed = 1;
-      if (!Main.LocalPlayer.controlLeft && !Main.LocalPlayer.releaseLeft)
-        this.latestXDirReleased = -1;
-      if (!Main.LocalPlayer.controlRight && !Main.LocalPlayer.releaseRight)
-        this.latestXDirReleased = 1;
-      this.LeftLastPressed = Main.LocalPlayer.controlLeft;
-      this.RightLastPressed = Main.LocalPlayer.controlRight;
+        public int latestXDirPressed = 0;
+        public int latestXDirReleased = 0;
+        private bool LeftLastPressed = false;
+        private bool RightLastPressed = false;
+        int lastSetBonusTimer = 0;
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+            int setbonusDir = Main.ReversedUpDownArmorSetBonuses ? 1 : 0;
+            if (Fargowiltas.SetBonusKey.JustPressed)
+            {
+                Main.LocalPlayer.KeyDoubleTap(setbonusDir);
+            }
+            if (Fargowiltas.SetBonusKey.Current)
+            {
+                if (Main.LocalPlayer.holdDownCardinalTimer[setbonusDir] != lastSetBonusTimer + 1)//don't double dip when holding normal set bonus key
+                {
+                    Main.LocalPlayer.holdDownCardinalTimer[setbonusDir]++;
+                }
+                Main.LocalPlayer.KeyHoldDown(setbonusDir, Main.LocalPlayer.holdDownCardinalTimer[setbonusDir]);
+                lastSetBonusTimer = Main.LocalPlayer.holdDownCardinalTimer[setbonusDir];
+            }
+            else
+            {
+                if (FargoClientConfig.Instance.DoubleTapSetBonusDisabled)
+                    Main.LocalPlayer.doubleTapCardinalTimer[0] = Main.LocalPlayer.doubleTapCardinalTimer[1] = 0;
+            }
+            if (Main.LocalPlayer.controlLeft && !LeftLastPressed)
+            {
+                latestXDirPressed = -1;
+            }
+            if (Main.LocalPlayer.controlRight && !RightLastPressed)
+            {
+                latestXDirPressed = 1;
+            }
+            if (!Main.LocalPlayer.controlLeft && !Main.LocalPlayer.releaseLeft)
+            {
+                latestXDirReleased = -1;
+            }
+            if (!Main.LocalPlayer.controlRight && !Main.LocalPlayer.releaseRight)
+            {
+                latestXDirReleased = 1;
+            }
+            LeftLastPressed = Main.LocalPlayer.controlLeft;
+            RightLastPressed = Main.LocalPlayer.controlRight;
+        }
     }
-  }
 }

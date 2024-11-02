@@ -1,152 +1,158 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.SiblingPylonTile
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.NPCs;
-using Fargowiltas.TileEntities;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
-using Terraria.Map;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
+using Fargowiltas.NPCs;
+using Fargowiltas.TileEntities;
+using Terraria.GameContent.ObjectInteractions;
+using Terraria.Audio;
+using Terraria.GameContent;
+using System.Linq;
+using Terraria.Map;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class SiblingPylonTile : ModPylon
-  {
-    public const int CrystalVerticalFrameCount = 8;
-    public Asset<Texture2D> crystalTexture;
-    public Asset<Texture2D> crystalHighlightTexture;
-    public Asset<Texture2D> mapIcon;
-
-    public virtual void Load()
+    public class SiblingPylonTile : ModPylon
     {
-      this.crystalTexture = ModContent.Request<Texture2D>(((ModTexturedType) this).Texture + "_Crystal", (AssetRequestMode) 2);
-      this.crystalHighlightTexture = ModContent.Request<Texture2D>(((ModTexturedType) this).Texture + "_CrystalHighlight", (AssetRequestMode) 2);
-      this.mapIcon = ModContent.Request<Texture2D>(((ModTexturedType) this).Texture + "_MapIcon", (AssetRequestMode) 2);
-    }
+        public const int CrystalVerticalFrameCount = 8;
 
-    public virtual void SetStaticDefaults()
-    {
-      Main.tileLighted[(int) ((ModBlockType) this).Type] = true;
-      Main.tileFrameImportant[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-      TileObjectData.newTile.LavaDeath = false;
-      TileObjectData.newTile.DrawYOffset = 2;
-      TileObjectData.newTile.StyleHorizontal = true;
-      TEModdedPylon instance = (TEModdedPylon) ModContent.GetInstance<SiblingPylonTileEntity>();
-      TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(new Func<int, int, int, int, int, int, int>(instance.PlacementPreviewHook_CheckIfCanPlace), 1, 0, true);
-      TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(new Func<int, int, int, int, int, int, int>(((ModTileEntity) instance).Hook_AfterPlacement), -1, 0, false);
-      TileObjectData.addTile((int) ((ModBlockType) this).Type);
-      TileID.Sets.InteractibleByNPCs[(int) ((ModBlockType) this).Type] = true;
-      TileID.Sets.PreventsSandfall[(int) ((ModBlockType) this).Type] = true;
-      ((ModTile) this).AddToArray(ref TileID.Sets.CountsAsPylon);
-      ((ModTile) this).AddMapEntry(Color.White, ((ModBlockType) this).CreateMapEntryName());
-    }
+        public Asset<Texture2D> crystalTexture;
+        public Asset<Texture2D> crystalHighlightTexture;
+        public Asset<Texture2D> mapIcon;
 
-    public virtual NPCShop.Entry GetNPCShopEntry() => (NPCShop.Entry) null;
+        public override void Load()
+        {
+            // We'll need these textures for later, it's best practice to cache them on load instead of continually requesting every draw call.
+            crystalTexture = ModContent.Request<Texture2D>(Texture + "_Crystal");
+            crystalHighlightTexture = ModContent.Request<Texture2D>(Texture + "_CrystalHighlight");
+            mapIcon = ModContent.Request<Texture2D>(Texture + "_MapIcon");
+        }
 
-    public virtual bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
+		public override void SetStaticDefaults()
+		{
+			Main.tileLighted[Type] = true;
+			Main.tileFrameImportant[Type] = true;
 
-    public virtual bool RightClick(int i, int j)
-    {
-      Main.mapFullscreen = true;
-      SoundEngine.PlaySound(ref SoundID.MenuOpen, new Vector2?(), (SoundUpdateCallback) null);
-      return true;
-    }
+			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+			TileObjectData.newTile.LavaDeath = false;
+			TileObjectData.newTile.DrawYOffset = 2;
+			TileObjectData.newTile.StyleHorizontal = true;
+			TEModdedPylon moddedPylon = ModContent.GetInstance<SiblingPylonTileEntity>();
+			TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(moddedPylon.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
+			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(moddedPylon.Hook_AfterPlacement, -1, 0, false);
 
-    public virtual void MouseOver(int i, int j)
-    {
-      Main.LocalPlayer.cursorItemIconEnabled = true;
-      Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<SiblingPylon>();
-    }
+			TileObjectData.addTile(Type);
 
-    public virtual void KillMultiTile(int i, int j, int frameX, int frameY)
-    {
-      ModContent.GetInstance<SiblingPylonTileEntity>().Kill(i, j);
-    }
+			TileID.Sets.InteractibleByNPCs[Type] = true;
+			TileID.Sets.PreventsSandfall[Type] = true;
 
-    private bool NearNPC(Vector2 tilePos, int npcType)
-    {
-      return ((IEnumerable<NPC>) Main.npc).Any<NPC>((Func<NPC, bool>) (n => ((Entity) n).active && n.type == npcType && (double) ((Entity) n).Distance(tilePos) < 1000.0));
-    }
+			// Adds functionality for proximity of pylons; if this is true, then being near this tile will count as being near a pylon for the teleportation process.
+			AddToArray(ref TileID.Sets.CountsAsPylon);
 
-    private bool NearEnoughSiblings(Vector2 tilePos)
-    {
-      int num = 0;
-      if (this.NearNPC(tilePos, ModContent.NPCType<Mutant>()))
-        ++num;
-      if (this.NearNPC(tilePos, ModContent.NPCType<Abominationn>()))
-        ++num;
-      if (this.NearNPC(tilePos, ModContent.NPCType<Deviantt>()))
-        ++num;
-      return num >= 2;
-    }
+			LocalizedText pylonName = CreateMapEntryName(); //Name is in the localization file
+			AddMapEntry(Color.White, pylonName);
+		}
 
-    public virtual void ValidTeleportCheck_DestinationPostCheck(
-      TeleportPylonInfo destinationPylonInfo,
-      ref bool destinationPylonValid,
-      ref string errorKey)
-    {
-      if (this.NearEnoughSiblings(Utils.ToWorldCoordinates(destinationPylonInfo.PositionInTiles, 8f, 8f)))
-        return;
-      destinationPylonValid = false;
-      errorKey = "Mods.Fargowiltas.MessageInfo.SiblingPylonNotNearSiblings";
-    }
+        public override NPCShop.Entry GetNPCShopEntry()
+        {
+            return null;
+        }
 
-    public virtual void ValidTeleportCheck_NearbyPostCheck(
-      TeleportPylonInfo nearbyPylonInfo,
-      ref bool destinationPylonValid,
-      ref bool anyNearbyValidPylon,
-      ref string errorKey)
-    {
-      if (this.NearEnoughSiblings(Utils.ToWorldCoordinates(nearbyPylonInfo.PositionInTiles, 8f, 8f)))
-        return;
-      destinationPylonValid = false;
-      errorKey = "Mods.Fargowiltas.MessageInfo.NearbySiblingPylonNotNearSiblings";
-    }
+        //public override NPCShop.Entry GetNPCShopEntry()/* tModPorter See ExamplePylonTile for an example. To register to specific NPC shops, use the new shop system directly in ModNPC.AddShop, GlobalNPC.ModifyShop or ModSystem.PostAddRecipes */
+        /*{
+			
+			return Condition.HappyEnough && (npcType == ModContent.NPCType<Mutant>() || npcType == ModContent.NPCType<Abominationn>() || npcType == ModContent.NPCType<Deviantt>())
+				&& NPC.AnyNPCs(ModContent.NPCType<Mutant>())
+				&& NPC.AnyNPCs(ModContent.NPCType<Abominationn>())
+				&& NPC.AnyNPCs(ModContent.NPCType<Deviantt>())
+				? ModContent.ItemType<SiblingPylon>()
+				: null;
+			
+		}
+		*/
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
-    public virtual void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-    {
-      r = 0.15f;
-      g = 0.75f;
-      b = 0.5617647f;
-    }
+		public override bool RightClick(int i, int j)
+		{
+			//Main.mapFullscreen = true;
+			//SoundEngine.PlaySound(SoundID.MenuOpen);
+			Main.LocalPlayer.TryOpeningFullscreenMap();
+			return true;
+		}
 
-    public virtual bool AutoSelect(int i, int j, Item item)
-    {
-      return ((ModTile) this).AutoSelect(i, j, item);
-    }
+		public override void MouseOver(int i, int j)
+		{
+			Main.LocalPlayer.cursorItemIconEnabled = true;
+			Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<SiblingPylon>();
+		}
 
-    public virtual void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
-    {
-      this.DefaultDrawPylonCrystal(spriteBatch, i, j, this.crystalTexture, this.crystalHighlightTexture, Vector2.op_Addition(Vector2.op_Multiply(Vector2.UnitX, -1f), Vector2.op_Multiply(Vector2.UnitY, -12f)), Color.op_Multiply(Color.White, 0.1f), Color.White, 4, 8);
-    }
+		public override void KillMultiTile(int i, int j, int frameX, int frameY)
+		{
+			ModContent.GetInstance<SiblingPylonTileEntity>().Kill(i, j);
 
-    public virtual void DrawMapIcon(
-      ref MapOverlayDrawContext context,
-      ref string mouseOverText,
-      TeleportPylonInfo pylonInfo,
-      bool isNearPylon,
-      Color drawColor,
-      float deselectedScale,
-      float selectedScale)
-    {
-      this.DefaultMapClickHandle(this.DefaultDrawMapIcon(ref context, this.mapIcon, Vector2.op_Addition(Utils.ToVector2(pylonInfo.PositionInTiles), new Vector2(1.5f, 2f)), drawColor, deselectedScale, selectedScale), pylonInfo, "Mods.Fargowiltas.Items.SiblingPylon.DisplayName", ref mouseOverText);
-    }
-  }
+			//Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 3, 4, ModContent.ItemType<SiblingPylon>());
+		}
+
+		bool NearNPC(Vector2 tilePos, int npcType)
+			=> Main.npc.Any(n => n.active && n.type == npcType && n.Distance(tilePos) < 1000);
+
+		bool NearEnoughSiblings(Vector2 tilePos)
+		{
+			int siblingsNearby = 0;
+			if (NearNPC(tilePos, ModContent.NPCType<Mutant>()))
+				siblingsNearby++;
+            if (NearNPC(tilePos, ModContent.NPCType<Abominationn>()))
+                siblingsNearby++;
+            if (NearNPC(tilePos, ModContent.NPCType<Deviantt>()))
+                siblingsNearby++;
+            return siblingsNearby >= 2;
+		}
+
+        public override void ValidTeleportCheck_DestinationPostCheck(TeleportPylonInfo destinationPylonInfo, ref bool destinationPylonValid, ref string errorKey)
+        {
+			Vector2 tilePos = destinationPylonInfo.PositionInTiles.ToWorldCoordinates();
+			if (!NearEnoughSiblings(tilePos))
+			{
+				destinationPylonValid = false;
+				errorKey = "Mods.Fargowiltas.MessageInfo.SiblingPylonNotNearSiblings";
+			}
+		}
+
+        public override void ValidTeleportCheck_NearbyPostCheck(TeleportPylonInfo nearbyPylonInfo, ref bool destinationPylonValid, ref bool anyNearbyValidPylon, ref string errorKey)
+		{
+			Vector2 tilePos = nearbyPylonInfo.PositionInTiles.ToWorldCoordinates();
+			if (!NearEnoughSiblings(tilePos))
+            {
+				destinationPylonValid = false;
+				errorKey = "Mods.Fargowiltas.MessageInfo.NearbySiblingPylonNotNearSiblings";
+			}
+		}
+
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			r = 51f / 255f * 0.75f;
+			g = 255f / 255f * 0.75f;
+			b = 191f / 255f * 0.75f;
+		}
+		public override bool AutoSelect(int i, int j, Item item)
+		{
+			return base.AutoSelect(i, j, item);
+		}
+		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, Vector2.UnitX * -1 + Vector2.UnitY * -12, Color.White * 0.1f, Color.White, 4, CrystalVerticalFrameCount);
+		}
+
+		public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale)
+		{
+			bool mouseOver = DefaultDrawMapIcon(ref context, mapIcon, pylonInfo.PositionInTiles.ToVector2() + new Vector2(1.5f, 2f), drawColor, deselectedScale, selectedScale);
+			DefaultMapClickHandle(mouseOver, pylonInfo, "Mods.Fargowiltas.Items.SiblingPylon.DisplayName", ref mouseOverText);
+		}
+	}
 }

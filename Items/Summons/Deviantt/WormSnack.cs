@@ -1,23 +1,24 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Deviantt.WormSnack
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
+﻿using Terraria;
+using Terraria.ID;
 
-using Terraria;
-
-#nullable disable
 namespace Fargowiltas.Items.Summons.Deviantt
 {
-  public class WormSnack : BaseSummon
-  {
-    public override int NPCType => !Main.hardMode ? 10 : 95;
-
-    public override void SetStaticDefaults() => base.SetStaticDefaults();
-
-    public virtual bool CanUseItem(Player player)
+    public class WormSnack : BaseSummon
     {
-      return player.ZoneDirtLayerHeight || player.ZoneRockLayerHeight || player.ZoneUnderworldHeight;
+        public override int NPCType => Main.hardMode ? NPCID.DiggerHead : NPCID.GiantWormHead;
+        
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            // DisplayName.SetDefault("Worm Snack");
+            /* Tooltip.SetDefault(@"Summons Giant Worm in pre-Hardmode
+Summons Digger in Hardmode
+Only usable underground"); */
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            return player.ZoneDirtLayerHeight || player.ZoneRockLayerHeight || player.ZoneUnderworldHeight;
+        }
     }
-  }
 }

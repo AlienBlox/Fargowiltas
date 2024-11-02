@@ -1,24 +1,42 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Deviantt.SuspiciousLookingChest
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.Deviantt
 {
-  public class SuspiciousLookingChest : BaseSummon
-  {
-    public override int NPCType => !Main.LocalPlayer.ZoneSnow ? 85 : 629;
-
-    public override void SetStaticDefaults() => base.SetStaticDefaults();
-
-    public virtual void AddRecipes()
+    public class SuspiciousLookingChest : BaseSummon
     {
-      this.CreateRecipe(1).AddRecipeGroup(RecipeGroupID.IronBar, 10).AddIngredient(2350, 5).AddIngredient(48, 1).AddTile(26).Register();
+        public override int NPCType => Main.LocalPlayer.ZoneSnow ? NPCID.IceMimic : NPCID.Mimic;
+        
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            // DisplayName.SetDefault("Suspicious Looking Chest");
+            /* Tooltip.SetDefault("Summons Mimic"
+            + "\nSummons Ice Mimic when in snow biome"); */
+        }
+        public override bool CanUseItem(Player player)
+        {
+            if (!Main.hardMode && !FargoUtils.EternityMode) 
+                return false;
+            return base.CanUseItem(player);
+        }
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            if (!FargoUtils.EternityMode)
+                tooltips.Insert(4, new TooltipLine(Mod, "HardmodeLock", Language.GetTextValue($"Mods.Fargowiltas.Items.SuspiciousLookingChest.HardmodeLock")));
+
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                    .AddRecipeGroup("Fargowiltas:AnyDemoniteBar", 10)
+                    .AddIngredient(ItemID.GoldCoin, 10)
+                    .AddIngredient(ItemID.Chest, 1)
+                    .AddTile(TileID.DemonAltar)
+                    .Register();
+        }
     }
-  }
 }

@@ -1,86 +1,73 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.ElementalAssemblerSheet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class ElementalAssemblerSheet : ModTile
-  {
-    public virtual void SetStaticDefaults()
+    public class ElementalAssemblerSheet : ModTile
     {
-      Main.tileLighted[(int) ((ModBlockType) this).Type] = true;
-      Main.tileFrameImportant[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-      TileObjectData.newTile.Width = 4;
-      Main.tileNoAttach[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CoordinateHeights = new int[3]
-      {
-        16,
-        16,
-        16
-      };
-      TileObjectData.addTile((int) ((ModBlockType) this).Type);
-      this.AddMapEntry(new Color(200, 200, 200), ((ModBlockType) this).CreateMapEntryName());
-      TileID.Sets.DisableSmartCursor[(int) ((ModBlockType) this).Type] = true;
-      this.AdjTiles = new int[17]
-      {
-        77,
-        17,
-        355,
-        114,
-        243,
-        228,
-        304,
-        302,
-        306,
-        308,
-        305,
-        220,
-        300,
-        13,
-        26,
-        85,
-        622
-      };
-      TileID.Sets.CountsAsHoneySource[(int) ((ModBlockType) this).Type] = true;
-      TileID.Sets.CountsAsLavaSource[(int) ((ModBlockType) this).Type] = true;
-      this.AnimationFrameHeight = 54;
-    }
+        public override void SetStaticDefaults()
+        {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+            TileObjectData.newTile.Width = 4;
+            Main.tileNoAttach[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
+            TileObjectData.addTile(Type);
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Elemental Assembler");
+            AddMapEntry(new Color(200, 200, 200), name);
+            TileID.Sets.DisableSmartCursor[Type] = true;
+            //counts as
+            AdjTiles = [TileID.Hellforge, TileID.Furnaces, TileID.AlchemyTable, TileID.TinkerersWorkbench, TileID.ImbuingStation, TileID.DyeVat, TileID.LivingLoom, TileID.GlassKiln, TileID.IceMachine, TileID.HoneyDispenser, TileID.SkyMill, TileID.Solidifier, TileID.BoneWelder, TileID.Bottles, TileID.DemonAltar, TileID.Tombstones, TileID.TeaKettle];
+            
+            TileID.Sets.CountsAsHoneySource[Type] = true;
+            TileID.Sets.CountsAsLavaSource[Type] = true;
 
-    public virtual void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-    {
-      float num = Utils.NextFloat(Main.rand, 0.9f, 1f);
-      r = g = b = num;
-    }
+            AnimationFrameHeight = 54;
 
-    public virtual void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+        }
 
-    public virtual void AnimateTile(ref int frame, ref int frameCounter)
-    {
-      ++frameCounter;
-      if (frameCounter >= 8)
-      {
-        frameCounter = 0;
-        ++frame;
-        frame %= 8;
-      }
-      Main.tileLighted[(int) ((ModBlockType) this).Type] = true;
-    }
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            float strength = Main.rand.NextFloat(0.9f, 1f);
+            r = g = b = strength;
+        }
 
-    public virtual void NearbyEffects(int i, int j, bool closer)
-    {
-      if ((double) ((Entity) Main.LocalPlayer).Distance(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8))) >= 80.0)
-        return;
-      Main.LocalPlayer.GetModPlayer<FargoPlayer>().ElementalAssemblerNearby = 6f;
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+        /*
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, ModContent.ItemType<ElementalAssembler>());
+        }
+        */
+        public override void AnimateTile(ref int frame, ref int frameCounter)
+        {
+            frameCounter++;
+            if (frameCounter >= 8) //replace with duration of frame in ticks
+            {
+                frameCounter = 0;
+                frame++;
+                frame %= 8;
+            }
+
+            Main.tileLighted[Type] = true;
+        }
+
+        public override void NearbyEffects(int i, int j, bool closer)
+        {
+            if (Main.LocalPlayer.Distance(new Vector2(i * 16 + 8, j * 16 + 8)) < 16 * 5)
+            {
+                Main.LocalPlayer.GetModPlayer<FargoPlayer>().ElementalAssemblerNearby = 6;
+            }
+        }
     }
-  }
 }

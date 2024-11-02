@@ -1,100 +1,75 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.CrucibleCosmosSheet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.Localization;
+using Terraria.DataStructures;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class CrucibleCosmosSheet : ModTile
-  {
-    public virtual void SetStaticDefaults()
+    public class CrucibleCosmosSheet : ModTile
     {
-      Main.tileFrameImportant[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
-      TileObjectData.newTile.Width = 4;
-      Main.tileNoAttach[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CoordinateHeights = new int[3]
-      {
-        16,
-        16,
-        16
-      };
-      TileObjectData.addTile((int) ((ModBlockType) this).Type);
-      this.AddMapEntry(new Color(200, 200, 200), ((ModBlockType) this).CreateMapEntryName());
-      TileID.Sets.DisableSmartCursor[(int) ((ModBlockType) this).Type] = true;
-      this.AdjTiles = new int[39]
-      {
-        18,
-        283,
-        17,
-        16,
-        13,
-        106,
-        86,
-        14,
-        15,
-        96,
-        172,
-        94,
-        77,
-        355,
-        114,
-        243,
-        228,
-        304,
-        302,
-        306,
-        308,
-        305,
-        220,
-        300,
-        134,
-        133,
-        26,
-        101,
-        125,
-        247,
-        412,
-        499,
-        301,
-        303,
-        307,
-        217,
-        218,
-        85,
-        ModContent.TileType<GoldenDippingVatSheet>()
-      };
-      TileID.Sets.CountsAsHoneySource[(int) ((ModBlockType) this).Type] = true;
-      TileID.Sets.CountsAsLavaSource[(int) ((ModBlockType) this).Type] = true;
-      TileID.Sets.CountsAsWaterSource[(int) ((ModBlockType) this).Type] = true;
-      this.AnimationFrameHeight = 54;
-    }
+        public override void SetStaticDefaults()
+        {
+            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+            TileObjectData.newTile.Width = 4;
+            Main.tileNoAttach[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16];
+            TileObjectData.addTile(Type);
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Crucible of the Cosmos");
+            AddMapEntry(new Color(200, 200, 200), name);
+            TileID.Sets.DisableSmartCursor[Type] = true;
+            //counts as
+            AdjTiles = [TileID.WorkBenches, TileID.HeavyWorkBench, TileID.Furnaces,  TileID.Anvils,  TileID.Bottles, TileID.Sawmill, TileID.Loom, TileID.Tables, TileID.Chairs, TileID.CookingPots, TileID.Sinks, TileID.Kegs, TileID.Hellforge, TileID.AlchemyTable, TileID.TinkerersWorkbench, TileID.ImbuingStation, TileID.DyeVat, TileID.LivingLoom, TileID.GlassKiln, TileID.IceMachine, TileID.HoneyDispenser, TileID.SkyMill, TileID.Solidifier, TileID.BoneWelder, TileID.MythrilAnvil, TileID.AdamantiteForge, TileID.DemonAltar, TileID.Bookcases, TileID.CrystalBall, TileID.Autohammer,  TileID.LunarCraftingStation, TileID.LesionStation, TileID.FleshCloningVat, TileID.LihzahrdFurnace, TileID.SteampunkBoiler, TileID.Blendomatic, TileID.MeatGrinder, TileID.Tombstones, ModContent.TileType<GoldenDippingVatSheet>()];
 
-    public virtual void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+            TileID.Sets.CountsAsHoneySource[Type] = true;
+            TileID.Sets.CountsAsLavaSource[Type] = true;
+            TileID.Sets.CountsAsWaterSource[Type] = true;
 
-    public virtual void AnimateTile(ref int frame, ref int frameCounter)
-    {
-      ++frameCounter;
-      if (frameCounter < 5)
-        return;
-      frameCounter = 0;
-      ++frame;
-      frame %= 8;
-    }
+            //if (ModLoader.GetMod("ThoriumMod") != null)
+            //{
+            //    Array.Resize(ref AdjTiles, AdjTiles.Length + 3);
+            //    AdjTiles[AdjTiles.Length - 1] = ModLoader.GetMod("ThoriumMod").TileType("ThoriumAnvil");
+            //    AdjTiles[AdjTiles.Length - 2] = ModLoader.GetMod("ThoriumMod").TileType("ArcaneArmorFabricator");
+            //    AdjTiles[AdjTiles.Length - 3] = ModLoader.GetMod("ThoriumMod").TileType("SoulForge");
+            //}
 
-    public virtual void NearbyEffects(int i, int j, bool closer)
-    {
-      if ((double) ((Entity) Main.LocalPlayer).Distance(new Vector2((float) (i * 16 + 8), (float) (j * 16 + 8))) >= 80.0)
-        return;
-      Main.LocalPlayer.GetModPlayer<FargoPlayer>().ElementalAssemblerNearby = 6f;
+            AnimationFrameHeight = 54;
+            
+            //name.AddTranslation(GameCulture.Chinese, "宇宙坩埚");
+        }
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+        /*
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, ModContent.ItemType<CrucibleCosmos>());
+        }
+        */
+        public override void AnimateTile(ref int frame, ref int frameCounter)
+        {
+            frameCounter++;
+            if (frameCounter >= 5) //replace with duration of frame in ticks
+            {
+                frameCounter = 0;
+                frame++;
+                frame %= 8;
+            }
+        }
+
+        public override void NearbyEffects(int i, int j, bool closer)
+        {
+            if (Main.LocalPlayer.Distance(new Vector2(i * 16 + 8, j * 16 + 8)) < 16 * 5)
+            {
+                Main.LocalPlayer.GetModPlayer<FargoPlayer>().ElementalAssemblerNearby = 6;
+            }
+        }
     }
-  }
 }

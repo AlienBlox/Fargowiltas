@@ -1,103 +1,138 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Misc.DeathFruit
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Misc
 {
-  public class DeathFruit : ModItem
-  {
-    private SoundStyle DeathFruitSound = new SoundStyle("Fargowiltas/Assets/Sounds/DeathFruit", (SoundType) 0);
+	public class DeathFruit : ModItem
+	{
+        SoundStyle DeathFruitSound = new SoundStyle("Fargowiltas/Assets/Sounds/DeathFruit");
+        public override void SetStaticDefaults()
+		{
+			// DisplayName.SetDefault("Death Fruit");
+			// Tooltip.SetDefault("Permanently decreases maximum life by 20\nEffects may not be reversible for characters that have used modded life-increasing items");
+		}
 
-    public virtual void SetStaticDefaults()
-    {
-    }
+		public override void SetDefaults()
+		{
+			Item.width = 18;
+			Item.height = 18;
+			Item.maxStack = 99;
+			Item.rare = ItemRarityID.Blue;
+			Item.useStyle = ItemUseStyleID.HoldUp;
+			Item.useAnimation = 30;
+			Item.useTime = 30;
+			Item.consumable = true;
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 18;
-      ((Entity) this.Item).height = 18;
-      this.Item.maxStack = 99;
-      this.Item.rare = 1;
-      this.Item.useStyle = 4;
-      this.Item.useAnimation = 30;
-      this.Item.useTime = 30;
-      this.Item.consumable = true;
-      this.Item.UseSound = new SoundStyle?(SoundID.Item27);
-    }
-
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(1291, 1).AddCondition(Condition.NearShimmer).Register();
-    }
-
-    public virtual bool AltFunctionUse(Player player) => true;
-
-    public virtual bool CanUseItem(Player player)
-    {
-      return (this.CanUse(player) || player.altFunctionUse == 2) && (this.CanUse(player, true) || player.altFunctionUse != 2);
-    }
-
-    public virtual void HoldItem(Player player)
-    {
-      if (player.ConsumedLifeCrystals > 0)
-        this.Item.UseSound = new SoundStyle?(this.DeathFruitSound);
-      else
-        this.Item.UseSound = new SoundStyle?(SoundID.Item27);
-    }
-
-    public virtual bool? UseItem(Player player)
-    {
-      if (player.ConsumedLifeFruit > 0)
-      {
-        if (player.altFunctionUse != 2)
-          --player.ConsumedLifeFruit;
-      }
-      else if (player.ConsumedLifeCrystals > 0)
-      {
-        if (player.altFunctionUse != 2)
-          --player.ConsumedLifeCrystals;
-      }
-      else
-      {
-        int num;
-        if (player.altFunctionUse == 2)
+			Item.UseSound = SoundID.Item27;
+		}
+        public override void AddRecipes()
         {
-          if (!this.CanUse(player, true))
-            return new bool?(false);
-          num = 20;
-          if (player.GetModPlayer<FargoPlayer>().DeathFruitHealth < 20)
-            num = player.GetModPlayer<FargoPlayer>().DeathFruitHealth;
+            CreateRecipe()
+                .AddIngredient(ItemID.LifeFruit)
+                .AddCondition(Condition.NearShimmer) 
+                .Register();
         }
-        else
+        public override bool AltFunctionUse(Player player) => true;
+        public override bool CanUseItem(Player player)
+		{
+            if (!CanUse(player) && player.altFunctionUse != 2)
+            {
+                return false;
+            }
+            if (!CanUse(player, true) && player.altFunctionUse == 2)
+            {
+                return false;
+            }
+			return true;
+		}
+        public override void HoldItem(Player player)
         {
-          if (!this.CanUse(player))
-            return new bool?(false);
-          num = -20;
+            if (player.ConsumedLifeCrystals > 0)
+            {
+                Item.UseSound = DeathFruitSound;
+            }
+            else
+            {
+                Item.UseSound = SoundID.Item27;
+            }
         }
-        player.GetModPlayer<FargoPlayer>().DeathFruitHealth -= num;
-        if (player.statLife > -num)
+        public override bool? UseItem(Player player)
+		{
+			if (player.ConsumedLifeFruit > 0)
+			{
+				if (player.altFunctionUse != 2)
+				{
+					player.ConsumedLifeFruit--;
+                }
+				
+			}
+			else if (player.ConsumedLifeCrystals > 0)
+			{
+                if (player.altFunctionUse != 2)
+                {
+					player.ConsumedLifeCrystals--;
+                }
+            }
+			else
+			{
+                int effect;
+                if (player.altFunctionUse == 2)
+                {
+                    if (CanUse(player, true))
+                    {
+                        effect = 20;
+
+                        if (player.GetModPlayer<FargoPlayer>().DeathFruitHealth < 20) //this should never occur but just to be sure
+                        {
+                            effect = player.GetModPlayer<FargoPlayer>().DeathFruitHealth;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (CanUse(player))
+                    {
+                        effect = -20;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                player.GetModPlayer<FargoPlayer>().DeathFruitHealth -= effect;
+                if (player.statLife > -effect) //don't decrease health under 0
+                {
+                    player.statLife += effect;
+                    if (Main.myPlayer == player.whoAmI)
+                    {
+                        player.HealEffect(effect, true);
+                    }
+                }
+            }
+			return true;
+		}
+
+        private bool CanUse(Player player, bool rightClick = false)
         {
-          player.statLife += num;
-          if (Main.myPlayer == ((Entity) player).whoAmI)
-            player.HealEffect(num, true);
+            if (!rightClick && GetLife(player) > 20)
+            {
+                return true;
+            }
+            if (rightClick && player.GetModPlayer<FargoPlayer>().DeathFruitHealth > 0)
+            {
+                return true;
+            }
+            return false;
         }
-      }
-      return new bool?(true);
+        private int GetLife(Player player) => player.statLifeMax - (player.ConsumedLifeFruit * 5);
     }
-
-    private bool CanUse(Player player, bool rightClick = false)
-    {
-      return !rightClick && this.GetLife(player) > 20 || rightClick && player.GetModPlayer<FargoPlayer>().DeathFruitHealth > 0;
-    }
-
-    private int GetLife(Player player) => player.statLifeMax - player.ConsumedLifeFruit * 5;
-  }
 }

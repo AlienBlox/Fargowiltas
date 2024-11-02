@@ -1,25 +1,33 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.VanillaCopy.LihzahrdPowerCell2
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.VanillaCopy
 {
-  public class LihzahrdPowerCell2 : BaseSummon
-  {
-    public override int NPCType => 245;
-
-    public override void SetStaticDefaults() => base.SetStaticDefaults();
-
-    public virtual bool CanUseItem(Player player) => NPC.downedPlantBoss;
-
-    public virtual void AddRecipes()
+    public class LihzahrdPowerCell2 : BaseSummon
     {
-      this.CreateRecipe(1).AddIngredient(1293, 1).AddTile(18).Register();
+        public override int NPCType => NPCID.Golem;
+        
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            // DisplayName.SetDefault("Lihzahrd Battery Pack");
+            // Tooltip.SetDefault("Summons the Golem without an altar");
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            return NPC.downedPlantBoss;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+               .AddIngredient(ItemID.LihzahrdPowerCell)
+               .AddTile(TileID.WorkBenches)
+               .Register();
+        }
     }
-  }
 }

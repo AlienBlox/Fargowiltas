@@ -1,108 +1,96 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.RenewalBaseProj
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class RenewalBaseProj : ModProjectile
-  {
-    private readonly string name;
-    private readonly int projType;
-    private readonly int convertType;
-    private readonly bool supreme;
-
-    protected RenewalBaseProj(string name, int projType, int convertType, bool supreme)
+    public class RenewalBaseProj : ModProjectile
     {
-      this.name = name;
-      this.projType = projType;
-      this.convertType = convertType;
-      this.supreme = supreme;
-    }
+        private readonly String name;
+        private readonly int projType;
+        private readonly int convertType;
+        private readonly bool supreme;
 
-    public virtual string Texture => "Fargowiltas/Items/Renewals/" + this.name;
-
-    public virtual void SetStaticDefaults()
-    {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 20;
-      ((Entity) this.Projectile).height = 20;
-      this.Projectile.aiStyle = 2;
-      this.Projectile.friendly = true;
-      this.Projectile.penetrate = -1;
-      this.Projectile.timeLeft = 170;
-    }
-
-    public virtual bool OnTileCollide(Vector2 oldVelocity)
-    {
-      this.Projectile.Kill();
-      return true;
-    }
-
-    public virtual void OnKill(int timeLeft)
-    {
-      SoundEngine.PlaySound(ref SoundID.Shatter, new Vector2?(((Entity) this.Projectile).Center), (SoundUpdateCallback) null);
-      int num1 = 150;
-      float[] numArray1 = new float[8]
-      {
-        0.0f,
-        0.0f,
-        5f,
-        5f,
-        5f,
-        -5f,
-        -5f,
-        -5f
-      };
-      float[] numArray2 = new float[8]
-      {
-        5f,
-        -5f,
-        0.0f,
-        5f,
-        -5f,
-        0.0f,
-        5f,
-        -5f
-      };
-      if (Main.netMode == 0)
-      {
-        for (int index = 0; index < 8; ++index)
-          Projectile.NewProjectile(((Entity) this.Projectile).GetSource_FromThis((string) null), ((Entity) this.Projectile).Center.X, ((Entity) this.Projectile).Center.Y, numArray1[index], numArray2[index], this.projType, 0, 0.0f, Main.myPlayer, 0.0f, 0.0f, 0.0f);
-      }
-      if (this.supreme)
-      {
-        for (int index1 = -Main.maxTilesX; index1 < Main.maxTilesX; ++index1)
+        protected RenewalBaseProj(String name, int projType, int convertType, bool supreme)
         {
-          for (int index2 = -Main.maxTilesY; index2 < Main.maxTilesY; ++index2)
-            WorldGen.Convert((int) ((double) index1 + (double) ((Entity) this.Projectile).Center.X / 16.0), (int) ((double) index2 + (double) ((Entity) this.Projectile).Center.Y / 16.0), this.convertType, 1);
+            this.name = name;
+            this.projType = projType;
+            this.convertType = convertType;
+            this.supreme = supreme;
         }
-      }
-      else
-      {
-        for (int index3 = -num1; index3 <= num1; ++index3)
+
+        public override string Texture => "Fargowiltas/Items/Renewals/" + name;
+
+        public override void SetStaticDefaults()
         {
-          for (int index4 = -num1; index4 <= num1; ++index4)
-          {
-            int num2 = (int) ((double) index3 + (double) ((Entity) this.Projectile).Center.X / 16.0);
-            int num3 = (int) ((double) index4 + (double) ((Entity) this.Projectile).Center.Y / 16.0);
-            if (Math.Sqrt((double) (index3 * index3 + index4 * index4)) <= (double) num1 + 0.5)
-              WorldGen.Convert(num2, num3, this.convertType, 1);
-          }
+            // DisplayName.SetDefault(name);
         }
-      }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 20;
+            Projectile.height = 20;
+            Projectile.aiStyle = 2;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 170;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Projectile.Kill();
+            return true;
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+
+            int radius = 150;
+            float[] speedX = [0, 0, 5, 5, 5, -5, -5, -5];
+            float[] speedY = [5, -5, 0, 5, -5, 0, 5, -5];
+
+            //because these projs may apparently delete blocks if spawned in unloaded chunks far away from players in mp
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, speedX[i], speedY[i], projType, 0, 0, Main.myPlayer);
+                }
+            }
+            if (supreme)
+            {
+                for (int x = -Main.maxTilesX; x < Main.maxTilesX; x++)
+                {
+                    for (int y = -Main.maxTilesY; y < Main.maxTilesY; y++)
+                    {
+                        int xPosition = (int)(x + Projectile.Center.X / 16.0f);
+                        int yPosition = (int)(y + Projectile.Center.Y / 16.0f);
+
+                        WorldGen.Convert(xPosition, yPosition, convertType, 1); 
+                    }
+                }
+            }
+            else
+            {
+                for (int x = -radius; x <= radius; x++)
+                {
+                    for (int y = -radius; y <= radius; y++)
+                    {
+                        int xPosition = (int)(x + Projectile.Center.X / 16.0f);
+                        int yPosition = (int)(y + Projectile.Center.Y / 16.0f);
+
+                        // Circle
+                        if (Math.Sqrt(x * x + y * y) <= radius + 0.5)
+                        {
+                            WorldGen.Convert(xPosition, yPosition, convertType, 1);
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }

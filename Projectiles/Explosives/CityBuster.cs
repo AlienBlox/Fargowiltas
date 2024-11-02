@@ -1,67 +1,77 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.Explosives.CityBuster
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Tiles;
+﻿using Fargowiltas.Tiles;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles.Explosives
 {
-  public class CityBuster : ModProjectile
-  {
-    public virtual void SetStaticDefaults()
+    public class CityBuster : ModProjectile
     {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 26;
-      ((Entity) this.Projectile).height = 26;
-      this.Projectile.aiStyle = 16;
-      this.Projectile.friendly = true;
-      this.Projectile.penetrate = -1;
-      this.Projectile.timeLeft = 300;
-    }
-
-    public virtual bool? CanDamage() => new bool?(false);
-
-    public virtual bool OnTileCollide(Vector2 oldVelocity)
-    {
-      ((Entity) this.Projectile).velocity.X = 0.0f;
-      return base.OnTileCollide(oldVelocity);
-    }
-
-    public virtual void OnKill(int timeLeft)
-    {
-      SoundEngine.PlaySound(ref SoundID.Item15, new Vector2?(((Entity) this.Projectile).Center), (SoundUpdateCallback) null);
-      SoundEngine.PlaySound(ref SoundID.Item14, new Vector2?(((Entity) this.Projectile).Center), (SoundUpdateCallback) null);
-      if (Main.netMode == 1)
-        return;
-      Vector2 center = ((Entity) this.Projectile).Center;
-      int num = 64;
-      for (int index1 = -num; index1 <= num; ++index1)
-      {
-        for (int index2 = -num * 2; index2 <= 0; ++index2)
+        public override void SetStaticDefaults()
         {
-          int x = (int) ((double) index1 + (double) center.X / 16.0);
-          int y = (int) ((double) index2 + (double) center.Y / 16.0);
-          if (x >= 0 && x < Main.maxTilesX && y >= 0 && y < Main.maxTilesY)
-          {
-            Tile tile = ((Tilemap) ref Main.tile)[x, y];
-            if (!Tile.op_Equality(tile, (ArgumentException) null) && FargoGlobalProjectile.OkayToDestroyTileAt(x, y) && !FargoGlobalProjectile.TileIsLiterallyAir(tile))
-              FargoGlobalTile.ClearTileAndLiquid(x, y);
-          }
+            // DisplayName.SetDefault("City Buster");
         }
-      }
-      Main.refreshMap = true;
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 26;
+            Projectile.height = 26;
+            Projectile.aiStyle = 16;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+        }
+
+        public override bool? CanDamage()
+        {
+            return false;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Projectile.velocity.X = 0;
+            return base.OnTileCollide(oldVelocity);
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            SoundEngine.PlaySound(SoundID.Item15, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+
+            Vector2 position = Projectile.Center;
+            int radius = 64;     //bigger = boomer
+
+            for (int x = -radius; x <= radius; x++)
+            {
+                for (int y = -radius * 2; y <= 0; y++)
+                {
+                    int xPosition = (int)(x + position.X / 16.0f);
+                    int yPosition = (int)(y + position.Y / 16.0f);
+
+                    if (xPosition < 0 || xPosition >= Main.maxTilesX || yPosition < 0 || yPosition >= Main.maxTilesY)
+                        continue;
+
+                    Tile tile = Main.tile[xPosition, yPosition];
+                    if (tile == null)
+                        continue;
+
+                    if (!FargoGlobalProjectile.OkayToDestroyTileAt(xPosition, yPosition) || FargoGlobalProjectile.TileIsLiterallyAir(tile))
+                        continue;
+
+                    FargoGlobalTile.ClearTileAndLiquid(xPosition, yPosition);
+                }
+            }
+
+            Main.refreshMap = true;
+        }
     }
-  }
 }

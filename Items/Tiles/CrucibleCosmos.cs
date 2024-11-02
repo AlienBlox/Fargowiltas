@@ -1,58 +1,81 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.CrucibleCosmos
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Common.Systems.Recipes;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.GameContent.Creative;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Localization;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Terraria;
+using Fargowiltas.Common.Systems.Recipes;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class CrucibleCosmos : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class CrucibleCosmos : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Crucible of the Cosmos");
+            // Tooltip.SetDefault("Functions as every crafting station\n'It seems to be hiding magnificent power'");
+            //DisplayName.AddTranslation(GameCulture.Chinese, "宇宙坩埚");
+            //Tooltip.AddTranslation(GameCulture.Chinese, "'它似乎隐藏着巨大的力量'\n包含几乎所有制作环境");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
 
-    public virtual void ModifyTooltips(List<TooltipLine> list)
-    {
-      foreach (TooltipLine tooltipLine in list)
-      {
-        if (tooltipLine.Mod == "Terraria" && tooltipLine.Name == "ItemName")
-          tooltipLine.OverrideColor = new Color?(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB));
-      }
-    }
+        public override void ModifyTooltips(List<TooltipLine> list)
+        {
+            foreach (TooltipLine tooltipLine in list)
+            {
+                if (tooltipLine.Mod == "Terraria" && tooltipLine.Name == "ItemName")
+                {
+                    tooltipLine.OverrideColor = new Color?(new Color(Main.DiscoR, Main.DiscoG, Main.DiscoB));
+                }
+            }
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 28;
-      ((Entity) this.Item).height = 14;
-      this.Item.rare = 10;
-      this.Item.maxStack = 99;
-      this.Item.useTurn = true;
-      this.Item.autoReuse = true;
-      this.Item.useAnimation = 15;
-      this.Item.useTime = 10;
-      this.Item.useStyle = 1;
-      this.Item.consumable = true;
-      this.Item.value = Item.buyPrice(2, 0, 0, 0);
-      this.Item.createTile = ModContent.TileType<CrucibleCosmosSheet>();
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 28;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Red;
+            Item.maxStack = 99;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.value = Item.buyPrice(2);
+            Item.createTile = ModContent.TileType<CrucibleCosmosSheet>();
+        }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(ModContent.ItemType<MultitaskCenter>(), 1).AddIngredient(ModContent.ItemType<ElementalAssembler>(), 1).AddIngredient(ModContent.ItemType<GoldenDippingVat>(), 1).AddRecipeGroup(RecipeGroups.AnyForge, 1).AddRecipeGroup(RecipeGroups.AnyHMAnvil, 1).AddRecipeGroup(RecipeGroups.AnyBookcase, 1).AddIngredient(487, 1).AddIngredient(1551, 1).AddIngredient(995, 1).AddIngredient(996, 1).AddIngredient(2203, 1).AddIngredient(4142, 1).AddIngredient(2193, 1).AddIngredient(2195, 1).AddIngredient(3549, 1).AddIngredient(3467, 25).AddTile(26).Register();
-      Mod mod;
-      if (!Terraria.ModLoader.ModLoader.TryGetMod("MagicStorage", ref mod))
-        return;
-      this.CreateRecipe(1).AddIngredient(mod.Find<ModItem>("CombinedStations4Item").Type, 1).AddIngredient(3467, 25).AddTile(26).Register();
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ModContent.ItemType<MultitaskCenter>())
+                .AddIngredient(ModContent.ItemType<ElementalAssembler>())
+				.AddIngredient(ModContent.ItemType<GoldenDippingVat>())
+                .AddRecipeGroup(RecipeGroups.AnyForge)
+                .AddRecipeGroup(RecipeGroups.AnyHMAnvil)
+                .AddRecipeGroup(RecipeGroups.AnyBookcase)
+                .AddIngredient(ItemID.CrystalBall)
+                .AddIngredient(ItemID.Autohammer)
+                .AddIngredient(ItemID.BlendOMatic)
+                .AddIngredient(ItemID.MeatGrinder)
+                .AddIngredient(ItemID.SteampunkBoiler)
+                .AddIngredient(ItemID.LesionStation)
+                .AddIngredient(ItemID.FleshCloningVaat)
+                .AddIngredient(ItemID.LihzahrdFurnace)
+                .AddIngredient(ItemID.LunarCraftingStation)
+                .AddIngredient(ItemID.LunarBar, 25)
+                .AddTile(TileID.DemonAltar)
+                .Register();
+
+            if (ModLoader.TryGetMod("MagicStorage", out Mod magicStorage))
+            {
+                CreateRecipe()
+                    .AddIngredient(magicStorage.Find<ModItem>("CombinedStations4Item").Type)
+                    .AddIngredient(ItemID.LunarBar, 25)
+                    .AddTile(TileID.DemonAltar)
+                    .Register();
+            }
+        }
     }
-  }
 }

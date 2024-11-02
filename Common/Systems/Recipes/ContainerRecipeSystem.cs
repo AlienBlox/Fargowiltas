@@ -1,254 +1,469 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Common.Systems.Recipes.ContainerRecipeSystem
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Utilities;
+﻿using Fargowiltas.Utilities;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Common.Systems.Recipes
 {
-  public class ContainerRecipeSystem : ModSystem
-  {
-    public virtual void AddRecipes()
+    public class ContainerRecipeSystem : ModSystem
     {
-      ContainerRecipeSystem.AddPreHMTreasureBagRecipes();
-      ContainerRecipeSystem.AddHMTreasureBagRecipes();
-      ContainerRecipeSystem.AddEventTreasureBagRecipes();
-      ContainerRecipeSystem.AddGrabBagRecipes();
-      ContainerRecipeSystem.AddCrateRecipes();
-      ContainerRecipeSystem.AddBiomeKeyRecipes();
-      if (!Main.zenithWorld && !Main.remixWorld)
-        ContainerRecipeSystem.CreateTreasureGroupRecipe(5010, 274, 3019, 218, 112, 220);
-      else
-        ContainerRecipeSystem.CreateTreasureGroupRecipe(5010, 274, 3019, 218, 220);
-    }
+        public override void AddRecipes()
+        {
+            AddPreHMTreasureBagRecipes();
+            AddHMTreasureBagRecipes();
+            AddEventTreasureBagRecipes();
+            AddGrabBagRecipes();
+            AddCrateRecipes();
+            AddBiomeKeyRecipes();
 
-    private static void AddPreHMTreasureBagRecipes()
-    {
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(2489, 1309);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1360, 1299);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1361, 994);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1362, 3060);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1363, 1313);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3322, 2888, 1121, 1123);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1364, 2502, 1170);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(5111, 5117, 5118, 5119, 5095);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(5108, 5098, 5101, 5113);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3324, 491, 489, 2998, 490, 434, 426, 514, 4912);
-    }
+            // Treasure magnet I HATE TREASURE MAGNET TEAR OFF ALL OF YOUR FLESH
+            CreateTreasureGroupRecipe(ItemID.TreasureMagnet,
+                ItemID.DarkLance,
+                ItemID.HellwingBow,
+                ItemID.Flamelash,
+                ItemID.Sunfury
+            );
+            RecipeHelper.CreateSimpleRecipe(ItemID.TreasureMagnet, ItemID.FlowerofFire, TileID.Solidifier, disableDecraft: true, conditions: Condition.NotRemixWorld);
+        }
 
-    private static void AddHMTreasureBagRecipes()
-    {
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(4957, 4758, 4981, 4980);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3328, 758, 1157, 1255, 788, 1178, 3018, 1259, 1155);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1370, 1305, 1182);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3329, 1258, 1122, 899, 1248, 1294, 1295, 1296, 1297);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3330, 2611, 2624, 2622, 2621, 2623);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(2589, 2609);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(4782, 4923, 4914, 4952, 4953, 4778);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(4783, 4715, 5075, 4823);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3332, 3063, 3389, 3065, 1553, 3930, 3541, 3570, 3571, 3569);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3595, 4469);
-    }
+        private static void AddPreHMTreasureBagRecipes()
+        {
+            CreateTreasureGroupRecipe(ItemID.KingSlimeTrophy, ItemID.SlimeStaff);
+            CreateTreasureGroupRecipe(ItemID.EyeofCthulhuTrophy, ItemID.Binoculars);
+            CreateTreasureGroupRecipe(ItemID.EaterofWorldsTrophy, ItemID.EatersBone);
+            CreateTreasureGroupRecipe(ItemID.BrainofCthulhuTrophy, ItemID.BoneRattle);
+            CreateTreasureGroupRecipe(ItemID.SkeletronTrophy, ItemID.BookofSkulls);
 
-    private static void AddEventTreasureBagRecipes()
-    {
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3867, 3857, 3855, 3810, 3809);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3868, 3811, 3812, 3854, 3852, 3823, 3835, 3836, 3856);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3860, 3883, 3827, 3870, 3858, 3859);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1855, 1829, 1831, 1835, 1837, 1845);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1856, 1826, 1801, 1802, 1782, 1784, 1811, 4680);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1962, 1928, 1916, 1930, 1871);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1961, 1910, 1929);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(1960, 1931, 1946, 1947, 1959, 1914);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3358, 2797, 2749, 2795, 2796, 2880, 2769, 2800, 2882, 2798);
-      ContainerRecipeSystem.CreateTreasureGroupRecipe(3359, 855, 854, 905, 2584, 3033, 672, 4471);
-    }
+            // Queen Bee
+            CreateTreasureGroupRecipe(ItemID.QueenBeeBossBag,
+                ItemID.BeesKnees,
+                ItemID.BeeGun,
+                ItemID.BeeKeeper
+            );
+            CreateTreasureGroupRecipe(ItemID.QueenBeeTrophy,
+                ItemID.HoneyedGoggles,
+                ItemID.Nectar
+            );
 
-    private static void AddBiomeKeyRecipes()
-    {
-      RecipeHelper.CreateSimpleRecipe(1535, 1569, 134, 1, 1, true, false, Condition.DownedPlantera);
-      RecipeHelper.CreateSimpleRecipe(1534, 1571, 134, 1, 1, true, false, Condition.DownedPlantera);
-      RecipeHelper.CreateSimpleRecipe(1533, 1156, 134, 1, 1, true, false, Condition.DownedPlantera);
-      RecipeHelper.CreateSimpleRecipe(1537, 1572, 134, 1, 1, true, false, Condition.DownedPlantera);
-      RecipeHelper.CreateSimpleRecipe(1536, 1260, 134, 1, 1, true, false, Condition.DownedPlantera);
-      RecipeHelper.CreateSimpleRecipe(4714, 4607, 134, 1, 1, true, false, Condition.DownedPlantera);
-    }
+            // Deerclops
+            CreateTreasureGroupRecipe(ItemID.DeerclopsBossBag,
+                ItemID.PewMaticHorn,
+                ItemID.WeatherPain,
+                ItemID.HoundiusShootius,
+                ItemID.LucyTheAxe
+            );
+            CreateTreasureGroupRecipe(ItemID.DeerclopsTrophy,
+                ItemID.ChesterPetItem,
+                ItemID.Eyebrella,
+                ItemID.DontStarveShaderItem
+            );
 
-    private static void AddGrabBagRecipes()
-    {
-      RecipeHelper.CreateSimpleRecipe(1869, 1927, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1923, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1921, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1870, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1909, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1915, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1869, 1918, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1774, 1810, 18, 10, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1774, 1800, 18, 25, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(1774, 1809, 18, 2, 25, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 313, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 314, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 315, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 317, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 316, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 318, 18, 1, 5, true, false);
-      RecipeHelper.CreateSimpleRecipe(3093, 2358, 18, 1, 5, true, false);
-    }
+            // Wall of Flesh
+            CreateTreasureGroupRecipe(ItemID.WallOfFleshBossBag,
+                ItemID.RangerEmblem,
+                ItemID.SorcererEmblem,
+                ItemID.SummonerEmblem,
+                ItemID.WarriorEmblem,
+                ItemID.ClockworkAssaultRifle,
+                ItemID.BreakerBlade,
+                ItemID.LaserRifle,
+                ItemID.FireWhip
+            );
+        }
 
-    private static void AddCrateRecipes()
-    {
-      ContainerRecipeSystem.CreateCrateRecipe(3200, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(3201, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(997, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(285, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(3068, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(946, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(953, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(3084, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(284, 2334, 3, 3979);
-      if (!Main.remixWorld && !Main.zenithWorld)
-        ContainerRecipeSystem.CreateCrateRecipe(3069, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(280, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(281, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(4341, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(4429, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(4427, 2334, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(2424, -1, 3, 3979);
-      ContainerRecipeSystem.CreateCrateRecipe(2608, 2335, 3, 3980);
-      ContainerRecipeSystem.CreateCrateRecipe(2587, 2335, 3, 3980);
-      ContainerRecipeSystem.CreateCrateRecipe(2501, 2335, 3, 3980);
-      ContainerRecipeSystem.CreateCrateRecipe(53, 2335, 1, 3980);
-      ContainerRecipeSystem.CreateCrateRecipe(49, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(50, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(930, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(54, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(975, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(5011, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(29, 2336, 5, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(2491, -1, 5, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(989, 2336, 5, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(3064, 2336, 1, 3981);
-      ContainerRecipeSystem.CreateCrateRecipe(212, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(964, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(211, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(213, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(2292, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(4426, 3208, 1, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(753, 3208, 5, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(3017, 3208, 5, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(2204, 3208, 5, 3987);
-      ContainerRecipeSystem.CreateCrateRecipe(159, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(65, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(4978, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(2197, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(158, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(2219, 3206, 1, 3985);
-      ContainerRecipeSystem.CreateCrateRecipe(162, 3203, 1, 3982);
-      ContainerRecipeSystem.CreateCrateRecipe(111, 3203, 1, 3982);
-      ContainerRecipeSystem.CreateCrateRecipe(115, 3203, 1, 3982);
-      ContainerRecipeSystem.CreateCrateRecipe(96, 3203, 1, 3982);
-      ContainerRecipeSystem.CreateCrateRecipe(64, 3203, 1, 3982);
-      ContainerRecipeSystem.CreateCrateRecipe(800, 3204, 1, 3983);
-      ContainerRecipeSystem.CreateCrateRecipe(802, 3204, 1, 3983);
-      ContainerRecipeSystem.CreateCrateRecipe(1256, 3204, 1, 3983);
-      ContainerRecipeSystem.CreateCrateRecipe(1290, 3204, 1, 3983);
-      ContainerRecipeSystem.CreateCrateRecipe(3062, 3204, 1, 3983);
-      ContainerRecipeSystem.CreateCrateRecipe(165, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(155, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(156, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(113, 3205, 1, 3984, 327);
-      if (!Main.zenithWorld && !Main.remixWorld)
-        ContainerRecipeSystem.CreateCrateRecipe(157, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(3317, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(164, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(329, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(163, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(2192, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(3000, 3205, 1, 3984, 327);
-      ContainerRecipeSystem.CreateCrateRecipe(2999, 3205, 1, 3984, 327);
-      if (!Main.zenithWorld && !Main.remixWorld)
-        ContainerRecipeSystem.CreateCrateRecipe(1319, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(987, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(724, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(950, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(3199, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(1579, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(670, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(2198, 4405, 1, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(669, 4405, 5, 4406);
-      ContainerRecipeSystem.CreateCrateRecipe(4055, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4056, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4061, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4442, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4062, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4276, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4263, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4262, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4066, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(4346, 4407, 1, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(934, 4407, 3, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(857, 4407, 3, 4408);
-      ContainerRecipeSystem.CreateCrateRecipe(274, 4877, 1, 4878, 329);
-      ContainerRecipeSystem.CreateCrateRecipe(3019, 4877, 1, 4878, 329);
-      ContainerRecipeSystem.CreateCrateRecipe(218, 4877, 1, 4878, 329);
-      if (!Main.zenithWorld && !Main.remixWorld)
-        ContainerRecipeSystem.CreateCrateRecipe(112, 4877, 1, 4878, 329);
-      ContainerRecipeSystem.CreateCrateRecipe(220, 4877, 1, 4878, 329);
-      ContainerRecipeSystem.CreateCrateRecipe(5010, 4877, 1, 4878, 329);
-      ContainerRecipeSystem.CreateCrateRecipe(906, 4877, 5, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4551, 4877, 5, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4737, 4877, 5, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4828, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4822, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4881, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4443, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4824, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(4819, 4877, 1, 4878);
-      ContainerRecipeSystem.CreateCrateRecipe(277, 5002, 1, 5003);
-      ContainerRecipeSystem.CreateCrateRecipe(186, 5002, 1, 5003);
-      ContainerRecipeSystem.CreateCrateRecipe(187, 5002, 1, 5003);
-      ContainerRecipeSystem.CreateCrateRecipe(4404, 5002, 1, 5003);
-      ContainerRecipeSystem.CreateCrateRecipe(863, 5002, 5, 5003);
-      ContainerRecipeSystem.CreateCrateRecipe(4425, 5002, 5, 5003);
-    }
+        private static void AddHMTreasureBagRecipes()
+        {
+            // Queen Slime
+            CreateTreasureGroupRecipe(ItemID.QueenSlimeBossBag,
+                ItemID.Smolstar,
+                ItemID.QueenSlimeMountSaddle,
+                ItemID.QueenSlimeHook
+            );
 
-    private static void CreateCrateRecipe(
-      int result,
-      int crate,
-      int crateAmount,
-      int hardmodeCrate,
-      int extraItem = -1)
-    {
-      if (crate != -1)
-      {
-        Recipe recipe = Recipe.Create(result, 1);
-        recipe.AddIngredient(crate, crateAmount);
-        if (extraItem != -1)
-          recipe.AddIngredient(extraItem, 1);
-        recipe.AddTile(18);
-        recipe.DisableDecraft();
-        recipe.Register();
-      }
-      if (hardmodeCrate == -1)
-        return;
-      Recipe recipe1 = Recipe.Create(result, 1);
-      recipe1.AddIngredient(hardmodeCrate, crateAmount);
-      if (extraItem != -1)
-        recipe1.AddIngredient(extraItem, 1);
-      recipe1.AddTile(18);
-      recipe1.DisableDecraft();
-      recipe1.Register();
-    }
+            // Plantera
+            CreateTreasureGroupRecipe(ItemID.PlanteraBossBag,
+                ItemID.GrenadeLauncher,
+                ItemID.PygmyStaff,
+                ItemID.VenusMagnum,
+                ItemID.NettleBurst,
+                ItemID.LeafBlower,
+                ItemID.Seedler,
+                ItemID.FlowerPow,
+                ItemID.WaspGun
+            );
+            CreateTreasureGroupRecipe(ItemID.PlanteraTrophy,
+                ItemID.TheAxe,
+                ItemID.Seedling
+            );
 
-    private static void CreateTreasureGroupRecipe(int input, params int[] outputs)
-    {
-      foreach (int output in outputs)
-        RecipeHelper.CreateSimpleRecipe(input, output, 220, 1, 1, true, false);
+            // Golem
+            CreateTreasureGroupRecipe(ItemID.GolemBossBag,
+                ItemID.Stynger,
+                ItemID.PossessedHatchet,
+                ItemID.SunStone,
+                ItemID.EyeoftheGolem,
+                ItemID.Picksaw,
+                ItemID.HeatRay,
+                ItemID.StaffofEarth,
+                ItemID.GolemFist
+            );
+
+            // Duke Fishron
+            CreateTreasureGroupRecipe(ItemID.FishronBossBag,
+                ItemID.Flairon,
+                ItemID.Tsunami,
+                ItemID.RazorbladeTyphoon,
+                ItemID.TempestStaff,
+                ItemID.BubbleGun
+            );
+            CreateTreasureGroupRecipe(ItemID.DukeFishronTrophy, ItemID.FishronWings);
+
+            // Empress of Light
+            CreateTreasureGroupRecipe(ItemID.FairyQueenBossBag,
+                ItemID.PiercingStarlight,
+                ItemID.RainbowWhip,
+                ItemID.FairyQueenMagicItem,
+                ItemID.FairyQueenRangedItem,
+                ItemID.HallowBossDye
+            );
+            CreateTreasureGroupRecipe(ItemID.FairyQueenTrophy,
+                ItemID.SparkleGuitar,
+                ItemID.RainbowCursor,
+                ItemID.RainbowWings
+            );
+
+            // Moon Lord
+            CreateTreasureGroupRecipe(ItemID.MoonLordBossBag,
+                ItemID.Meowmere,
+                ItemID.Terrarian,
+                ItemID.StarWrath,
+                ItemID.SDMG,
+                ItemID.Celeb2,
+                ItemID.LastPrism,
+                ItemID.LunarFlareBook,
+                ItemID.RainbowCrystalStaff,
+                ItemID.MoonlordTurretStaff
+            );
+            CreateTreasureGroupRecipe(ItemID.MoonLordTrophy, ItemID.MeowmereMinecart);
+        }
+
+        private static void AddEventTreasureBagRecipes()
+        {
+            // Dark Mage
+            CreateTreasureGroupRecipe(ItemID.BossTrophyDarkmage,
+                ItemID.DD2PetDragon,
+                ItemID.DD2PetGato,
+                ItemID.SquireShield,
+                ItemID.ApprenticeScarf
+            );
+
+            // Ogre
+            CreateTreasureGroupRecipe(ItemID.BossTrophyOgre,
+                ItemID.HuntressBuckler,
+                ItemID.MonkBelt,
+                ItemID.DD2PhoenixBow,
+                ItemID.BookStaff,
+                ItemID.DD2SquireDemonSword,
+                ItemID.MonkStaffT1,
+                ItemID.MonkStaffT2,
+                ItemID.DD2PetGhost
+            );
+
+            // Betsy
+            CreateTreasureGroupRecipe(ItemID.BossBagBetsy,
+                ItemID.BetsyWings,
+                ItemID.DD2SquireBetsySword,
+                ItemID.ApprenticeStaffT3,
+                ItemID.MonkStaffT3,
+                ItemID.DD2BetsyBow
+            );
+
+            // Mourning Wood
+            CreateTreasureGroupRecipe(ItemID.MourningWoodTrophy,
+                ItemID.SpookyHook,
+                ItemID.SpookyTwig,
+                ItemID.StakeLauncher,
+                ItemID.CursedSapling,
+                ItemID.NecromanticScroll
+            );
+
+            // Pumpking
+            CreateTreasureGroupRecipe(ItemID.PumpkingTrophy,
+                ItemID.TheHorsemansBlade,
+                ItemID.BatScepter,
+                ItemID.RavenStaff,
+                ItemID.CandyCornRifle,
+                ItemID.JackOLanternLauncher,
+                ItemID.BlackFairyDust,
+                ItemID.ScytheWhip
+            );
+
+            // Everscream
+            CreateTreasureGroupRecipe(ItemID.EverscreamTrophy,
+                ItemID.ChristmasTreeSword,
+                ItemID.ChristmasHook,
+                ItemID.Razorpine,
+                ItemID.FestiveWings
+            );
+
+            // Santa NK1
+            CreateTreasureGroupRecipe(ItemID.SantaNK1Trophy,
+                ItemID.ElfMelter,
+                ItemID.ChainGun
+            );
+
+            // Ice Queen
+            CreateTreasureGroupRecipe(ItemID.IceQueenTrophy,
+                ItemID.BlizzardStaff,
+                ItemID.SnowmanCannon,
+                ItemID.NorthPole,
+                ItemID.BabyGrinchMischiefWhistle,
+                ItemID.ReindeerBells
+            );
+
+            // Saucer
+            CreateTreasureGroupRecipe(ItemID.MartianSaucerTrophy,
+                ItemID.Xenopopper,
+                ItemID.XenoStaff,
+                ItemID.LaserMachinegun,
+                ItemID.ElectrosphereLauncher,
+                ItemID.InfluxWaver,
+                ItemID.CosmicCarKey,
+                ItemID.AntiGravityHook,
+                ItemID.ChargedBlasterCannon,
+                ItemID.LaserDrill
+            );
+
+            // Flying Dutchman
+            CreateTreasureGroupRecipe(ItemID.FlyingDutchmanTrophy,
+                ItemID.LuckyCoin,
+                ItemID.DiscountCard,
+                ItemID.CoinGun,
+                ItemID.PirateStaff,
+                ItemID.GoldRing,
+                ItemID.Cutlass,
+                ItemID.PirateMinecart
+            );
+        }
+
+        private static void AddBiomeKeyRecipes()
+        {
+            RecipeHelper.CreateSimpleRecipe(ItemID.CrimsonKey, ItemID.VampireKnives, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+            RecipeHelper.CreateSimpleRecipe(ItemID.CorruptionKey, ItemID.ScourgeoftheCorruptor, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+            RecipeHelper.CreateSimpleRecipe(ItemID.JungleKey, ItemID.PiranhaGun, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+            RecipeHelper.CreateSimpleRecipe(ItemID.FrozenKey, ItemID.StaffoftheFrostHydra, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HallowedKey, ItemID.RainbowGun, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+            RecipeHelper.CreateSimpleRecipe(ItemID.DungeonDesertKey, ItemID.StormTigerStaff, TileID.MythrilAnvil, disableDecraft: true, conditions: Condition.DownedPlantera);
+        }
+
+        private static void AddGrabBagRecipes()
+        {
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.DogWhistle, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.Toolbox, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.HandWarmer, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.RedRyder, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.CandyCaneSword, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.CandyCaneHook, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.Present, ItemID.FruitcakeChakram, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            
+            RecipeHelper.CreateSimpleRecipe(ItemID.GoodieBag, ItemID.UnluckyYarn, TileID.WorkBenches, ingredientAmount: 10, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.GoodieBag, ItemID.BatHook, TileID.WorkBenches, ingredientAmount: 25, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.GoodieBag, ItemID.RottenEgg, TileID.WorkBenches, ingredientAmount: 2, resultAmount: 25, disableDecraft: true);
+            
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Daybloom, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Moonglow, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Blinkroot, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Waterleaf, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Deathweed, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Fireblossom, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(ItemID.HerbBag, ItemID.Shiverthorn, TileID.WorkBenches, resultAmount: 5, disableDecraft: true);
+        }
+
+        private static void AddCrateRecipes()
+        {
+            //wooden
+            CreateCrateRecipe(ItemID.SailfishBoots, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.TsunamiInABottle, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Extractinator, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Aglet, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.CordageGuide, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Umbrella, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.ClimbingClaws, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Radar, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.WoodenBoomerang, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.WandofSparking, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard, conditions: Condition.NotRemixWorld);
+            CreateCrateRecipe(ItemID.Spear, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Blowpipe, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.PortableStool, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            //CreateCrateRecipe(ItemID.BabyBirdStaff, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.SunflowerMinecart, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.LadybugMinecart, ItemID.WoodenCrate, 3, ItemID.WoodenCrateHard);
+            CreateCrateRecipe(ItemID.Anchor, -1, 3, ItemID.WoodenCrateHard);
+
+            //iron
+            CreateCrateRecipe(ItemID.FalconBlade, ItemID.IronCrate, 3, ItemID.IronCrateHard);
+            CreateCrateRecipe(ItemID.TartarSauce, ItemID.IronCrate, 3, ItemID.IronCrateHard);
+            CreateCrateRecipe(ItemID.GingerBeard, ItemID.IronCrate, 3, ItemID.IronCrateHard);
+            CreateCrateRecipe(ItemID.CloudinaBottle, ItemID.IronCrate, 1, ItemID.IronCrateHard);
+
+
+            //gold
+            CreateCrateRecipe(ItemID.BandofRegeneration, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.MagicMirror, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.FlareGun, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.HermesBoots, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.ShoeSpikes, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.Mace, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.LifeCrystal, ItemID.GoldenCrate, 5, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.HardySaddle, -1, 5, ItemID.GoldenCrateHard);
+            CreateCrateRecipe(ItemID.EnchantedSword, ItemID.GoldenCrate, 5, ItemID.GoldenCrateHard);
+
+            CreateCrateRecipe(ItemID.Sundial, ItemID.GoldenCrate, 1, ItemID.GoldenCrateHard); //actually should be hm but fuck it
+
+            //jungle
+            CreateCrateRecipe(ItemID.AnkletoftheWind, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.Boomstick, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.FeralClaws, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.StaffofRegrowth, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.FiberglassFishingPole, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.BeeMinecart, ItemID.JungleFishingCrate, 1, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.Seaweed, ItemID.JungleFishingCrate, 5, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.FlowerBoots, ItemID.JungleFishingCrate, 5, ItemID.JungleFishingCrateHard);
+            CreateCrateRecipe(ItemID.HoneyDispenser, ItemID.JungleFishingCrate, 5, ItemID.JungleFishingCrateHard);
+
+            //sky
+            CreateCrateRecipe(ItemID.ShinyRedBalloon, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+            CreateCrateRecipe(ItemID.Starfury, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+            CreateCrateRecipe(ItemID.CreativeWings, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+            CreateCrateRecipe(ItemID.SkyMill, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+            CreateCrateRecipe(ItemID.LuckyHorseshoe, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+            CreateCrateRecipe(ItemID.CelestialMagnet, ItemID.FloatingIslandFishingCrate, 1, ItemID.FloatingIslandFishingCrateHard);
+
+            //corrupt
+            CreateCrateRecipe(ItemID.BallOHurt, ItemID.CorruptFishingCrate, 1, ItemID.CorruptFishingCrateHard);
+            CreateCrateRecipe(ItemID.BandofStarpower, ItemID.CorruptFishingCrate, 1, ItemID.CorruptFishingCrateHard);
+            CreateCrateRecipe(ItemID.ShadowOrb, ItemID.CorruptFishingCrate, 1, ItemID.CorruptFishingCrateHard);
+            CreateCrateRecipe(ItemID.Musket, ItemID.CorruptFishingCrate, 1, ItemID.CorruptFishingCrateHard);
+            CreateCrateRecipe(ItemID.Vilethorn, ItemID.CorruptFishingCrate, 1, ItemID.CorruptFishingCrateHard);
+
+            //crimson
+            CreateCrateRecipe(ItemID.TheUndertaker, ItemID.CrimsonFishingCrate, 1, ItemID.CrimsonFishingCrateHard);
+            CreateCrateRecipe(ItemID.TheRottedFork, ItemID.CrimsonFishingCrate, 1, ItemID.CrimsonFishingCrateHard);
+            CreateCrateRecipe(ItemID.CrimsonRod, ItemID.CrimsonFishingCrate, 1, ItemID.CrimsonFishingCrateHard);
+            CreateCrateRecipe(ItemID.PanicNecklace, ItemID.CrimsonFishingCrate, 1, ItemID.CrimsonFishingCrateHard);
+            CreateCrateRecipe(ItemID.CrimsonHeart, ItemID.CrimsonFishingCrate, 1, ItemID.CrimsonFishingCrateHard);
+
+            //hallow
+
+            //dungeon
+            CreateCrateRecipe(ItemID.WaterBolt, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.Muramasa, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.CobaltShield, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.MagicMissile, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.AquaScepter, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey, conditions: Condition.NotRemixWorld);
+            CreateCrateRecipe(ItemID.Valor, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.Handgun, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.ShadowKey, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.BlueMoon, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.BoneWelder, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.AlchemyTable, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+            CreateCrateRecipe(ItemID.BewitchingTable, ItemID.DungeonFishingCrate, 1, ItemID.DungeonFishingCrateHard, ItemID.GoldenKey);
+
+            //frozen crate
+            CreateCrateRecipe(ItemID.SnowballCannon, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard, conditions: Condition.NotRemixWorld);
+            CreateCrateRecipe(ItemID.BlizzardinaBottle, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.IceBlade, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.IceSkates, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.IceMirror, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.FlurryBoots, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.IceBoomerang, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.IceMachine, ItemID.FrozenCrate, 1, ItemID.FrozenCrateHard);
+            CreateCrateRecipe(ItemID.Fish, ItemID.FrozenCrate, 5, ItemID.FrozenCrateHard);
+
+            //oasis crate
+            CreateCrateRecipe(ItemID.SandBoots, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.AncientChisel, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.ThunderSpear, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.ScarabFishingRod, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.ThunderStaff, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.CatBast, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.MagicConch, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.MysticCoilSnake, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.DesertMinecart, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.EncumberingStone, ItemID.OasisCrate, 1, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.FlyingCarpet, ItemID.OasisCrate, 3, ItemID.OasisCrateHard);
+            CreateCrateRecipe(ItemID.SandstorminaBottle, ItemID.OasisCrate, 3, ItemID.OasisCrateHard);
+
+            //obsidian
+            CreateCrateRecipe(ItemID.DarkLance, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey);
+            CreateCrateRecipe(ItemID.HellwingBow, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey);
+            CreateCrateRecipe(ItemID.Flamelash, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey);
+            CreateCrateRecipe(ItemID.FlowerofFire, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey, conditions: Condition.NotRemixWorld);
+            CreateCrateRecipe(ItemID.Sunfury, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey);
+            CreateCrateRecipe(ItemID.TreasureMagnet, ItemID.LavaCrate, 1, ItemID.LavaCrateHard, ItemID.ShadowKey);
+
+            CreateCrateRecipe(ItemID.LavaCharm, ItemID.LavaCrate, 5, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.HellCake, ItemID.LavaCrate, 5, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.OrnateShadowKey, ItemID.LavaCrate, 5, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.SuperheatedBlood, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.FlameWakerBoots, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.LavaFishingHook, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.HellMinecart, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.WetBomb, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+            CreateCrateRecipe(ItemID.DemonConch, ItemID.LavaCrate, 1, ItemID.LavaCrateHard);
+
+            // ocean crate
+            CreateCrateRecipe(ItemID.Trident, ItemID.OceanCrate, 1, ItemID.OceanCrateHard);
+            CreateCrateRecipe(ItemID.BreathingReed, ItemID.OceanCrate, 1, ItemID.OceanCrateHard);
+            CreateCrateRecipe(ItemID.Flipper, ItemID.OceanCrate, 1, ItemID.OceanCrateHard);
+            CreateCrateRecipe(ItemID.FloatingTube, ItemID.OceanCrate, 1, ItemID.OceanCrateHard);
+            CreateCrateRecipe(ItemID.WaterWalkingBoots, ItemID.OceanCrate, 5, ItemID.OceanCrateHard);
+            CreateCrateRecipe(ItemID.SharkBait, ItemID.OceanCrate, 5, ItemID.OceanCrateHard);
+        }
+
+        private static void CreateCrateRecipe(int result, int crate, int crateAmount, int hardmodeCrate, int extraItem = -1, params Condition[] conditions)
+        {
+            if (crate != -1)
+            {
+                var recipe = Recipe.Create(result);
+                recipe.AddIngredient(crate, crateAmount);
+                if (extraItem != -1)
+                {
+                    recipe.AddIngredient(extraItem);
+                }
+                recipe.AddTile(TileID.WorkBenches);
+                foreach (Condition condition in conditions)
+                {
+                    recipe.AddCondition(condition);
+                }
+                recipe.DisableDecraft();
+                recipe.Register();
+            }
+
+            if (hardmodeCrate != -1)
+            {
+                var recipe = Recipe.Create(result);
+                recipe.AddIngredient(hardmodeCrate, crateAmount);
+                if (extraItem != -1)
+                {
+                    recipe.AddIngredient(extraItem);
+                }
+                recipe.AddTile(TileID.WorkBenches);
+                foreach (Condition condition in conditions)
+                {
+                    recipe.AddCondition(condition);
+                }
+                recipe.DisableDecraft();
+                recipe.Register();
+            }
+        }
+
+        private static void CreateTreasureGroupRecipe(int input, params int[] outputs)
+        {
+            foreach (int output in outputs)
+            {
+                RecipeHelper.CreateSimpleRecipe(input, output, TileID.Solidifier, disableDecraft: true);
+            }
+        }
     }
-  }
 }

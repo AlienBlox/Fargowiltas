@@ -1,94 +1,138 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.FakeHeartDeviantt
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+﻿using System;
 using Microsoft.Xna.Framework;
-using System;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class FakeHeartDeviantt : ModProjectile
-  {
-    public virtual void SetStaticDefaults()
+    public class FakeHeartDeviantt : ModProjectile
     {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 12;
-      ((Entity) this.Projectile).height = 12;
-      this.Projectile.timeLeft = 600;
-      this.Projectile.friendly = true;
-      this.Projectile.npcProj = true;
-      this.Projectile.aiStyle = -1;
-      this.Projectile.tileCollide = false;
-      this.Projectile.ignoreWater = true;
-    }
-
-    public virtual void AI()
-    {
-      float num1 = (float) ((double) Main.rand.Next(90, 111) * 0.0099999997764825821 * ((double) Main.essScale * 0.5));
-      Lighting.AddLight(((Entity) this.Projectile).Center, 0.5f * num1, 0.1f * num1, 0.1f * num1);
-      if ((double) this.Projectile.localAI[0] == 0.0)
-      {
-        this.Projectile.localAI[0] = 1f;
-        this.Projectile.ai[0] = -1f;
-      }
-      if ((double) this.Projectile.ai[0] >= 0.0 && (double) this.Projectile.ai[0] < (double) Main.maxNPCs)
-      {
-        int index = (int) this.Projectile.ai[0];
-        if (Main.npc[index].CanBeChasedBy((object) null, false))
+        public override void SetStaticDefaults()
         {
-          double num2 = (double) Utils.ToRotation(Vector2.op_Subtraction(((Entity) Main.npc[index]).Center, ((Entity) this.Projectile).Center)) - (double) Utils.ToRotation(((Entity) this.Projectile).velocity);
-          if (num2 > Math.PI)
-            num2 -= 2.0 * Math.PI;
-          if (num2 < -1.0 * Math.PI)
-            num2 += 2.0 * Math.PI;
-          ((Entity) this.Projectile).velocity = Utils.RotatedBy(((Entity) this.Projectile).velocity, num2 * ((double) ((Entity) this.Projectile).Distance(((Entity) Main.npc[index]).Center) > 100.0 ? 0.40000000596046448 : 0.10000000149011612), new Vector2());
+            // DisplayName.SetDefault("Fake Heart");
         }
-        else
+
+        public override void SetDefaults()
         {
-          this.Projectile.ai[0] = -1f;
-          this.Projectile.netUpdate = true;
+            Projectile.width = 12;
+            Projectile.height = 12;
+            Projectile.timeLeft = 600;
+            Projectile.friendly = true;
+            Projectile.npcProj = true;
+            Projectile.aiStyle = -1;
+
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
-      }
-      else if ((double) ++this.Projectile.localAI[1] > 6.0)
-      {
-        this.Projectile.localAI[1] = 0.0f;
-        float num3 = 700f;
-        int num4 = -1;
-        for (int index = 0; index < Main.maxNPCs; ++index)
+
+        public override void AI()
         {
-          NPC npc = Main.npc[index];
-          if (npc.CanBeChasedBy((object) null, false) && Collision.CanHitLine(((Entity) this.Projectile).Center, 0, 0, ((Entity) npc).Center, 0, 0))
-          {
-            float num5 = ((Entity) this.Projectile).Distance(((Entity) npc).Center);
-            if ((double) num5 < (double) num3)
+            float rand = Main.rand.Next(90, 111) * 0.01f * (Main.essScale * 0.5f);
+            Lighting.AddLight(Projectile.Center, 0.5f * rand, 0.1f * rand, 0.1f * rand);
+
+            /*Projectile.ai[0]--;
+            if (Projectile.ai[0] > 0)
             {
-              num3 = num5;
-              num4 = index;
+                Projectile.rotation = -Projectile.velocity.ToRotation();
             }
-          }
+            else if (Projectile.ai[0] == 0)
+                Projectile.velocity = Vector2.Zero;
+            else
+            {
+                Projectile.ai[1]--;
+                if (Projectile.ai[1] == 0)
+                {
+                    Projectile.velocity = Projectile.DirectionTo(Main.player[Player.FindClosest(Projectile.Center, 0, 0)].Center) * 20;
+                    Projectile.netUpdate = true;
+                }
+                if (Projectile.ai[1] <= 0)
+                {
+                    Projectile.rotation = Projectile.velocity.ToRotation();
+                }
+            }
+
+            Projectile.rotation -= (float)Math.PI / 2;*/
+
+            if (Projectile.localAI[0] == 0)
+            {
+                Projectile.localAI[0] = 1;
+                Projectile.ai[0] = -1;
+            }
+
+            if (Projectile.ai[0] >= 0 && Projectile.ai[0] < Main.maxNPCs)
+            {
+                int ai0 = (int)Projectile.ai[0];
+                if (Main.npc[ai0].CanBeChasedBy())
+                {
+                    double num4 = (Main.npc[ai0].Center - Projectile.Center).ToRotation() - Projectile.velocity.ToRotation();
+                    if (num4 > Math.PI)
+                    {
+                        num4 -= 2.0 * Math.PI;
+                    }
+
+                    if (num4 < -1.0 * Math.PI)
+                    {
+                        num4 += 2.0 * Math.PI;
+                    }
+
+                    Projectile.velocity = Projectile.velocity.RotatedBy(num4 * (Projectile.Distance(Main.npc[ai0].Center) > 100 ? 0.4f : 0.1f));
+                }
+                else
+                {
+                    Projectile.ai[0] = -1f;
+                    Projectile.netUpdate = true;
+                }
+            }
+            else
+            {
+                if (++Projectile.localAI[1] > 6f)
+                {
+                    Projectile.localAI[1] = 0f;
+                    float maxDistance = 700f;
+                    int possibleTarget = -1;
+                    for (int i = 0; i < Main.maxNPCs; i++)
+                    {
+                        NPC npc = Main.npc[i];
+                        if (npc.CanBeChasedBy() && Collision.CanHitLine(Projectile.Center, 0, 0, npc.Center, 0, 0))
+                        {
+                            float npcDistance = Projectile.Distance(npc.Center);
+                            if (npcDistance < maxDistance)
+                            {
+                                maxDistance = npcDistance;
+                                possibleTarget = i;
+                            }
+                        }
+                    }
+
+                    Projectile.ai[0] = possibleTarget;
+                    Projectile.netUpdate = true;
+                }
+            }
+
+            Projectile.rotation = Projectile.velocity.ToRotation() - (float)Math.PI / 2;
         }
-        this.Projectile.ai[0] = (float) num4;
-        this.Projectile.netUpdate = true;
-      }
-      this.Projectile.rotation = Utils.ToRotation(((Entity) this.Projectile).velocity) - 1.57079637f;
-    }
 
-    public virtual void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-    {
-      target.AddBuff(119, 600, false);
-    }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            target.AddBuff(BuffID.Lovestruck, 600);
+        }
 
-    public virtual Color? GetAlpha(Color lightColor)
-    {
-      return new Color?(Color.op_Multiply(new Color((int) byte.MaxValue, (int) ((Color) ref lightColor).G, (int) ((Color) ref lightColor).B, (int) ((Color) ref lightColor).A), this.Projectile.Opacity));
+        public override Color? GetAlpha(Color lightColor)
+        {
+            return new Color(255, lightColor.G, lightColor.B, lightColor.A) * Projectile.Opacity;
+        }
+
+        //public override bool PreDraw(ref Color lightColor)
+        //{
+        //    Texture2D texture2D13 = Main.ProjectileTexture[Projectile.type];
+        //    int num156 = Main.ProjectileTexture[Projectile.type].Height / Main.projFrames[Projectile.type]; // ypos of lower right corner of sprite to draw
+        //    int y3 = num156 * Projectile.frame; // ypos of upper left corner of sprite to draw
+        //    Rectangle rectangle = new Rectangle(0, y3, texture2D13.Width, num156);
+        //    Vector2 origin2 = rectangle.Size() / 2f;
+        //    Main.spriteBatch.Draw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin2, Projectile.scale, SpriteEffects.None, 0f);
+        //    return false;
+        //}
     }
-  }
 }

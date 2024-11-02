@@ -1,58 +1,60 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Abom.WeatherBalloon
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.Abom
 {
-  public class WeatherBalloon : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class WeatherBalloon : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 3;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Weather Balloon");
+            // Tooltip.SetDefault("Starts the Rain");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 3;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 20;
-      ((Entity) this.Item).height = 20;
-      this.Item.maxStack = 20;
-      this.Item.value = Item.sellPrice(0, 0, 2, 0);
-      this.Item.rare = 1;
-      this.Item.useAnimation = 30;
-      this.Item.useTime = 30;
-      this.Item.useStyle = 5;
-      this.Item.consumable = true;
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 20;
+            Item.height = 20;
+            Item.maxStack = 20;
+            Item.value = Item.sellPrice(0, 0, 2);
+            Item.rare = ItemRarityID.Blue;
+            Item.useAnimation = 30;
+            Item.useTime = 30;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.consumable = true;
+        }
 
-    public virtual bool CanUseItem(Player player) => !Main.IsItRaining && !Main.IsItStorming;
+        public override bool CanUseItem(Player player)
+        {
+            return !Main.IsItRaining && !Main.IsItStorming;
+        }
+                
+        public override bool? UseItem(Player player)
+        {
+            LanternNight.GenuineLanterns = false;
+            LanternNight.ManualLanterns = false;
 
-    public virtual bool? UseItem(Player player)
-    {
-      LanternNight.GenuineLanterns = false;
-      LanternNight.ManualLanterns = false;
-      Main.rainTime = (double) (86400 / 24 * 12);
-      Main.raining = true;
-      Main.maxRaining = Main.cloudAlpha = 0.9f;
-      if (Main.netMode == 2)
-      {
-        NetMessage.SendData(7, -1, -1, (NetworkText) null, 0, 0.0f, 0.0f, 0.0f, 0, 0, 0);
-        Main.SyncRain();
-      }
-      FargoUtils.PrintLocalization("MessageInfo.StartRain", new Color(175, 75, (int) byte.MaxValue));
-      SoundEngine.PlaySound(ref SoundID.Roar, new Vector2?(((Entity) player).position), (SoundUpdateCallback) null);
-      return new bool?(true);
+            //sets rain time to 12 hours
+            int day = 86400;
+            int hour = day / 24;
+            Main.rainTime = hour * 12;
+            Main.raining = true;
+            Main.maxRaining = Main.cloudAlpha = 0.9f;
+
+            if (Main.netMode == NetmodeID.Server)
+            {
+                NetMessage.SendData(MessageID.WorldData);
+                Main.SyncRain();
+            }
+            FargoUtils.PrintLocalization("MessageInfo.StartRain", new Color(175, 75, 255));
+            SoundEngine.PlaySound(SoundID.Roar, player.position);
+
+            return true;
+        }
     }
-  }
 }

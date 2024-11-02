@@ -1,69 +1,81 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.Explosives.ObsInstabridgeProj
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Tiles;
+﻿using Fargowiltas.Tiles;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Projectiles.Explosives
 {
-  public class ObsInstabridgeProj : ModProjectile
-  {
-    public virtual void SetStaticDefaults()
+    public class ObsInstabridgeProj : ModProjectile
     {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 20;
-      ((Entity) this.Projectile).height = 36;
-      this.Projectile.aiStyle = 16;
-      this.Projectile.friendly = true;
-      this.Projectile.penetrate = -1;
-      this.Projectile.timeLeft = 1;
-    }
-
-    public virtual bool? CanDamage() => new bool?(false);
-
-    public virtual void OnKill(int timeLeft)
-    {
-      Vector2 center = ((Entity) this.Projectile).Center;
-      SoundEngine.PlaySound(ref SoundID.Item14, new Vector2?(center), (SoundUpdateCallback) null);
-      if (Main.netMode == 1)
-        return;
-      for (int index1 = 1; index1 <= Main.maxTilesX; ++index1)
-      {
-        for (int index2 = -5; index2 <= 0; ++index2)
+        public override void SetStaticDefaults()
         {
-          int x = index1;
-          int y = (int) ((double) index2 + (double) center.Y / 16.0);
-          if (x >= 0 && x < Main.maxTilesX && y >= 0 && y < Main.maxTilesY)
-          {
-            Tile tile = ((Tilemap) ref Main.tile)[x, y];
-            if (!Tile.op_Equality(tile, (ArgumentException) null) && FargoGlobalProjectile.OkayToDestroyTileAt(x, y))
-            {
-              FargoGlobalTile.ClearEverything(x, y);
-              if (index2 == 0)
-              {
-                FargoGlobalTile.ClearEverything(x, y, false);
-                WorldGen.PlaceTile(x, y, 19, false, false, -1, 13);
-                if (Main.netMode == 2)
-                  NetMessage.SendTileSquare(-1, x, y, 1, (TileChangeType) 0);
-              }
-              else if (!FargoGlobalProjectile.TileIsLiterallyAir(tile))
-                FargoGlobalTile.ClearEverything(x, y);
-            }
-          }
+            // DisplayName.SetDefault("Obsidian Instabridge");
         }
-      }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 20;
+            Projectile.height = 36;
+            Projectile.aiStyle = 16;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 1;
+        }
+
+        public override bool? CanDamage()
+        {
+            return false;
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            Vector2 position = Projectile.Center;
+            SoundEngine.PlaySound(SoundID.Item14, position);
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+
+            // All the way across
+            for (int x = 1; x <= Main.maxTilesX; x++)
+            {
+                // Six down, last is platforms
+                for (int y = -5; y <= 0; y++)
+                {
+                    int xPosition = x;
+                    int yPosition = (int)(y + position.Y / 16.0f);
+
+                    if (xPosition < 0 || xPosition >= Main.maxTilesX || yPosition < 0 || yPosition >= Main.maxTilesY)
+                        continue;
+
+                    Tile tile = Main.tile[xPosition, yPosition];
+
+                    if (tile == null)
+                        continue;
+
+                    if (!FargoGlobalProjectile.OkayToDestroyTileAt(xPosition, yPosition))
+                        continue;
+
+                    FargoGlobalTile.ClearEverything(xPosition, yPosition);
+
+                    if (y == 0)
+                    {
+                        FargoGlobalTile.ClearEverything(xPosition, yPosition, false);
+                        // Spawn platforms
+                        WorldGen.PlaceTile(xPosition, yPosition, TileID.Platforms, false, false, -1, 13);
+                        if (Main.netMode == NetmodeID.Server)
+                            NetMessage.SendTileSquare(-1, xPosition, yPosition, 1);
+                    }
+                    else
+                    {
+                        if (!FargoGlobalProjectile.TileIsLiterallyAir(tile))
+                            FargoGlobalTile.ClearEverything(xPosition, yPosition);
+                    }
+                }
+            }
+        }
     }
-  }
 }

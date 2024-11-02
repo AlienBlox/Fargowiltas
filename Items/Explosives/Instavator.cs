@@ -1,47 +1,67 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Explosives.Instavator
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using Fargowiltas.Common.Systems;
 using Fargowiltas.Projectiles.Explosives;
+using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent.Creative;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Explosives
 {
-  public class Instavator : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class Instavator : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 10;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Instavator");
+            // Tooltip.SetDefault("Drops a bomb that creates a hellevator instantly\nDo not use if any important building is below");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 10;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 10;
-      ((Entity) this.Item).height = 32;
-      this.Item.maxStack = 99;
-      this.Item.consumable = true;
-      this.Item.useStyle = 1;
-      this.Item.rare = 2;
-      this.Item.UseSound = new SoundStyle?(SoundID.Item1);
-      this.Item.useAnimation = 20;
-      this.Item.useTime = 20;
-      this.Item.value = Item.buyPrice(0, 0, 3, 0);
-      this.Item.noUseGraphic = true;
-      this.Item.noMelee = true;
-      this.Item.shoot = ModContent.ProjectileType<InstaProj>();
-      this.Item.shootSpeed = 5f;
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 10;
+            Item.height = 32;
+            Item.maxStack = 99;
+            Item.consumable = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.value = Item.buyPrice(0, 0, 3);
+            Item.noUseGraphic = true;
+            Item.noMelee = true;
+            Item.shoot = ModContent.ProjectileType<InstaProj>();
+            Item.shootSpeed = 5f;
+        }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(167, 50).AddIngredient(985, 10).AddIngredient(8, 99).AddIngredient(75, 3).AddTile(16).Register();
+        public override void HoldItem(Player player)
+        {
+            if (player.whoAmI == Main.myPlayer)
+            {
+                Vector2 mouse = Main.MouseWorld;
+                mouse += Vector2.UnitY * 16;
+                InstaVisual.DrawOrigin drawOrigin = InstaVisual.DrawOrigin.Top;
+                InstaVisual.DrawInstaVisual(player, mouse, new(7, 1000), drawOrigin);
+            }
+        }
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            Vector2 mouse = Main.MouseWorld;
+
+            Projectile.NewProjectile(player.GetSource_ItemUse(source.Item), mouse, Vector2.Zero, type, 0, 0, player.whoAmI);
+
+            return false;
+        }
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.Dynamite, 50)
+                .AddIngredient(ItemID.RopeCoil, 10)
+                .AddIngredient(ItemID.Torch, 99)
+                .AddIngredient(ItemID.FallenStar, 3)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
-  }
 }

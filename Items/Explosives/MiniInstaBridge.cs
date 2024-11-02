@@ -1,62 +1,71 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Explosives.MiniInstaBridge
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+﻿using Fargowiltas.Common.Systems;
 using Fargowiltas.Projectiles.Explosives;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Explosives
 {
-  public class MiniInstaBridge : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class MiniInstaBridge : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 10;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Mini Instabridge");
+            /* Tooltip.SetDefault("Creates a long bridge of platforms at your cursor" +
+                               "\nWill not break any blocks"); */
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 10;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 10;
-      ((Entity) this.Item).height = 32;
-      this.Item.maxStack = 99;
-      this.Item.consumable = true;
-      this.Item.useStyle = 1;
-      this.Item.rare = 2;
-      this.Item.UseSound = new SoundStyle?(SoundID.Item1);
-      this.Item.useAnimation = 20;
-      this.Item.useTime = 20;
-      this.Item.value = Item.buyPrice(0, 0, 3, 0);
-      this.Item.noUseGraphic = true;
-      this.Item.noMelee = true;
-      this.Item.shoot = ModContent.ProjectileType<MiniInstabridgeProj>();
-    }
+        public override void SetDefaults()
+        {
+            Item.width = 10;
+            Item.height = 32;
+            Item.maxStack = 99;
+            Item.consumable = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.value = Item.buyPrice(0, 0, 3);
+            Item.noUseGraphic = true;
+            Item.noMelee = true;
+            Item.shoot = ModContent.ProjectileType<MiniInstabridgeProj>();
+        }
 
-    public virtual bool Shoot(
-      Player player,
-      EntitySource_ItemUse_WithAmmo source,
-      Vector2 position,
-      Vector2 velocity,
-      int type,
-      int damage,
-      float knockback)
-    {
-      Vector2 mouseWorld = Main.MouseWorld;
-      Projectile.NewProjectile(player.GetSource_ItemUse(((EntitySource_ItemUse) source).Item, (string) null), mouseWorld, Vector2.Zero, type, 0, 0.0f, ((Entity) player).whoAmI, 0.0f, 0.0f, 0.0f);
-      return false;
-    }
+        public override void HoldItem(Player player)
+        {
+            if (player.whoAmI == Main.myPlayer)
+            {
+                Vector2 mouse = Main.MouseWorld;
+                int side = Math.Sign(mouse.X - player.Center.X);
+                InstaVisual.DrawOrigin origin = side > 0 ? InstaVisual.DrawOrigin.Left : InstaVisual.DrawOrigin.Right;
+                if (side == -1)
+                    mouse.X += side * 16;
+                InstaVisual.DrawInstaVisual(player, mouse, new(1000, 1), origin);
+            }
+        }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(167, 1).AddIngredient(94, 100).AddIngredient(75, 1).AddTile(16).Register();
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            Vector2 mouse = Main.MouseWorld;
+
+            Projectile.NewProjectile(player.GetSource_ItemUse(source.Item), mouse, Vector2.Zero, type, 0, 0, player.whoAmI);
+
+            return false;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.Dynamite)
+                .AddIngredient(ItemID.WoodPlatform, 100)
+                .AddIngredient(ItemID.FallenStar)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
-  }
 }

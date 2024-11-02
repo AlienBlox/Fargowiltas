@@ -1,25 +1,27 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.SwarmSummons.OverloadBrain
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using Fargowiltas.NPCs;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.SwarmSummons
 {
-  public class OverloadBrain : SwarmSummonBase
-  {
-    public OverloadBrain()
-      : base(266, nameof (OverloadBrain), 25, "GoreySpine")
+    public class OverloadBrain : SwarmSummonBase
     {
-    }
+        public OverloadBrain() : base(NPCID.BrainofCthulhu, nameof(OverloadBrain), 25, "GoreySpine")
+        {
+        }
 
-    public virtual void SetStaticDefaults()
-    {
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Brain Storm");
+            // Tooltip.SetDefault("Summons several Brains of Cthulhu\nOnly Treasure Bags will be dropped");
+        }
 
-    public virtual bool CanUseItem(Player player) => !Fargowiltas.Fargowiltas.SwarmActive;
-  }
+        public override bool CanUseItem(Player player)
+        {
+            return !Fargowiltas.SwarmActive;
+        }
+    }
 }

@@ -1,80 +1,91 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Misc.SuperDummy
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Projectiles;
 using Microsoft.Xna.Framework;
-using System.IO;
 using Terraria;
-using Terraria.GameContent.Creative;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Fargowiltas;
+using Fargowiltas.Projectiles;
+using Terraria.Localization;
+using Terraria.DataStructures;
 
-#nullable disable
 namespace Fargowiltas.Items.Misc
 {
-  public class SuperDummy : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class SuperDummy : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 20;
-      ((Entity) this.Item).height = 30;
-      this.Item.useTime = 15;
-      this.Item.useAnimation = 15;
-      this.Item.useStyle = 1;
-      this.Item.useTurn = true;
-      this.Item.rare = 1;
-    }
-
-    public virtual bool AltFunctionUse(Player player) => true;
-
-    public virtual bool? UseItem(Player player)
-    {
-      if (player.altFunctionUse == 2)
-      {
-        if (((Entity) player).whoAmI == Main.myPlayer)
+        public override void SetStaticDefaults()
         {
-          switch (Main.netMode)
-          {
-            case 0:
-              for (int index = 0; index < Main.maxNPCs; ++index)
-              {
-                if (((Entity) Main.npc[index]).active && Main.npc[index].type == ModContent.NPCType<Fargowiltas.NPCs.SuperDummy>())
-                {
-                  NPC npc = Main.npc[index];
-                  npc.life = 0;
-                  npc.HitEffect(0, 10.0, new bool?());
-                  Main.npc[index].SimpleStrikeNPC(int.MaxValue, 0, false, 0.0f, (DamageClass) null, false, 0.0f, true);
-                }
-              }
-              break;
-            case 1:
-              ModPacket packet = ((ModType) this).Mod.GetPacket(256);
-              ((BinaryWriter) packet).Write((byte) 5);
-              packet.Send(-1, -1);
-              break;
-          }
-        }
-      }
-      else if (NPC.CountNPCS(ModContent.NPCType<Fargowiltas.NPCs.SuperDummy>()) < 50)
-      {
-        Vector2 vector2;
-        // ISSUE: explicit constructor call
-        ((Vector2) ref vector2).\u002Ector((float) ((int) Main.MouseWorld.X - 9), (float) ((int) Main.MouseWorld.Y - 20));
-        Projectile.NewProjectile(player.GetSource_ItemUse(this.Item, (string) null), vector2, Vector2.Zero, ModContent.ProjectileType<SpawnProj>(), 0, 0.0f, ((Entity) player).whoAmI, (float) ModContent.NPCType<Fargowiltas.NPCs.SuperDummy>(), 0.0f, 0.0f);
-      }
-      return new bool?(true);
-    }
+            // DisplayName.SetDefault("Super Dummy");
+            /* Tooltip.SetDefault("Spawns a super dummy at your cursor" +
+                               "\nSame as regular Target Dummy except minions and projectiles detect and home onto it" +
+                               "\nOn hit effects get triggered as well" +
+                               "\nRight click to remove all spawned super dummies" +
+                               "\nCan spawn up to 50 super dummies at once"); */
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(3202, 1).AddIngredient(75, 1).AddTile(96).Register();
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+
+        }
+
+        public override void SetDefaults()
+        {
+            Item.width = 20;
+            Item.height = 30;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTurn = true;
+            Item.rare = ItemRarityID.Blue;
+        }
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return true;
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == ItemAlternativeFunctionID.ActivatedAndUsed)
+            {
+                if (player.whoAmI == Main.myPlayer)
+                {
+                    if (Main.netMode == NetmodeID.SinglePlayer)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            if (Main.npc[i].active && Main.npc[i].type == ModContent.NPCType<NPCs.SuperDummy>())
+                            {
+                                NPC npc = Main.npc[i];
+                                npc.life = 0;
+                                npc.HitEffect();
+                                Main.npc[i].SimpleStrikeNPC(int.MaxValue, 0, false, 0, null, false, 0, true);
+                                //Main.npc[i].StrikeNPCNoInteraction(int.MaxValue, 0, 0, false, false, false);
+                            }
+                        }
+                    }
+                    else if (Main.netMode == NetmodeID.MultiplayerClient) //tell server to clear
+                    {
+                        var netMessage = Mod.GetPacket();
+                        netMessage.Write((byte)5);
+                        netMessage.Send();
+                    }
+                }
+            }
+            else if (NPC.CountNPCS(ModContent.NPCType<NPCs.SuperDummy>()) < 50)// && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                Vector2 pos = new((int)Main.MouseWorld.X - 9, (int)Main.MouseWorld.Y - 20);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), pos, Vector2.Zero, ModContent.ProjectileType<SpawnProj>(), 0, 0, player.whoAmI, ModContent.NPCType<NPCs.SuperDummy>());
+
+                //NPC.NewNPC((int)pos.X, (int)pos.Y, ModContent.NPCType<NPCs.SuperDummy>());
+            }
+
+            return true;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.TargetDummy)
+                .AddIngredient(ItemID.FallenStar)
+                .AddTile(TileID.CookingPots)
+                .Register();
+        }
     }
-  }
 }

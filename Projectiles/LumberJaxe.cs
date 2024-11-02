@@ -1,53 +1,50 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.LumberJaxe
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Terraria;
+﻿using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class LumberJaxe : ModProjectile
-  {
-    public virtual void SetStaticDefaults()
+    public class LumberJaxe : ModProjectile
     {
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("LumberJaxe");
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 42;
-      ((Entity) this.Projectile).height = 40;
-      this.Projectile.friendly = true;
-      this.Projectile.DamageType = DamageClass.Ranged;
-      this.Projectile.penetrate = 1;
-      this.Projectile.aiStyle = 0;
-      this.Projectile.timeLeft = 150;
-      this.AIType = 89;
-    }
+        public override void SetDefaults()
+        {
+            Projectile.width = 42;
+            Projectile.height = 40;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.penetrate = 1;
+            Projectile.aiStyle = 0;
+            Projectile.timeLeft = 150;
+            AIType = ProjectileID.CrystalBullet;
+        }
 
-    public virtual void AI() => this.Projectile.rotation += 0.3f;
+        public override void AI()
+        {
+            Projectile.rotation += 0.3f;
+        }
 
-    public virtual void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-    {
-      if (target.type == 325 || target.type == 344 || target.type == 326)
-      {
-        ref StatModifier local = ref modifiers.FinalDamage;
-        local = StatModifier.op_Multiply(local, 10f);
-      }
-      base.ModifyHitNPC(target, ref modifiers);
-    }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (target.type == NPCID.MourningWood || target.type == NPCID.Everscream || target.type == NPCID.Splinterling)
+            {
+                modifiers.FinalDamage *= 10;
+            }
+            base.ModifyHitNPC(target, ref modifiers);
+        }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            Projectile.Kill();
+        }
 
-    public virtual void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-    {
-      this.Projectile.Kill();
+        public override void OnKill(int timeLeft)
+        {
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, Projectile.velocity.X * 0, Projectile.velocity.Y * 0, ModContent.ProjectileType<Explosion>(), (int)(Projectile.damage * 1f), Projectile.knockBack, Projectile.owner);
+        }
     }
-
-    public virtual void OnKill(int timeLeft)
-    {
-      Projectile.NewProjectile(((Entity) this.Projectile).GetSource_FromThis((string) null), ((Entity) this.Projectile).Center.X, ((Entity) this.Projectile).Center.Y, ((Entity) this.Projectile).velocity.X * 0.0f, ((Entity) this.Projectile).velocity.Y * 0.0f, ModContent.ProjectileType<Explosion>(), (int) ((double) this.Projectile.damage * 1.0), this.Projectile.knockBack, this.Projectile.owner, 0.0f, 0.0f, 0.0f);
-    }
-  }
 }

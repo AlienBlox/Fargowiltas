@@ -1,99 +1,93 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Common.Systems.Recipes.ConversionRecipeSystem
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Items.Summons;
+﻿using Fargowiltas.Items.Summons;
 using Fargowiltas.Items.Summons.Mutant;
 using Fargowiltas.Items.Summons.VanillaCopy;
 using Fargowiltas.Utilities;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Common.Systems.Recipes
 {
-  public class ConversionRecipeSystem : ModSystem
-  {
-    public virtual void AddRecipes()
+    public class ConversionRecipeSystem : ModSystem
     {
-      ConversionRecipeSystem.AddSummonConversions();
-      ConversionRecipeSystem.AddEvilConversions();
-      ConversionRecipeSystem.AddMetalConversions();
-    }
+        public override void AddRecipes()
+        {
+            AddSummonConversions();
+            AddEvilConversions();
+            AddMetalConversions();
+        }
 
-    private static void AddSummonConversions()
-    {
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<FleshyDoll>(), 267, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<LihzahrdPowerCell2>(), 1293, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<TruffleWorm2>(), 2673, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<CelestialSigil2>(), 3601, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechEye>(), 544, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechWorm>(), 556, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechSkull>(), 557, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<GoreySpine>(), 1331, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<SlimyCrown>(), 560, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<Abeemination2>(), 1133, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<DeerThing2>(), 5120, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<WormyFood>(), 70, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<SuspiciousEye>(), 43, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<PrismaticPrimrose>(), 4961, 18, 1, 1, false, false);
-      RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<JellyCrystal>(), 4988, 18, 1, 1, false, false);
-    }
+        private static void AddSummonConversions()
+        {
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<FleshyDoll>(), ItemID.GuideVoodooDoll, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<LihzahrdPowerCell2>(), ItemID.LihzahrdPowerCell, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<TruffleWorm2>(), ItemID.TruffleWorm, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<CelestialSigil2>(), ItemID.CelestialSigil, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechEye>(), ItemID.MechanicalEye, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechWorm>(), ItemID.MechanicalWorm, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<MechSkull>(), ItemID.MechanicalSkull, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<GoreySpine>(), ItemID.BloodySpine, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<SlimyCrown>(), ItemID.SlimeCrown, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<Abeemination2>(), ItemID.Abeemination, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<DeerThing2>(), ItemID.DeerThing, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<WormyFood>(), ItemID.WormFood, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<SuspiciousEye>(), ItemID.SuspiciousLookingEye, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<PrismaticPrimrose>(), ItemID.EmpressButterfly, TileID.WorkBenches);
+            RecipeHelper.CreateSimpleRecipe(ModContent.ItemType<JellyCrystal>(), ItemID.QueenSlimeCrystal, TileID.WorkBenches);
+        }
 
-    private static void AddEvilConversions()
-    {
-      ConversionRecipeSystem.AddConvertRecipe(1330, 68);
-      ConversionRecipeSystem.AddConvertRecipe(86, 1329);
-      ConversionRecipeSystem.AddConvertRecipe(782, 784);
-      ConversionRecipeSystem.AddConvertRecipe(1332, 522);
-      ConversionRecipeSystem.AddConvertRecipe(3016, 3015);
-      ConversionRecipeSystem.AddConvertRecipe(3007, 3008);
-      ConversionRecipeSystem.AddConvertRecipe(3023, 3020);
-      ConversionRecipeSystem.AddConvertRecipe(3012, 3013);
-      ConversionRecipeSystem.AddConvertRecipe(3014, 3006);
-      ConversionRecipeSystem.AddConvertRecipe(115, 3062);
-      ConversionRecipeSystem.AddConvertRecipe(96, 800);
-      ConversionRecipeSystem.AddConvertRecipe(1290, 111);
-      ConversionRecipeSystem.AddConvertRecipe(162, 802);
-      ConversionRecipeSystem.AddConvertRecipe(1256, 64);
-      ConversionRecipeSystem.AddConvertRecipe(836, 61);
-      ConversionRecipeSystem.AddConvertRecipe(911, 619);
-      ConversionRecipeSystem.AddConvertRecipe(60, 2887);
-      ConversionRecipeSystem.AddConvertRecipe(3211, 3210);
-      ConversionRecipeSystem.AddConvertRecipe(1569, 1571);
-      ConversionRecipeSystem.AddConvertRecipe(2318, 2305);
-      ConversionRecipeSystem.AddConvertRecipe(2319, 2318);
-      ConversionRecipeSystem.AddConvertRecipe(3060, 994);
-      ConversionRecipeSystem.AddConvertRecipe(2171, 59);
-      ConversionRecipeSystem.AddConvertRecipe(1492, 1488);
-      ConversionRecipeSystem.AddConvertRecipe(4284, 4285);
-    }
+        private static void AddEvilConversions()
+        {
+            AddConvertRecipe(ItemID.Vertebrae, ItemID.RottenChunk);
+            AddConvertRecipe(ItemID.ShadowScale, ItemID.TissueSample);
+            AddConvertRecipe(ItemID.PurpleSolution, ItemID.RedSolution);
+            AddConvertRecipe(ItemID.Ichor, ItemID.CursedFlame);
+            AddConvertRecipe(ItemID.FleshKnuckles, ItemID.PutridScent);
+            AddConvertRecipe(ItemID.DartPistol, ItemID.DartRifle);
+            AddConvertRecipe(ItemID.WormHook, ItemID.TendonHook);
+            AddConvertRecipe(ItemID.ChainGuillotines, ItemID.FetidBaghnakhs);
+            AddConvertRecipe(ItemID.ClingerStaff, ItemID.SoulDrain);
+            AddConvertRecipe(ItemID.ShadowOrb, ItemID.CrimsonHeart);
+            AddConvertRecipe(ItemID.Musket, ItemID.TheUndertaker);
+            AddConvertRecipe(ItemID.PanicNecklace, ItemID.BandofStarpower);
+            AddConvertRecipe(ItemID.BallOHurt, ItemID.TheRottedFork);
+            AddConvertRecipe(ItemID.CrimsonRod, ItemID.Vilethorn);
+            AddConvertRecipe(ItemID.CrimstoneBlock, ItemID.EbonstoneBlock);
+            AddConvertRecipe(ItemID.Shadewood, ItemID.Ebonwood);
+            AddConvertRecipe(ItemID.VileMushroom, ItemID.ViciousMushroom);
+            AddConvertRecipe(ItemID.Bladetongue, ItemID.Toxikarp);
+            AddConvertRecipe(ItemID.VampireKnives, ItemID.ScourgeoftheCorruptor);
+            AddConvertRecipe(ItemID.Ebonkoi, ItemID.CrimsonTigerfish);
+            AddConvertRecipe(ItemID.Hemopiranha, ItemID.Ebonkoi);
+            AddConvertRecipe(ItemID.BoneRattle, ItemID.EatersBone);
+            AddConvertRecipe(ItemID.CrimsonSeeds, ItemID.CorruptSeeds);
+            AddConvertRecipe(ItemID.DeadlandComesAlive, ItemID.LightlessChasms);
+            AddConvertRecipe(ItemID.BlackCurrant, ItemID.BloodOrange);
+        }
 
-    private static void AddMetalConversions()
-    {
-      ConversionRecipeSystem.AddConvertRecipe(12, 699);
-      ConversionRecipeSystem.AddConvertRecipe(20, 703);
-      ConversionRecipeSystem.AddConvertRecipe(11, 700);
-      ConversionRecipeSystem.AddConvertRecipe(22, 704);
-      ConversionRecipeSystem.AddConvertRecipe(14, 701);
-      ConversionRecipeSystem.AddConvertRecipe(21, 705);
-      ConversionRecipeSystem.AddConvertRecipe(13, 702);
-      ConversionRecipeSystem.AddConvertRecipe(19, 706);
-      ConversionRecipeSystem.AddConvertRecipe(364, 1104);
-      ConversionRecipeSystem.AddConvertRecipe(381, 1184);
-      ConversionRecipeSystem.AddConvertRecipe(365, 1105);
-      ConversionRecipeSystem.AddConvertRecipe(382, 1191);
-      ConversionRecipeSystem.AddConvertRecipe(366, 1106);
-      ConversionRecipeSystem.AddConvertRecipe(391, 1198);
-      ConversionRecipeSystem.AddConvertRecipe(56, 880);
-      ConversionRecipeSystem.AddConvertRecipe(57, 1257);
-    }
+        private static void AddMetalConversions()
+        {
+            AddConvertRecipe(ItemID.CopperOre, ItemID.TinOre);
+            AddConvertRecipe(ItemID.CopperBar, ItemID.TinBar);
+            AddConvertRecipe(ItemID.IronOre, ItemID.LeadOre);
+            AddConvertRecipe(ItemID.IronBar, ItemID.LeadBar);
+            AddConvertRecipe(ItemID.SilverOre, ItemID.TungstenOre);
+            AddConvertRecipe(ItemID.SilverBar, ItemID.TungstenBar);
+            AddConvertRecipe(ItemID.GoldOre, ItemID.PlatinumOre);
+            AddConvertRecipe(ItemID.GoldBar, ItemID.PlatinumBar);
+            AddConvertRecipe(ItemID.CobaltOre, ItemID.PalladiumOre);
+            AddConvertRecipe(ItemID.CobaltBar, ItemID.PalladiumBar);
+            AddConvertRecipe(ItemID.MythrilOre, ItemID.OrichalcumOre);
+            AddConvertRecipe(ItemID.MythrilBar, ItemID.OrichalcumBar);
+            AddConvertRecipe(ItemID.AdamantiteOre, ItemID.TitaniumOre);
+            AddConvertRecipe(ItemID.AdamantiteBar, ItemID.TitaniumBar);
+            AddConvertRecipe(ItemID.DemoniteOre, ItemID.CrimtaneOre);
+            AddConvertRecipe(ItemID.DemoniteBar, ItemID.CrimtaneBar);
+        }
 
-    private static void AddConvertRecipe(int itemID, int otherItemID)
-    {
-      RecipeHelper.CreateSimpleRecipe(itemID, otherItemID, 26, 1, 1, true, false);
-      RecipeHelper.CreateSimpleRecipe(otherItemID, itemID, 26, 1, 1, true, false);
+        private static void AddConvertRecipe(int itemID, int otherItemID)
+        {
+            RecipeHelper.CreateSimpleRecipe(itemID, otherItemID, TileID.DemonAltar, disableDecraft: true);
+            RecipeHelper.CreateSimpleRecipe(otherItemID, itemID, TileID.DemonAltar, disableDecraft: true);
+        }
     }
-  }
 }

@@ -1,50 +1,42 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Explosives.SemiBridgifier
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Fargowiltas.Items.Tiles;
 using Fargowiltas.Projectiles.Explosives;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent.Creative;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Explosives
 {
-  public class SemiBridgifier : OmniBridgifier
-  {
-    public override void SetStaticDefaults()
+    public class SemiBridgifier : OmniBridgifier
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Semi-Bridgifier");
+            // Tooltip.SetDefault("Can be reused infinitely\nUpgrades the platform you are standing on to use Semistations\nDoes NOT build a platform!");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
 
-    public override void SetDefaults()
-    {
-      base.SetDefaults();
-      this.Item.rare = 1;
-      this.Item.shoot = ModContent.ProjectileType<SemiBridgifierProj>();
-    }
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            Item.rare = ItemRarityID.Blue;
+            Item.shoot = ModContent.ProjectileType<SemiBridgifierProj>();
+        }
 
-    public override bool Shoot(
-      Player player,
-      EntitySource_ItemUse_WithAmmo source,
-      Vector2 position,
-      Vector2 velocity,
-      int type,
-      int damage,
-      float knockback)
-    {
-      Projectile.NewProjectile((IEntitySource) source, position, velocity, type, damage, knockback, ((Entity) player).whoAmI, 0.0f, 0.0f, 0.0f);
-      return false;
-    }
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+            return false;
+        }
 
-    public override void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(ModContent.ItemType<InstaBridge>(), 1).AddTile(ModContent.TileType<SemistationSheet>()).Register();
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ModContent.ItemType<InstaBridge>())
+                .AddTile(ModContent.TileType<SemistationSheet>())
+                .Register();
+        }
     }
-  }
 }

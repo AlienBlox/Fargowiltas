@@ -1,45 +1,39 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.PurityTotemSheet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class PurityTotemSheet : ModTile
-  {
-    public const int TILES_NEGATED = 9000;
-
-    public virtual void SetStaticDefaults()
+    public class PurityTotemSheet : ModTile
     {
-      Main.tileLighted[(int) ((ModBlockType) this).Type] = true;
-      Main.tileFrameImportant[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
-      TileObjectData.newTile.Height = 3;
-      TileObjectData.newTile.CoordinateHeights = new int[4]
-      {
-        16,
-        16,
-        16,
-        16
-      };
-      TileObjectData.addTile((int) ((ModBlockType) this).Type);
-      this.AddMapEntry(Color.Yellow, ((ModBlockType) this).CreateMapEntryName());
-    }
+        public const int TILES_NEGATED = 9000;
 
-    public virtual bool CanDrop(int i, int j) => false;
 
-    public virtual void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-    {
-      r = 1f;
-      g = 1f;
-      b = 1f;
+        public override void SetStaticDefaults()
+        {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
+            TileObjectData.newTile.Height = 3;
+            TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
+            TileObjectData.addTile(Type);
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Purity Totem");
+            AddMapEntry(Color.Yellow, name);
+        }
+        public override bool CanDrop(int i, int j) => false;
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            r = 1f;
+            g = 1f;
+            b = 1f;
+        }
     }
-  }
 }

@@ -1,111 +1,122 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Misc.PortableSundial
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Misc
 {
-  public class PortableSundial : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class PortableSundial : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 20;
-      ((Entity) this.Item).height = 20;
-      this.Item.value = Item.sellPrice(0, 5, 0, 0);
-      this.Item.rare = 4;
-      this.Item.useAnimation = 30;
-      this.Item.useTime = 30;
-      this.Item.useStyle = 5;
-      this.Item.mana = 15;
-      this.Item.UseSound = new SoundStyle?(SoundID.Item4);
-    }
-
-    public virtual bool AltFunctionUse(Player player) => true;
-
-    public virtual bool CanUseItem(Player player)
-    {
-      if (((IEnumerable<NPC>) Main.npc).Any<NPC>((Func<NPC, bool>) (n => ((Entity) n).active && n.boss)))
-      {
-        this.Item.useAnimation = 120;
-        this.Item.useTime = 120;
-      }
-      else
-      {
-        this.Item.useAnimation = 30;
-        this.Item.useTime = 30;
-      }
-      return !Main.IsFastForwardingTime();
-    }
-
-    public virtual bool? UseItem(Player player)
-    {
-      if (player.altFunctionUse == 2)
-      {
-        Main.sundialCooldown = 0;
-        SoundEngine.PlaySound(ref SoundID.Item4, new Vector2?(((Entity) player).position), (SoundUpdateCallback) null);
-        if (Main.netMode == 1)
+        public override void SetStaticDefaults()
         {
-          NetMessage.SendData(51, -1, -1, (NetworkText) null, Main.myPlayer, 3f, 0.0f, 0.0f, 0, 0, 0);
-          return new bool?(true);
+            // DisplayName.SetDefault("Portable Sundial");
+            /* Tooltip.SetDefault("Left click to instantly change time" +
+                               "\nTime cycles between dawn, noon, dusk, and midnight" +
+                               "\nRight click to activate the Enchanted Sundial effect" +
+                               "\nCycling to dawn will reset travelling merchant's shops"); */
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
         }
-        if (Main.dayTime)
-          Main.fastForwardTimeToDusk = true;
-        else
-          Main.fastForwardTimeToDawn = true;
-        NetMessage.SendData(7, -1, -1, (NetworkText) null, 0, 0.0f, 0.0f, 0.0f, 0, 0, 0);
-      }
-      else
-      {
-        int num1 = 27000;
-        int num2 = 16200;
-        if (Main.dayTime && Main.time < (double) num1)
-          Main.time = (double) num1;
-        else if (Main.time < (double) num2)
-        {
-          Main.time = (double) num2;
-        }
-        else
-        {
-          Main.dayTime = !Main.dayTime;
-          Main.time = 0.0;
-          if (Main.dayTime)
-          {
-            BirthdayParty.CheckMorning();
-            Chest.SetupTravelShop();
-          }
-          else
-          {
-            BirthdayParty.CheckNight();
-            if (!Main.dayTime && ++Main.moonPhase > 7)
-              Main.moonPhase = 0;
-          }
-        }
-      }
-      return new bool?(true);
-    }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(3064, 1).AddIngredient(5381, 1).AddTile(305).Register();
+        public override void SetDefaults()
+        {
+            Item.width = 20;
+            Item.height = 20;
+            Item.value = Item.sellPrice(0, 5);
+            Item.rare = ItemRarityID.LightRed;
+            Item.useAnimation = 30;
+            Item.useTime = 30;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.mana = 15;
+            Item.UseSound = SoundID.Item4;
+        }
+
+        public override bool AltFunctionUse(Player player)
+        {
+            return true;
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            if (Main.npc.Any(n => n.active && n.boss))
+            {
+                Item.useAnimation = 120;
+                Item.useTime = 120;
+            }
+            else
+            {
+                Item.useAnimation = 30;
+                Item.useTime = 30;
+            }
+
+            //return !Main.fastForwardTime/* tModPorter Note: Removed. Suggestion: IsFastForwardingTime(), fastForwardTimeToDawn or fastForwardTimeToDusk */;
+            return !Main.IsFastForwardingTime();
+        }
+
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == ItemAlternativeFunctionID.ActivatedAndUsed)
+            {
+                Main.sundialCooldown = 0;
+                SoundEngine.PlaySound(SoundID.Item4, player.position);
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    NetMessage.SendData(MessageID.MiscDataSync, number: Main.myPlayer, number2: 3f);
+                    return true;
+                }
+
+                //Main.fastForwardTime/* tModPorter Note: Removed. Suggestion: IsFastForwardingTime(), fastForwardTimeToDawn or fastForwardTimeToDusk */ = true;
+                if (Main.dayTime)
+                    Main.fastForwardTimeToDusk = true;
+                else
+                    Main.fastForwardTimeToDawn = true;
+            }
+            else
+            {
+                int noon = 27000;
+                int midnight = 16200;
+                if (Main.dayTime && Main.time < noon)
+                {
+                    Main.time = noon;
+                }
+                else if (Main.time < midnight)
+                {
+                    Main.time = midnight;
+                }
+                else
+                {
+                    Main.dayTime = !Main.dayTime;
+                    Main.time = 0;
+
+                    if (Main.dayTime)
+                    {
+                        BirthdayParty.CheckMorning();
+
+                        Chest.SetupTravelShop();
+                    }
+                    else
+                    {
+                        BirthdayParty.CheckNight();
+
+                        //change moon phases when switching to night
+                        if (!Main.dayTime && ++Main.moonPhase > 7)
+                            Main.moonPhase = 0;
+                    }
+                }
+            }
+            NetMessage.SendData(MessageID.WorldData);
+            return true;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.Sundial)
+                .AddIngredient(ItemID.Moondial)
+                .AddTile(TileID.SkyMill)
+                .Register();
+        }
     }
-  }
 }

@@ -1,28 +1,27 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.SwarmSummons.OverloadGolem
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+﻿using Fargowiltas.NPCs;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.SwarmSummons
 {
-  public class OverloadGolem : SwarmSummonBase
-  {
-    public OverloadGolem()
-      : base(245, nameof (OverloadGolem), 25, "LihzahrdPowerCell2")
+    public class OverloadGolem : SwarmSummonBase
     {
-    }
+        public OverloadGolem() : base(NPCID.Golem, nameof(OverloadGolem), 25, "LihzahrdPowerCell2")
+        {
+        }
 
-    public virtual void SetStaticDefaults()
-    {
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Runic Power Cell");
+            // Tooltip.SetDefault("Summons several Golems\nOnly Treasure Bags will be dropped");
+        }
 
-    public virtual bool CanUseItem(Player player)
-    {
-      return !Fargowiltas.Fargowiltas.SwarmActive && NPC.downedPlantBoss;
+        public override bool CanUseItem(Player player)
+        {
+            return !Fargowiltas.SwarmActive && NPC.downedPlantBoss;
+        }
     }
-  }
 }

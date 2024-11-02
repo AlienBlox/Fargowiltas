@@ -1,39 +1,36 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.MutantToilet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Terraria;
-using Terraria.GameContent.Creative;
+using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class MutantToilet : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class MutantToilet : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
-    }
+        public override void SetStaticDefaults()
+        {
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
 
-    public virtual void SetDefaults()
-    {
-      this.Item.DefaultToPlaceableTile(ModContent.TileType<MutantToiletSheet>(), 0);
-      this.Item.maxStack = 99;
-      ((Entity) this.Item).width = 16;
-      ((Entity) this.Item).height = 24;
-      this.Item.value = Item.sellPrice(1, 50, 0, 0);
-      this.Item.rare = 11;
-    }
+        public override void SetDefaults()
+        {
+            Item.DefaultToPlaceableTile(ModContent.TileType<MutantToiletSheet>());
+            Item.maxStack = 99;
+            Item.width = 16;
+            Item.height = 24;
+            Item.value = Item.sellPrice(1, 50);
+            Item.rare = ItemRarityID.Purple;
+        }
 
-    public virtual void AddRecipes()
-    {
-      ModItem modItem;
-      if (!ModContent.TryFind<ModItem>("Fargowiltas/Mutant", ref modItem))
-        return;
-      this.CreateRecipe(1).AddIngredient(3467, 6).AddIngredient(modItem.Type, 1).AddTile(ModContent.TileType<CrucibleCosmosSheet>()).Register();
+        public override void AddRecipes()
+        {
+            if (ModContent.TryFind("Fargowiltas/Mutant", out ModItem modItem))
+            {
+                CreateRecipe()
+                  .AddIngredient(ItemID.LunarBar, 6)
+                  .AddIngredient(modItem.Type)
+                  .AddTile(ModContent.TileType<CrucibleCosmosSheet>())
+                  .Register();
+            }
+        }
     }
-  }
 }

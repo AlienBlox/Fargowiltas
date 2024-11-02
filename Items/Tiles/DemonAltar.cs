@@ -1,41 +1,75 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.DemonAltar
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Terraria;
-using Terraria.GameContent.Creative;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Localization;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Terraria;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class DemonAltar : ModItem
-  {
-    public virtual void SetStaticDefaults()
+    public class DemonAltar : ModItem
     {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 1;
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Demon Altar");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
+
+        public override void SetDefaults()
+        {
+            Item.width = 28;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
+            Item.maxStack = 99;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.createTile = ModContent.TileType<DemonAltarSheet>();
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.DemoniteBar, 10)
+                .AddIngredient(ItemID.ShadowScale, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
 
-    public virtual void SetDefaults()
+    public class CrimsonAltar : ModItem
     {
-      ((Entity) this.Item).width = 28;
-      ((Entity) this.Item).height = 14;
-      this.Item.rare = 2;
-      this.Item.maxStack = 99;
-      this.Item.useTurn = true;
-      this.Item.autoReuse = true;
-      this.Item.useAnimation = 15;
-      this.Item.useTime = 10;
-      this.Item.useStyle = 1;
-      this.Item.consumable = true;
-      this.Item.createTile = ModContent.TileType<DemonAltarSheet>();
-    }
+        public override void SetStaticDefaults()
+        {
+            // DisplayName.SetDefault("Crimson Altar");
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
+        }
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(57, 10).AddIngredient(86, 5).AddTile(16).Register();
+        public override void SetDefaults()
+        {
+            Item.width = 28;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
+            Item.maxStack = 99;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+            Item.createTile = ModContent.TileType<CrimsonAltarSheet>();
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.CrimtaneBar, 10)
+                .AddIngredient(ItemID.TissueSample, 5)
+                .AddTile(TileID.Anvils)
+                .Register();
+        }
     }
-  }
 }

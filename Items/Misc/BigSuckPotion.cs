@@ -1,50 +1,49 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Misc.BigSuckPotion
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Fargowiltas.Content.Buffs;
+using System.Linq;
 using Terraria;
-using Terraria.Audio;
-using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Misc
 {
-  public class BigSuckPotion : ModItem
-  {
-    public virtual void SetStaticDefaults()
-    {
-      CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[this.Type] = 20;
-    }
+	public class BigSuckPotion : ModItem
+	{
+        public override void SetStaticDefaults()
+        {
+            Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 20;
+        }
 
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Item).width = 14;
-      ((Entity) this.Item).height = 24;
-      this.Item.maxStack = 30;
-      this.Item.rare = 1;
-      this.Item.useStyle = 9;
-      this.Item.useAnimation = 17;
-      this.Item.useTime = 17;
-      this.Item.consumable = true;
-      this.Item.useTurn = true;
-      this.Item.UseSound = new SoundStyle?(SoundID.Item3);
-      this.Item.value = Item.buyPrice(0, 0, 2, 0);
-    }
+        public override void SetDefaults()
+		{
+			Item.width = 14;
+			Item.height = 24;
+			Item.maxStack = 30;
+			Item.rare = ItemRarityID.Blue;
+			Item.useStyle = ItemUseStyleID.DrinkLiquid;
+			Item.useAnimation = 17;
+			Item.useTime = 17;
+			Item.consumable = true;
+			Item.useTurn = true;
 
-    public virtual bool? UseItem(Player player)
-    {
-      player.AddBuff(ModContent.BuffType<BigSuckBuff>(), 180, true, false);
-      return new bool?(true);
-    }
+			Item.UseSound = SoundID.Item3;
+			Item.value = Item.buyPrice(silver: 10);
+		}
 
-    public virtual void AddRecipes()
-    {
-      this.CreateRecipe(1).AddIngredient(126, 1).AddIngredient(116, 1).AddIngredient(75, 1).AddTile(13).Register();
+        public override bool? UseItem(Player player)
+        {
+			player.AddBuff(ModContent.BuffType<BigSuckBuff>(), 180);
+            return true;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.BottledWater)
+                .AddIngredient(ItemID.Meteorite)
+                .AddIngredient(ItemID.FallenStar)
+                .AddTile(TileID.Bottles) 
+                .DisableDecraft()
+                .Register();
+        }
     }
-  }
 }

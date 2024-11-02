@@ -1,206 +1,243 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.FargoNet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas
 {
-  public static class FargoNet
-  {
-    public const byte SummonNPCFromClient = 0;
-    private const bool Debug = true;
-
-    public static void SendData(
-      int dataType,
-      int dataA,
-      int dataB,
-      string text,
-      int playerID,
-      float dataC,
-      float dataD,
-      float dataE,
-      int clientType)
+    public static class FargoNet
     {
-      NetMessage.SendData(dataType, dataA, dataB, NetworkText.FromLiteral(text), playerID, dataC, dataD, dataE, clientType, 0, 0);
-    }
+        public const byte SummonNPCFromClient = 0;
+        private const bool Debug = false;
 
-    public static ModPacket WriteToPacket(ModPacket packet, byte msg, params object[] param)
-    {
-      ((BinaryWriter) packet).Write(msg);
-      for (int index = 0; index < param.Length; ++index)
-      {
-        object obj = param[index];
-        switch (obj)
+        public static void SendData(int dataType, int dataA, int dataB, string text, int playerID, float dataC, float dataD, float dataE, int clientType)
         {
-          case byte[] _:
-            foreach (byte num in (byte[]) obj)
-              ((BinaryWriter) packet).Write(num);
-            break;
-          case bool flag:
-            ((BinaryWriter) packet).Write(flag);
-            break;
-          case byte num1:
-            ((BinaryWriter) packet).Write(num1);
-            break;
-          case short num2:
-            ((BinaryWriter) packet).Write(num2);
-            break;
-          case int num3:
-            ((BinaryWriter) packet).Write(num3);
-            break;
-          case float num4:
-            ((BinaryWriter) packet).Write(num4);
-            break;
+            NetMessage.SendData(dataType, dataA, dataB, NetworkText.FromLiteral(text), playerID, dataC, dataD, dataE, clientType);
         }
-      }
-      return packet;
-    }
 
-    public static void SyncAI(Entity codable, float[] ai, int aitype)
-    {
-      int num;
-      switch (codable)
-      {
-        case NPC _:
-          num = 0;
-          break;
-        case Projectile _:
-          num = 1;
-          break;
-        default:
-          num = -1;
-          break;
-      }
-      int entType = num;
-      if (entType == -1)
-        return;
-      int id = codable is NPC ? codable.whoAmI : ((Projectile) codable).identity;
-      FargoNet.SyncAI(entType, id, ai, aitype);
-    }
+        public static ModPacket WriteToPacket(ModPacket packet, byte msg, params object[] param)
+        {
+            packet.Write(msg);
+            for (int m = 0; m < param.Length; m++)
+            {
+                object obj = param[m];
+                switch (obj)
+                {
+                    case byte[] _:
+                        {
+                            byte[] array = (byte[])obj;
+                            foreach (byte b in array)
+                            {
+                                packet.Write(b);
+                            }
 
-    public static void SyncAI(int entType, int id, float[] ai, int aitype)
-    {
-      object[] objArray = new object[ai.Length + 4];
-      objArray[0] = (object) (byte) entType;
-      objArray[1] = (object) (short) id;
-      objArray[2] = (object) (byte) aitype;
-      objArray[3] = (object) (byte) ai.Length;
-      for (int index = 4; index < objArray.Length; ++index)
-        objArray[index] = (object) ai[index - 4];
-      FargoNet.SendFargoNetMessage(1, objArray);
-    }
+                            break;
+                        }
 
-    public static object[] WriteVector2Array(Vector2[] array)
-    {
-      List<object> objectList = new List<object>()
-      {
-        (object) array.Length
-      };
-      foreach (Vector2 vector2 in array)
-      {
-        objectList.Add((object) vector2.X);
-        objectList.Add((object) vector2.Y);
-      }
-      return objectList.ToArray();
-    }
+                    case bool _:
+                        packet.Write((bool)obj);
+                        break;
 
-    public static void WriteVector2Array(Vector2[] array, BinaryWriter writer)
-    {
-      writer.Write(array.Length);
-      foreach (Vector2 vector2 in array)
-      {
-        writer.Write(vector2.X);
-        writer.Write(vector2.Y);
-      }
-    }
+                    case byte _:
+                        packet.Write((byte)obj);
+                        break;
 
-    public static Vector2[] ReadVector2Array(BinaryReader reader)
-    {
-      int length = reader.ReadInt32();
-      Vector2[] vector2Array = new Vector2[length];
-      for (int index = 0; index < length; ++index)
-        vector2Array[index] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-      return vector2Array;
-    }
+                    case short _:
+                        packet.Write((short)obj);
+                        break;
 
-    public static void SendFargoNetMessage(int msg, params object[] param)
-    {
-      if (Main.netMode == 0)
-        return;
-      FargoNet.WriteToPacket(ModContent.GetInstance<Fargowiltas.Fargowiltas>().GetPacket(256), (byte) msg, param).Send(-1, -1);
-    }
+                    case int _:
+                        packet.Write((int)obj);
+                        break;
 
-    public static void HandlePacket(BinaryReader bb, byte msg)
-    {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "HANDING MESSAGE: " + msg.ToString()));
-      try
-      {
-        if (msg != (byte) 0 || Main.netMode != 2)
-          return;
-        int index = (int) bb.ReadByte();
-        int bossType = (int) bb.ReadInt16();
-        bool spawnMessage = bb.ReadBoolean();
-        int num1 = bb.ReadInt32();
-        int num2 = bb.ReadInt32();
-        string overrideDisplayName = bb.ReadString();
-        bool namePlural = bb.ReadBoolean();
-        Fargowiltas.Fargowiltas.SpawnBoss(Main.player[index], bossType, spawnMessage, new Vector2((float) num1, (float) num2), overrideDisplayName, namePlural);
-      }
-      catch (Exception ex)
-      {
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "ERROR HANDLING MSG: " + msg.ToString() + ": " + ex.Message));
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ex.StackTrace);
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) "-------");
-      }
-    }
+                    case float _:
+                        packet.Write((float)obj);
+                        break;
 
-    public static void SyncPlayer(int toWho, int fromWho, bool newPlayer)
-    {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "SYNC PLAYER CALLED! NEWPLAYER: " + newPlayer.ToString() + ". TOWHO: " + toWho.ToString() + ". FROMWHO:" + fromWho.ToString()));
-      if (Main.netMode != 2 || toWho <= -1 && fromWho <= -1)
-        return;
-      FargoNet.PlayerConnected();
-    }
+                    case string _:
+                        packet.Write((string)obj);
+                        break;
+                }
+            }
 
-    public static void PlayerConnected()
-    {
-      ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Info((object) "--SERVER-- PLAYER JOINED!");
-    }
+            return packet;
+        }
 
-    public static void SendNetMessage(int msg, params object[] param)
-    {
-      FargoNet.SendNetMessageClient(msg, -1, param);
-    }
+        public static void SyncAI(Entity codable, float[] ai, int aitype)
+        {
+            int entType = codable is NPC ? 0 : codable is Projectile ? 1 : -1;
+            if (entType == -1)
+            {
+                return;
+            }
 
-    public static void SendNetMessageClient(int msg, int client, params object[] param)
-    {
-      try
-      {
-        if (Main.netMode == 0)
-          return;
-        FargoNet.WriteToPacket(ModContent.GetInstance<Fargowiltas.Fargowiltas>().GetPacket(256), (byte) msg, param).Send(client, -1);
-      }
-      catch (Exception ex)
-      {
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ((Main.netMode == 2 ? "--SERVER-- " : "--CLIENT-- ") + "ERROR SENDING MSG: " + msg.ToString() + ": " + ex.Message));
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ex.StackTrace);
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) "-------");
-        string empty = string.Empty;
-        for (int index = 0; index < param.Length; ++index)
-          empty += param[index]?.ToString();
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) ("PARAMS: " + empty));
-        ModContent.GetInstance<Fargowiltas.Fargowiltas>().Logger.Error((object) "-------");
-      }
+            int id = codable is NPC ? ((NPC)codable).whoAmI : ((Projectile)codable).identity;
+            SyncAI(entType, id, ai, aitype);
+        }
+
+        /*
+         * Used to sync custom ai float arrays. (the npc or projectile requires a method called 'public void SetAI(float[] ai, int type)' that sets the ai for this to work)
+         */
+        public static void SyncAI(int entType, int id, float[] ai, int aitype)
+        {
+            object[] ai2 = new object[ai.Length + 4];
+            ai2[0] = (byte)entType;
+            ai2[1] = (short)id;
+            ai2[2] = (byte)aitype;
+            ai2[3] = (byte)ai.Length;
+            for (int m = 4; m < ai2.Length; m++)
+            {
+                ai2[m] = ai[m - 4];
+            }
+
+            SendFargoNetMessage(1, ai2);
+        }
+
+        /*
+         * Writes a vector2 array to an obj[] array that can be sent via netmessaging.
+         */
+        public static object[] WriteVector2Array(Vector2[] array)
+        {
+            List<object> list = new List<object>
+            {
+                array.Length,
+            };
+
+            foreach (Vector2 vec in array)
+            {
+                list.Add(vec.X);
+                list.Add(vec.Y);
+            }
+
+            return list.ToArray();
+        }
+
+        /*
+         * Writes a vector2 array to a binary writer.
+         */
+        public static void WriteVector2Array(Vector2[] array, BinaryWriter writer)
+        {
+            writer.Write(array.Length);
+            foreach (Vector2 vec in array)
+            {
+                writer.Write(vec.X);
+                writer.Write(vec.Y);
+            }
+        }
+
+        /*
+         * Reads a vector2 array from a binary reader.
+         */
+        public static Vector2[] ReadVector2Array(BinaryReader reader)
+        {
+            int arrayLength = reader.ReadInt32();
+            Vector2[] array = new Vector2[arrayLength];
+            for (int m = 0; m < arrayLength; m++)
+            {
+                array[m] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            }
+
+            return array;
+        }
+
+        public static void SendFargoNetMessage(int msg, params object[] param)
+        {
+            // Nothing to sync in SP
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                return;
+            }
+
+            WriteToPacket(ModContent.GetInstance<Fargowiltas>().GetPacket(), (byte)msg, param).Send();
+        }
+
+        public static void HandlePacket(BinaryReader bb, byte msg)
+        {
+            if (Debug)
+            {
+                ModContent.GetInstance<Fargowiltas>().Logger.Error((Main.netMode == NetmodeID.Server ? "--SERVER-- " : "--CLIENT-- ") + "HANDLING MESSAGE: " + msg);
+            }
+
+            try
+            {
+                if (msg == SummonNPCFromClient)
+                {
+                    int playerID = bb.ReadByte();
+                    int bossType = bb.ReadInt16();
+                    bool spawnMessage = bb.ReadBoolean();
+                    int npcCenterX = bb.ReadInt32();
+                    int npcCenterY = bb.ReadInt32();
+                    string overrideDisplayName = bb.ReadString();
+                    bool namePlural = bb.ReadBoolean();
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        Fargowiltas.SpawnBoss(Main.player[playerID], bossType, spawnMessage, new Vector2(npcCenterX, npcCenterY), overrideDisplayName, namePlural);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ModContent.GetInstance<Fargowiltas>().Logger.Error((Main.netMode == NetmodeID.Server ? "--SERVER-- " : "--CLIENT-- ") + "ERROR HANDLING MSG: " + msg.ToString() + ": " + e.Message);
+                ModContent.GetInstance<Fargowiltas>().Logger.Error(e.StackTrace);
+                ModContent.GetInstance<Fargowiltas>().Logger.Error("-------");
+            }
+        }
+
+        public static void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            if (Debug)
+            {
+                ModContent.GetInstance<Fargowiltas>().Logger.Error((Main.netMode == NetmodeID.Server ? "--SERVER-- " : "--CLIENT-- ") + "SYNC PLAYER CALLED! NEWPLAYER: " + newPlayer + ". TOWHO: " + toWho + ". FROMWHO:" + fromWho);
+            }
+
+            if (Main.netMode == NetmodeID.Server && (toWho > -1 || fromWho > -1))
+            {
+                PlayerConnected();
+            }
+        }
+
+        public static void PlayerConnected()
+        {
+            if (Debug)
+            {
+                ModContent.GetInstance<Fargowiltas>().Logger.Info("--SERVER-- PLAYER JOINED!");
+            }
+        }
+
+        public static void SendNetMessage(int msg, params object[] param)
+        {
+            SendNetMessageClient(msg, -1, param);
+        }
+
+        public static void SendNetMessageClient(int msg, int client, params object[] param)
+        {
+            try
+            {
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    return;
+                }
+
+                WriteToPacket(ModContent.GetInstance<Fargowiltas>().GetPacket(), (byte)msg, param).Send(client);
+            }
+            catch (Exception e)
+            {
+                ModContent.GetInstance<Fargowiltas>().Logger.Error((Main.netMode == NetmodeID.Server ? "--SERVER-- " : "--CLIENT-- ") + "ERROR SENDING MSG: " + msg.ToString() + ": " + e.Message);
+                ModContent.GetInstance<Fargowiltas>().Logger.Error(e.StackTrace);
+                ModContent.GetInstance<Fargowiltas>().Logger.Error("-------");
+                string param2 = string.Empty;
+                for (int m = 0; m < param.Length; m++)
+                {
+                    param2 += param[m];
+                }
+
+                ModContent.GetInstance<Fargowiltas>().Logger.Error("PARAMS: " + param2);
+                ModContent.GetInstance<Fargowiltas>().Logger.Error("-------");
+            }
+        }
     }
-  }
 }

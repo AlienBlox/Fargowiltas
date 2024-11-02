@@ -1,26 +1,35 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Summons.Deviantt.BloodSushiPlatter
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Fargowiltas.Common.Systems.Recipes;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
-#nullable disable
 namespace Fargowiltas.Items.Summons.Deviantt
 {
-  public class BloodSushiPlatter : BaseSummon
-  {
-    public override int NPCType => 618;
-
-    public override void SetStaticDefaults() => base.SetStaticDefaults();
-
-    public virtual bool CanUseItem(Player player) => !Main.dayTime && Main.bloodMoon;
-
-    public virtual void AddRecipes()
+    public class BloodSushiPlatter : BaseSummon
     {
-      this.CreateRecipe(1).AddIngredient(4271, 1).AddIngredient(1085, 1).AddRecipeGroup(RecipeGroups.AnyFoodT3, 3).AddTile(134).Register();
+        public override int NPCType => NPCID.BloodNautilus;
+        
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            // DisplayName.SetDefault("Blood Sushi Platter");
+            /* Tooltip.SetDefault("Summons Dreadnautilus" +
+                               "\nOnly usable during Blood Moon"); */
+        }
+
+        public override bool CanUseItem(Player player)
+        {
+            return FargoUtils.ActuallyNight && Main.bloodMoon;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe()
+                .AddIngredient(ItemID.BloodMoonStarter)
+                .AddIngredient(ItemID.DeepRedPaint)
+                .AddRecipeGroup(RecipeGroups.AnyFoodT3, 3)
+                .AddTile(TileID.MythrilAnvil)
+                .Register();
+        }
     }
-  }
 }

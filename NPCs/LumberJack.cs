@@ -1,18 +1,16 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.NPCs.LumberJack
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Fargowiltas.Common.Configs;
 using Fargowiltas.Items.Tiles;
 using Fargowiltas.Items.Vanity;
+using Fargowiltas.Items.Weapons;
+using Fargowiltas.Projectiles;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using Terraria;
-using Terraria.Audio;
+using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
@@ -20,571 +18,476 @@ using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
-#nullable disable
 namespace Fargowiltas.NPCs
 {
-  [AutoloadHead]
-  public class LumberJack : ModNPC
-  {
-    private bool dayOver;
-    private bool nightOver;
-    public const string ShopName = "Shop";
-
-    public virtual ITownNPCProfile TownNPCProfile() => (ITownNPCProfile) new LumberJackProfile();
-
-    public virtual void SetStaticDefaults()
+    [AutoloadHead]
+    public class LumberJack : ModNPC
     {
-      Main.npcFrameCount[this.NPC.type] = 25;
-      NPCID.Sets.ExtraFramesCount[this.NPC.type] = 9;
-      NPCID.Sets.AttackFrameCount[this.NPC.type] = 4;
-      NPCID.Sets.DangerDetectRange[this.NPC.type] = 700;
-      NPCID.Sets.AttackType[this.NPC.type] = 0;
-      NPCID.Sets.AttackTime[this.NPC.type] = 90;
-      NPCID.Sets.AttackAverageChance[this.NPC.type] = 30;
-      NPCID.Sets.HatOffsetY[this.NPC.type] = 2;
-      NPCID.Sets.ShimmerTownTransform[this.NPC.type] = true;
-      NPCID.Sets.ShimmerTownTransform[this.Type] = true;
-      NPCID.Sets.NPCBestiaryDrawModifiers bestiaryDrawModifiers1;
-      // ISSUE: explicit constructor call
-      ((NPCID.Sets.NPCBestiaryDrawModifiers) ref bestiaryDrawModifiers1).\u002Ector();
-      bestiaryDrawModifiers1.Velocity = -1f;
-      bestiaryDrawModifiers1.Direction = new int?(-1);
-      NPCID.Sets.NPCBestiaryDrawModifiers bestiaryDrawModifiers2 = bestiaryDrawModifiers1;
-      NPCID.Sets.NPCBestiaryDrawOffset.Add(this.Type, bestiaryDrawModifiers2);
-      NPCHappiness happiness1 = this.NPC.Happiness;
-      ((NPCHappiness) ref happiness1).SetBiomeAffection<ForestBiome>((AffectionLevel) 100);
-      NPCHappiness happiness2 = this.NPC.Happiness;
-      ((NPCHappiness) ref happiness2).SetNPCAffection<Squirrel>((AffectionLevel) 50);
-      NPCHappiness happiness3 = this.NPC.Happiness;
-      ((NPCHappiness) ref happiness3).SetNPCAffection(20, (AffectionLevel) -50);
-      NPCHappiness happiness4 = this.NPC.Happiness;
-      ((NPCHappiness) ref happiness4).SetNPCAffection(38, (AffectionLevel) -100);
-    }
+        private bool dayOver;
+        private bool nightOver;
 
-    public virtual void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-    {
-      bestiaryEntry.Info.AddRange((IEnumerable<IBestiaryInfoElement>) new IBestiaryInfoElement[2]
-      {
-        (IBestiaryInfoElement) BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
-        (IBestiaryInfoElement) new FlavorTextBestiaryInfoElement("Mods.Fargowiltas.Bestiary.LumberJack")
-      });
-    }
 
-    public virtual void SetDefaults()
-    {
-      this.NPC.townNPC = true;
-      this.NPC.friendly = true;
-      ((Entity) this.NPC).width = 40;
-      ((Entity) this.NPC).height = 40;
-      this.NPC.aiStyle = 7;
-      this.NPC.damage = 10;
-      this.NPC.defense = 15;
-      this.NPC.lifeMax = 250;
-      this.NPC.HitSound = new SoundStyle?(SoundID.NPCHit1);
-      this.NPC.DeathSound = new SoundStyle?(SoundID.NPCDeath1);
-      this.NPC.knockBackResist = 0.5f;
-      this.AnimationType = 22;
-    }
+        //public override bool Autoload(ref string name)
+        //{
+        //    name = "LumberJack";
+        //    return mod.Properties.Autoload;
+        //}
 
-    public virtual bool CanTownNPCSpawn(int numTownNPCs)
-    {
-      bool flag;
-      return ((!FargoServerConfig.Instance.Lumber ? 0 : (FargoWorld.DownedBools.TryGetValue("lumberjack", out flag) ? 1 : 0)) & (flag ? 1 : 0)) != 0;
-    }
-
-    public static void OnTreeShake(On_WorldGen.orig_ShakeTree orig, int i, int j)
-    {
-      orig.Invoke(i, j);
-      int num1;
-      int num2;
-      WorldGen.GetTreeBottom(i, j, ref num1, ref num2);
-      Tile tile1 = ((Tilemap) ref Main.tile)[num1, num2];
-      if (WorldGen.GetTreeType((int) ((Tile) ref tile1).TileType) == null)
-        return;
-      int num3;
-      for (num3 = num2 - 1; num3 > 10; --num3)
-      {
-        Tile tile2 = ((Tilemap) ref Main.tile)[num1, num3];
-        if (((Tile) ref tile2).HasTile)
+        public override ITownNPCProfile TownNPCProfile()
         {
-          bool[] isShakeable = TileID.Sets.IsShakeable;
-          tile2 = ((Tilemap) ref Main.tile)[num1, num3];
-          int index = (int) ((Tile) ref tile2).TileType;
-          if (!isShakeable[index])
-            break;
+            return new LumberJackProfile();
         }
-        else
-          break;
-      }
-      int num4 = num3 + 1;
-      bool flag;
-      if (!WorldGen.IsTileALeafyTreeTop(num1, num4) || Collision.SolidTiles(num1 - 2, num1 + 2, num4 - 2, num4 + 2) || !Utils.NextBool(WorldGen.genRand, 10) || FargoWorld.WoodChopped < 250 || FargoWorld.DownedBools.TryGetValue("lumberjack", out flag) & flag)
-        return;
-      FargoWorld.DownedBools["lumberjack"] = true;
-      NPC.NewNPC(NPC.GetBossSpawnSource(Main.myPlayer), num1 * 16, num4 * 16, ModContent.NPCType<LumberJack>(), 0, 0.0f, 0.0f, 0.0f, 0.0f, (int) byte.MaxValue);
-    }
 
-    public virtual void Load()
-    {
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: reference to a compiler-generated field
-      // ISSUE: method pointer
-      On_WorldGen.ShakeTree += LumberJack.\u003C\u003EO.\u003C0\u003E__OnTreeShake ?? (LumberJack.\u003C\u003EO.\u003C0\u003E__OnTreeShake = new On_WorldGen.hook_ShakeTree((object) null, __methodptr(OnTreeShake)));
-    }
-
-    public virtual bool CanGoToStatue(bool toKingStatue) => toKingStatue;
-
-    public virtual void AI()
-    {
-      if (!Main.dayTime)
-        this.nightOver = true;
-      if (!Main.dayTime)
-        return;
-      this.dayOver = true;
-    }
-
-    public virtual List<string> SetNPCNameList()
-    {
-      return new List<string>((IEnumerable<string>) new string[12]
-      {
-        "Griff",
-        "Jack",
-        "Bruce",
-        "Larry",
-        "Will",
-        "Jerry",
-        "Liam",
-        "Stan",
-        "Lee",
-        "Woody",
-        "Leif",
-        "Paul"
-      });
-    }
-
-    public virtual string GetChat()
-    {
-      List<string> list = ((IEnumerable<LocalizedText>) Language.FindAll(Lang.CreateDialogFilter("Mods.Fargowiltas.NPCs.LumberJack.Chat.Normal"))).Select<LocalizedText, string>((Func<LocalizedText, string>) (item => item.Value)).ToList<string>();
-      int firstNpc = NPC.FindFirstNPC(18);
-      if (firstNpc >= 0)
-        list.Add(LumberJack.LumberChat("Nurse", (object) Main.npc[firstNpc].GivenName));
-      if (Main.LocalPlayer.HeldItem.type == 5095)
-        list.Add(LumberJack.LumberChat("LucyTheAxe"));
-      return Utils.Next<string>(Main.rand, (IList<string>) list);
-    }
-
-    public virtual void SetChatButtons(ref string button, ref string button2)
-    {
-      button = Language.GetTextValue("LegacyInterface.28");
-      button2 = Language.GetTextValue("Mods.Fargowiltas.NPCs.LumberJack.TreeTreasures");
-    }
-
-    public virtual void OnChatButtonClicked(bool firstButton, ref string shopName)
-    {
-      Player localPlayer = Main.LocalPlayer;
-      if (firstButton)
-        shopName = "Shop";
-      else if (this.dayOver && this.nightOver)
-      {
-        string str;
-        if (localPlayer.ZoneDesert && !localPlayer.ZoneBeach)
+        public override void SetStaticDefaults()
         {
-          str = LumberJack.LumberChat("Desert");
-          int num = Utils.Next<int>(Main.rand, new int[2]
-          {
-            2157,
-            2156
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(276, (string) null), 276, 100);
-        }
-        else if (localPlayer.ZoneJungle)
-        {
-          str = LumberJack.LumberChat("Jungle");
-          int num1 = Utils.Next<int>(Main.rand, new int[4]
-          {
-            3194,
-            3193,
-            3192,
-            2121
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num1, (string) null), num1, 5);
-          int num2 = Utils.Next<int>(Main.rand, new int[2]
-          {
-            4292,
-            4294
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num2, (string) null), num2, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(620, (string) null), 620, 50);
-        }
-        else if (localPlayer.ZoneHallow)
-        {
-          str = LumberJack.LumberChat("Hallow");
-          for (int index = 0; index < 5; ++index)
-          {
-            int num = Utils.Next<int>(Main.rand, new int[4]
+            // DisplayName.SetDefault("LumberJack");
+
+            Main.npcFrameCount[NPC.type] = 25;
+
+            NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
+            NPCID.Sets.AttackFrameCount[NPC.type] = 4;
+            NPCID.Sets.DangerDetectRange[NPC.type] = 700;
+            NPCID.Sets.AttackType[NPC.type] = 0;
+            NPCID.Sets.AttackTime[NPC.type] = 90;
+            NPCID.Sets.AttackAverageChance[NPC.type] = 30;
+            NPCID.Sets.HatOffsetY[NPC.type] = 2;
+
+            NPCID.Sets.ShimmerTownTransform[NPC.type] = true; // This set says that the Town NPC has a Shimmered form. Otherwise, the Town NPC will become transparent when touching Shimmer like other enemies.
+
+            NPCID.Sets.ShimmerTownTransform[Type] = true; // Allows for this NPC to have a different texture after touching the Shimmer liquid.
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
             {
-              2004,
-              4070,
-              4069,
-              4068
+                Velocity = -1f,
+                Direction = -1
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+
+            NPC.Happiness.SetBiomeAffection<ForestBiome>(AffectionLevel.Love);
+
+            NPC.Happiness.SetNPCAffection<Squirrel>(AffectionLevel.Like);
+            NPC.Happiness.SetNPCAffection(NPCID.Dryad, AffectionLevel.Dislike);
+            NPC.Happiness.SetNPCAffection(NPCID.Demolitionist, AffectionLevel.Hate);
+
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+                new FlavorTextBestiaryInfoElement("Mods.Fargowiltas.Bestiary.LumberJack")
             });
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 1);
-          }
-          int num3 = Utils.Next<int>(Main.rand, new int[2]
-          {
-            4297,
-            4288
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num3, (string) null), num3, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(621, (string) null), 621, 50);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(4961, (string) null), 4961, 1);
         }
-        else if (localPlayer.ZoneGlowshroom && Main.hardMode)
+
+        public override void SetDefaults()
         {
-          str = LumberJack.LumberChat("GlowshroomHM");
-          int num = Utils.Next<int>(Main.rand, new int[2]
-          {
-            2007,
-            2673
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(183, (string) null), 183, 50);
+            NPC.townNPC = true;
+            NPC.friendly = true;
+            NPC.width = 40;
+            NPC.height = 40;
+            NPC.aiStyle = 7;
+            NPC.damage = 10;
+            NPC.defense = 15;
+            NPC.lifeMax = Main.hardMode ? 1000 : 250;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.knockBackResist = 0.5f;
+            AnimationType = NPCID.Guide;
+
+            //if (GetInstance<FargoConfig>().CatchNPCs)
+            //{
+            //    Main.npcCatchable[NPC.type] = true;
+            //    NPC.catchItem = (short)mod.ItemType("LumberJack");
+            //}
         }
-        else if (localPlayer.ZoneCorrupt || localPlayer.ZoneCrimson)
+
+        public override bool CanTownNPCSpawn(int numTownNPCs)/* tModPorter Suggestion: Copy the implementation of NPC.SpawnAllowed_Merchant in vanilla if you to count money, and be sure to set a flag when unlocked, so you don't count every tick. */
         {
-          str = LumberJack.LumberChat("Evil");
-          for (int index = 0; index < 5; ++index)
-          {
-            int num = Utils.Next<int>(Main.rand, new int[4]
+            return FargoServerConfig.Instance.Lumber && FargoWorld.DownedBools.TryGetValue("lumberjack", out bool down) && down;
+        }
+
+        // Tree Shake spawn method
+        public static void OnTreeShake(Terraria.On_WorldGen.orig_ShakeTree orig, int i, int j)
+        {
+            orig(i, j);
+            if (!(FargoServerConfig.Instance.Lumber && Main.rand.NextBool(10) && FargoWorld.WoodChopped >= 400 && !(FargoWorld.DownedBools.TryGetValue("lumberjack", out bool down) && down)))
+                return;
+            WorldGen.GetTreeBottom(i, j, out var x, out var y);
+            TreeTypes treeType = WorldGen.GetTreeType(Main.tile[x, y].TileType);
+            if (treeType == TreeTypes.None)
+                return;
+            y--;
+            while (y > 10 && Main.tile[x, y].HasTile && TileID.Sets.IsShakeable[Main.tile[x, y].TileType])
             {
-              4289,
-              4284,
-              4285,
-              4296
-            });
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 1);
-          }
-        }
-        else if (localPlayer.ZoneSnow)
-        {
-          str = LumberJack.LumberChat("Snow");
-          int num = Utils.Next<int>(Main.rand, new int[2]
-          {
-            4286,
-            4295
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(2503, (string) null), 2503, 50);
-        }
-        else if (localPlayer.ZoneBeach)
-        {
-          str = LumberJack.LumberChat("Beach");
-          int num = Utils.Next<int>(Main.rand, new int[2]
-          {
-            4287,
-            4283
-          });
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(4359, (string) null), 4359, 5);
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(2504, (string) null), 2504, 50);
-        }
-        else if (localPlayer.ZoneUnderworldHeight)
-        {
-          str = LumberJack.LumberChat("Underworld");
-          for (int index = 0; index < 5; ++index)
-          {
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(5215, (string) null), 5215, 50);
-            int num4 = Utils.Next<int>(Main.rand, new int[3]
-            {
-              4845,
-              4849,
-              4847
-            });
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num4, (string) null), num4, 1);
-            int num5 = Utils.Next<int>(Main.rand, new int[2]
-            {
-              5277,
-              5278
-            });
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num5, (string) null), num5, 1);
-          }
-        }
-        else if (localPlayer.ZoneRockLayerHeight || localPlayer.ZoneDirtLayerHeight)
-        {
-          if (Utils.NextBool(Main.rand, 2))
-          {
-            str = LumberJack.LumberChat("DirtRockGem");
-            for (int index = 0; index < 5; ++index)
-            {
-              int num6 = Utils.Next<int>(Main.rand, new int[7]
-              {
-                182,
-                178,
-                181,
-                179,
-                177,
-                180,
-                999
-              });
-              localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num6, (string) null), num6, 3);
-              int num7 = Utils.Next<int>(Main.rand, new int[14]
-              {
-                4836,
-                4837,
-                4831,
-                4834,
-                4835,
-                4833,
-                4832,
-                4844,
-                4838,
-                4843,
-                4841,
-                4842,
-                4840,
-                4839
-              });
-              localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num7, (string) null), num7, 1);
+                y--;
             }
-          }
-          else
-          {
-            str = LumberJack.LumberChat("DirtRockMouse");
-            int num = 2003;
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
-          }
+            y++;
+            if (!WorldGen.IsTileALeafyTreeTop(x, y) || Collision.SolidTiles(x - 2, x + 2, y - 2, y + 2))
+                return;
+
+            FargoWorld.DownedBools["lumberjack"] = true;
+            NPC.NewNPC(NPC.GetBossSpawnSource(Main.myPlayer), x * 16, y * 16, NPCType<LumberJack>());
         }
-        else
+        public override void Load()
         {
-          if (Main.dayTime)
-          {
-            if (Main.WindyEnoughForKiteDrops && Utils.NextBool(Main.rand, 2))
+            On_WorldGen.ShakeTree += OnTreeShake;
+        }
+
+
+        public override bool CanGoToStatue(bool toKingStatue) => toKingStatue;
+
+        public override void AI()
+        {
+            if (!Main.dayTime)
             {
-              str = LumberJack.LumberChat("CommonDayTimeWindy");
-              int num = 4361;
-              localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 5);
+                nightOver = true;
             }
-            else if (Utils.NextBool(Main.rand, 3))
+
+            if (Main.dayTime)
             {
-              str = LumberJack.LumberChat("CommonDayTimeButterfly");
-              for (int index = 0; index < 5; ++index)
-              {
-                int num = Utils.Next<int>(Main.rand, new int[8]
+                dayOver = true;
+            }
+        }
+
+
+        public override List<string> SetNPCNameList()
+        {
+            string[] names = ["Griff", "Jack", "Bruce", "Larry", "Will", "Jerry", "Liam", "Stan", "Lee", "Woody", "Leif", "Paul"];
+
+            return new List<string>(names);
+        }
+
+        public override string GetChat()
+        {
+            List<string> dialogue = Language.FindAll(Lang.CreateDialogFilter("Mods.Fargowiltas.NPCs.LumberJack.Chat.Normal")).Select(item => item.Value).ToList();
+            
+            int nurse = NPC.FindFirstNPC(NPCID.Nurse);
+            if (nurse >= 0)
+            {
+                dialogue.Add(LumberChat("Nurse", Main.npc[nurse].GivenName));
+            }
+
+            Player player = Main.LocalPlayer;
+            if (player.HeldItem.type == ItemID.LucyTheAxe)
+            {
+                dialogue.Add(LumberChat("LucyTheAxe"));
+            }
+
+            return Main.rand.Next(dialogue);
+        }
+
+        public override void SetChatButtons(ref string button, ref string button2)
+        {
+            button = Language.GetTextValue("LegacyInterface.28");
+            button2 = Language.GetTextValue("Mods.Fargowiltas.NPCs.LumberJack.TreeTreasures");
+        }
+
+        public const string ShopName = "Shop";
+
+        public override void OnChatButtonClicked(bool firstButton, ref string shopName)
+        {
+            Player player = Main.LocalPlayer;
+
+            if (firstButton)
+            {
+                shopName = ShopName;
+                return;
+            }
+
+            if (dayOver && nightOver)
+            {
+                string quote = "";
+                int itemType;
+
+                if (player.ZoneDesert && !player.ZoneBeach)
                 {
-                  2001,
-                  1994,
-                  1995,
-                  1996,
-                  1998,
-                  1999,
-                  1997,
-                  2000
-                });
-                localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 1);
-              }
-            }
-            else if (Utils.NextBool(Main.rand, 20))
-            {
-              str = LumberJack.LumberChat("CommonDayTimeEucaluptusSap");
-              localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(4366, (string) null), 4366, 1);
+                    quote = LumberChat("Desert");
+                    itemType = Main.rand.Next(new int[] { ItemID.Scorpion, ItemID.BlackScorpion });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.Cactus), ItemID.Cactus, 100);
+                }
+                else if (player.ZoneJungle)
+                {
+                    quote = LumberChat("Jungle");
+                    itemType = Main.rand.Next(new int[] { ItemID.Buggy, ItemID.Sluggy, ItemID.Grubby, ItemID.Frog });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    itemType = Main.rand.Next(new int[] { ItemID.Mango, ItemID.Pineapple });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.RichMahogany), ItemID.RichMahogany, 50);
+                }
+                else if (player.ZoneHallow)
+                {
+                    quote = LumberChat("Hallow");
+                    for (int i = 0; i < 5; i++)
+                    {
+                        itemType = Main.rand.Next(new int[] { ItemID.LightningBug, ItemID.FairyCritterBlue, ItemID.FairyCritterGreen, ItemID.FairyCritterPink });
+                        player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+                    }
+                    itemType = Main.rand.Next(new int[] { ItemID.Starfruit, ItemID.Dragonfruit });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.Pearlwood), ItemID.Pearlwood, 50);
+
+                    //add prismatic lacewing if post plantera
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.EmpressButterfly), ItemID.EmpressButterfly, 1);
+                }
+                else if (player.ZoneGlowshroom && Main.hardMode)
+                {
+                    quote = LumberChat("GlowshroomHM");
+                    itemType = Main.rand.Next(new int[] { ItemID.GlowingSnail, ItemID.TruffleWorm });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.GlowingMushroom), ItemID.GlowingMushroom, 50);
+                    //add mushroom grass seeds
+
+                }
+                else if (player.ZoneCorrupt || player.ZoneCrimson)
+                {
+                    quote = LumberChat("Evil");
+                    for (int i = 0; i < 5; i++)
+                    {
+                        itemType = Main.rand.Next(new int[] { ItemID.Elderberry, ItemID.BlackCurrant, ItemID.BloodOrange, ItemID.Rambutan });
+                        player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+                    }
+                }
+                else if (player.ZoneSnow)
+                {
+                    //penguin
+                    quote = LumberChat("Snow");
+                    itemType = Main.rand.Next(new int[] { ItemID.Cherry, ItemID.Plum });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.BorealWood), ItemID.BorealWood, 50);
+                }
+                else if (player.ZoneBeach)
+                {
+                    quote = LumberChat("Beach");
+                    itemType = Main.rand.Next(new int[] { ItemID.Coconut, ItemID.Banana });
+                    player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.Seagull), ItemID.Seagull, 5);
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.PalmWood), ItemID.PalmWood, 50);
+                }
+                else if (player.ZoneUnderworldHeight)
+                {
+                    quote = LumberChat("Underworld");
+                    for (int i = 0; i < 5; i++)
+                    {
+                        player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.AshWood), ItemID.AshWood, 50);
+                        itemType = Main.rand.Next(new int[] { ItemID.HellButterfly, ItemID.MagmaSnail, ItemID.Lavafly });
+                        player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+                        itemType = Main.rand.Next(new int[] { ItemID.SpicyPepper, ItemID.Pomegranate});
+                        player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+                    }
+                }
+                else if (player.ZoneRockLayerHeight || player.ZoneDirtLayerHeight)
+                {
+					if (Main.rand.NextBool(2))
+					{
+						quote = LumberChat("DirtRockGem");
+
+						for (int i = 0; i < 5; i++)
+						{
+							itemType = Main.rand.Next(new int[] { ItemID.Diamond, ItemID.Ruby, ItemID.Amethyst, ItemID.Emerald, ItemID.Sapphire, ItemID.Topaz, ItemID.Amber });
+							player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 3);
+							
+							itemType = Main.rand.Next(new int[] { ItemID.GemSquirrelDiamond, ItemID.GemSquirrelAmber, ItemID.GemSquirrelAmethyst, ItemID.GemSquirrelEmerald, ItemID.GemSquirrelRuby, ItemID.GemSquirrelSapphire, ItemID.GemSquirrelTopaz, ItemID.GemBunnyAmber, ItemID.GemBunnyAmethyst, ItemID.GemBunnyDiamond, ItemID.GemBunnyEmerald, ItemID.GemBunnyRuby, ItemID.GemBunnySapphire, ItemID.GemBunnyTopaz });
+							player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 1);
+						}
+					}
+					else
+					{
+						quote = LumberChat("DirtRockMouse");
+						
+						itemType = ItemID.Mouse;
+						player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+					}
+                }
+                //purity, most common option likely
+                else// if (player.position.Y > Main.worldSurface)
+                {
+                    if (Main.dayTime)
+                    {
+						if (Main.WindyEnoughForKiteDrops && Main.rand.NextBool(2)) //ladybug
+						{
+							quote = LumberChat("CommonDayTimeWindy");
+							itemType = ItemID.LadyBug;
+							player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType, 5);
+						}
+                        else if (Main.rand.NextBool(3)) //butterfly
+                        {
+                            quote = LumberChat("CommonDayTimeButterfly");
+							for (int i = 0; i < 5; i++)
+                            {
+								itemType = Main.rand.Next(new int[] { ItemID.JuliaButterfly, ItemID.MonarchButterfly, ItemID.PurpleEmperorButterfly, ItemID.RedAdmiralButterfly, ItemID.SulphurButterfly, ItemID.TreeNymphButterfly, ItemID.UlyssesButterfly, ItemID.ZebraSwallowtailButterfly });
+								player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+							}
+                        }
+                        else if (Main.rand.NextBool(20))
+                        {
+                            quote = LumberChat("CommonDayTimeEucaluptusSap");
+                            player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.EucaluptusSap), ItemID.EucaluptusSap);
+                        }
+                        else
+                        {
+                            quote = LumberChat("CommonDayTimeCritter");
+							for (int i = 0; i < 5; i++)
+                            {
+								itemType = Main.rand.Next(new int[] { ItemID.Grasshopper, ItemID.Squirrel, ItemID.SquirrelRed, ItemID.Bird, ItemID.BlueJay, ItemID.Cardinal });
+								player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+							}
+                        }
+                    }
+                    else
+                    {
+                        quote = LumberChat("CommonNightTime");
+                        player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.Firefly), ItemID.Firefly);
+                    }
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        itemType = Main.rand.Next(new int[] { ItemID.Lemon, ItemID.Peach, ItemID.Apricot, ItemID.Grapefruit, ItemID.Apple });
+                        player.QuickSpawnItem(player.GetSource_OpenItem(itemType), itemType);
+                    }
+                    player.QuickSpawnItem(player.GetSource_OpenItem(ItemID.Wood), ItemID.Wood, 50);
+                }
+
+                Main.npcChatText = quote;
+                dayOver = false;
+                nightOver = false;
             }
             else
             {
-              str = LumberJack.LumberChat("CommonDayTimeCritter");
-              for (int index = 0; index < 5; ++index)
-              {
-                int num = Utils.Next<int>(Main.rand, new int[6]
-                {
-                  2740,
-                  2018,
-                  3563,
-                  2015,
-                  2016,
-                  2017
-                });
-                localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 1);
-              }
+                Main.npcChatText = LumberChat("Rest");
             }
-          }
-          else
-          {
-            str = LumberJack.LumberChat("CommonNightTime");
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(1992, (string) null), 1992, 1);
-          }
-          for (int index = 0; index < 5; ++index)
-          {
-            int num = Utils.Next<int>(Main.rand, new int[5]
-            {
-              4291,
-              4293,
-              4282,
-              4290,
-              4009
-            });
-            localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(num, (string) null), num, 1);
-          }
-          localPlayer.QuickSpawnItem(localPlayer.GetSource_OpenItem(9, (string) null), 9, 50);
         }
-        Main.npcChatText = str;
-        this.dayOver = false;
-        this.nightOver = false;
-      }
-      else
-        Main.npcChatText = LumberJack.LumberChat("Rest");
+
+        public override void AddShops()
+        {
+            var npcShop = new NPCShop(Type, ShopName)
+                .Add(new Item(ItemID.WoodPlatform) { shopCustomPrice = Item.buyPrice(copper: 5) })
+                .Add(new Item(ItemID.Wood) { shopCustomPrice = Item.buyPrice(copper: 10) })
+                .Add(new Item(ItemID.BorealWood) { shopCustomPrice = Item.buyPrice(copper: 10) })
+                .Add(new Item(ItemID.RichMahogany) { shopCustomPrice = Item.buyPrice(copper: 15) })
+                .Add(new Item(ItemID.PalmWood) { shopCustomPrice = Item.buyPrice(copper: 15) })
+                .Add(new Item(ItemID.Ebonwood) { shopCustomPrice = Item.buyPrice(copper: 15) })
+                .Add(new Item(ItemID.Shadewood) { shopCustomPrice = Item.buyPrice(copper: 15) })
+                .Add(new Item(ItemID.AshWood) { shopCustomPrice = Item.buyPrice(copper: 20) })
+                .Add(new Item(ItemID.Pearlwood) { shopCustomPrice = Item.buyPrice(copper: 20) }, Condition.Hardmode)
+                .Add(new Item(ItemID.SpookyWood) { shopCustomPrice = Item.buyPrice(copper: 50) }, Condition.DownedPumpking)
+                .Add(new Item(ItemID.Cactus) { shopCustomPrice = Item.buyPrice(copper: 10) })
+                .Add(new Item(ItemID.BambooBlock) { shopCustomPrice = Item.buyPrice(copper: 10) })
+                .Add(new Item(ItemID.LivingWoodWand) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                .Add(new Item(ItemType<LumberjackMask>()) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                .Add(new Item(ItemType<LumberjackBody>()) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                .Add(new Item(ItemType<LumberjackPants>()) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                .Add(new Item(ItemType<Items.Weapons.LumberJaxe>()) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                .Add(new Item(ItemID.SharpeningStation) { shopCustomPrice = Item.buyPrice(copper: 100000) })
+                .Add(new Item(ItemType<WoodenToken>()) { shopCustomPrice = Item.buyPrice(copper: 10000) })
+                ;
+
+            npcShop.Register();
+        }
+
+        public override void ModifyActiveShop(string shopName, Item[] items)
+        {
+        }
+
+        public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+        {
+            damage = 20;
+            knockback = 4f;
+        }
+
+        public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
+        {
+            cooldown = 30;
+            randExtraCooldown = 30;
+        }
+
+        public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
+        {
+            projType = ModContent.ProjectileType<Projectiles.LumberJaxe>();
+            attackDelay = 1;
+        }
+
+        public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
+        {
+            multiplier = 12f;
+            randomOffset = 2f;
+        }
+
+        public override void OnKill()
+        {
+            FargoWorld.DownedBools["lumberjack"] = true;
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<LumberHat>(), 3));
+        }
+
+        public override void HitEffect(NPC.HitInfo hit)
+        {
+            if (NPC.life <= 0)
+            {
+                for (int k = 0; k < 8; k++)
+                {
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, 2.5f * hit.HitDirection, -2.5f, Scale: 0.8f);
+                }
+
+                if (!Main.dedServ)
+                {
+                    Vector2 pos = NPC.position + new Vector2(Main.rand.Next(NPC.width - 8), Main.rand.Next(NPC.height / 2));
+                    Gore.NewGore(NPC.GetSource_Death(), pos, NPC.velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore3").Type);
+
+                    pos = NPC.position + new Vector2(Main.rand.Next(NPC.width - 8), Main.rand.Next(NPC.height / 2));
+                    Gore.NewGore(NPC.GetSource_Death(), pos, NPC.velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore2").Type);
+
+                    pos = NPC.position + new Vector2(Main.rand.Next(NPC.width - 8), Main.rand.Next(NPC.height / 2));
+                    Gore.NewGore(NPC.GetSource_Death(), pos, NPC.velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore1").Type);
+                }
+            }
+            else
+            {
+                for (int k = 0; k < hit.Damage / NPC.lifeMax * 50.0; k++)
+                {
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, hit.HitDirection, -1f, Scale: 0.6f);
+                }
+            }
+        }
+
+        private static string LumberChat(string key, params object[] args) => Language.GetTextValue($"Mods.Fargowiltas.NPCs.LumberJack.Chat.{key}", args);
     }
 
-    public virtual void AddShops()
+    public class LumberJackProfile : ITownNPCProfile
     {
-      NPCShop npcShop1 = new NPCShop(this.Type, "Shop");
-      Item obj1 = new Item(94, 1, 0);
-      obj1.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 5));
-      Condition[] conditionArray1 = Array.Empty<Condition>();
-      NPCShop npcShop2 = npcShop1.Add(obj1, conditionArray1);
-      Item obj2 = new Item(9, 1, 0);
-      obj2.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10));
-      Condition[] conditionArray2 = Array.Empty<Condition>();
-      NPCShop npcShop3 = npcShop2.Add(obj2, conditionArray2);
-      Item obj3 = new Item(2503, 1, 0);
-      obj3.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10));
-      Condition[] conditionArray3 = Array.Empty<Condition>();
-      NPCShop npcShop4 = npcShop3.Add(obj3, conditionArray3);
-      Item obj4 = new Item(620, 1, 0);
-      obj4.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 15));
-      Condition[] conditionArray4 = Array.Empty<Condition>();
-      NPCShop npcShop5 = npcShop4.Add(obj4, conditionArray4);
-      Item obj5 = new Item(2504, 1, 0);
-      obj5.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 15));
-      Condition[] conditionArray5 = Array.Empty<Condition>();
-      NPCShop npcShop6 = npcShop5.Add(obj5, conditionArray5);
-      Item obj6 = new Item(619, 1, 0);
-      obj6.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 15));
-      Condition[] conditionArray6 = Array.Empty<Condition>();
-      NPCShop npcShop7 = npcShop6.Add(obj6, conditionArray6);
-      Item obj7 = new Item(911, 1, 0);
-      obj7.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 15));
-      Condition[] conditionArray7 = Array.Empty<Condition>();
-      NPCShop npcShop8 = npcShop7.Add(obj7, conditionArray7);
-      Item obj8 = new Item(5215, 1, 0);
-      obj8.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 20));
-      Condition[] conditionArray8 = Array.Empty<Condition>();
-      NPCShop npcShop9 = npcShop8.Add(obj8, conditionArray8);
-      Item obj9 = new Item(621, 1, 0);
-      obj9.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 20));
-      Condition[] conditionArray9 = new Condition[1]
-      {
-        Condition.Hardmode
-      };
-      NPCShop npcShop10 = npcShop9.Add(obj9, conditionArray9);
-      Item obj10 = new Item(1729, 1, 0);
-      obj10.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 50));
-      Condition[] conditionArray10 = new Condition[1]
-      {
-        Condition.DownedPumpking
-      };
-      NPCShop npcShop11 = npcShop10.Add(obj10, conditionArray10);
-      Item obj11 = new Item(276, 1, 0);
-      obj11.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10));
-      Condition[] conditionArray11 = Array.Empty<Condition>();
-      NPCShop npcShop12 = npcShop11.Add(obj11, conditionArray11);
-      Item obj12 = new Item(4564, 1, 0);
-      obj12.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10));
-      Condition[] conditionArray12 = Array.Empty<Condition>();
-      NPCShop npcShop13 = npcShop12.Add(obj12, conditionArray12);
-      Item obj13 = new Item(832, 1, 0);
-      obj13.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray13 = Array.Empty<Condition>();
-      NPCShop npcShop14 = npcShop13.Add(obj13, conditionArray13);
-      Item obj14 = new Item(ModContent.ItemType<LumberjackMask>(), 1, 0);
-      obj14.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray14 = Array.Empty<Condition>();
-      NPCShop npcShop15 = npcShop14.Add(obj14, conditionArray14);
-      Item obj15 = new Item(ModContent.ItemType<LumberjackBody>(), 1, 0);
-      obj15.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray15 = Array.Empty<Condition>();
-      NPCShop npcShop16 = npcShop15.Add(obj15, conditionArray15);
-      Item obj16 = new Item(ModContent.ItemType<LumberjackPants>(), 1, 0);
-      obj16.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray16 = Array.Empty<Condition>();
-      NPCShop npcShop17 = npcShop16.Add(obj16, conditionArray16);
-      Item obj17 = new Item(ModContent.ItemType<Fargowiltas.Items.Weapons.LumberJaxe>(), 1, 0);
-      obj17.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray17 = Array.Empty<Condition>();
-      NPCShop npcShop18 = npcShop17.Add(obj17, conditionArray17);
-      Item obj18 = new Item(3198, 1, 0);
-      obj18.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 100000));
-      Condition[] conditionArray18 = Array.Empty<Condition>();
-      NPCShop npcShop19 = npcShop18.Add(obj18, conditionArray18);
-      Item obj19 = new Item(ModContent.ItemType<WoodenToken>(), 1, 0);
-      obj19.shopCustomPrice = new int?(Item.buyPrice(0, 0, 0, 10000));
-      Condition[] conditionArray19 = Array.Empty<Condition>();
-      ((AbstractNPCShop) npcShop19.Add(obj19, conditionArray19)).Register();
-    }
+        public int RollVariation() => 0;
+        public string GetNameForVariant(NPC npc) => npc.getNewNPCName();
 
-    public virtual void ModifyActiveShop(string shopName, Item[] items)
-    {
-    }
+        public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc)
+        {
+            if (npc.IsABestiaryIconDummy && !npc.ForcePartyHatOn)
+                return ModContent.Request<Texture2D>("Fargowiltas/NPCs/LumberJack");
+            if (npc.IsABestiaryIconDummy && npc.ForcePartyHatOn)
+                return ModContent.Request<Texture2D>("Fargowiltas/NPCs/LumberJack_Party");
 
-    public virtual void TownNPCAttackStrength(ref int damage, ref float knockback)
-    {
-      damage = 20;
-      knockback = 4f;
-    }
+            if (npc.IsShimmerVariant)
+            {
+                if (npc.altTexture == 1)
+                {
+                    return ModContent.Request<Texture2D>("Fargowiltas/NPCs/Lumberjack_Shimmer_Party");
+                }
+                else
+                {
+                    return ModContent.Request<Texture2D>("Fargowiltas/NPCs/Lumberjack_Shimmer");
+                }
+            }
 
-    public virtual void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
-    {
-      cooldown = 30;
-      randExtraCooldown = 30;
-    }
+            if (npc.altTexture == 1)
+                return ModContent.Request<Texture2D>("Fargowiltas/NPCs/LumberJack_Party");
 
-    public virtual void TownNPCAttackProj(ref int projType, ref int attackDelay)
-    {
-      projType = ModContent.ProjectileType<Fargowiltas.Projectiles.LumberJaxe>();
-      attackDelay = 1;
-    }
+            return ModContent.Request<Texture2D>("Fargowiltas/NPCs/LumberJack");
+        }
 
-    public virtual void TownNPCAttackProjSpeed(
-      ref float multiplier,
-      ref float gravityCorrection,
-      ref float randomOffset)
-    {
-      multiplier = 12f;
-      randomOffset = 2f;
+        public int GetHeadTextureIndex(NPC npc) => ModContent.GetModHeadSlot("Fargowiltas/NPCs/LumberJack_Head");
     }
-
-    public virtual void OnKill() => FargoWorld.DownedBools["lumberjack"] = true;
-
-    public virtual void ModifyNPCLoot(NPCLoot npcLoot)
-    {
-      ((NPCLoot) ref npcLoot).Add(ItemDropRule.Common(ModContent.ItemType<LumberHat>(), 3, 1, 1));
-    }
-
-    public virtual void HitEffect(NPC.HitInfo hit)
-    {
-      if (this.NPC.life <= 0)
-      {
-        for (int index = 0; index < 8; ++index)
-          Dust.NewDust(((Entity) this.NPC).position, ((Entity) this.NPC).width, ((Entity) this.NPC).height, 5, 2.5f * (float) hit.HitDirection, -2.5f, 0, new Color(), 0.8f);
-        if (Main.dedServ)
-          return;
-        Vector2 vector2_1 = Vector2.op_Addition(((Entity) this.NPC).position, new Vector2((float) Main.rand.Next(((Entity) this.NPC).width - 8), (float) Main.rand.Next(((Entity) this.NPC).height / 2)));
-        Gore.NewGore(((Entity) this.NPC).GetSource_Death((string) null), vector2_1, ((Entity) this.NPC).velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore3").Type, 1f);
-        Vector2 vector2_2 = Vector2.op_Addition(((Entity) this.NPC).position, new Vector2((float) Main.rand.Next(((Entity) this.NPC).width - 8), (float) Main.rand.Next(((Entity) this.NPC).height / 2)));
-        Gore.NewGore(((Entity) this.NPC).GetSource_Death((string) null), vector2_2, ((Entity) this.NPC).velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore2").Type, 1f);
-        Vector2 vector2_3 = Vector2.op_Addition(((Entity) this.NPC).position, new Vector2((float) Main.rand.Next(((Entity) this.NPC).width - 8), (float) Main.rand.Next(((Entity) this.NPC).height / 2)));
-        Gore.NewGore(((Entity) this.NPC).GetSource_Death((string) null), vector2_3, ((Entity) this.NPC).velocity, ModContent.Find<ModGore>("Fargowiltas", "LumberGore1").Type, 1f);
-      }
-      else
-      {
-        for (int index = 0; (double) index < (double) (((NPC.HitInfo) ref hit).Damage / this.NPC.lifeMax) * 50.0; ++index)
-          Dust.NewDust(((Entity) this.NPC).position, ((Entity) this.NPC).width, ((Entity) this.NPC).height, 5, (float) hit.HitDirection, -1f, 0, new Color(), 0.6f);
-      }
-    }
-
-    private static string LumberChat(string key, params object[] args)
-    {
-      return Language.GetTextValue("Mods.Fargowiltas.NPCs.LumberJack.Chat." + key, args);
-    }
-  }
 }

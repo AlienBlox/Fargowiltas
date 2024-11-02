@@ -1,75 +1,88 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.Explosives.HalfInstaProj
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Fargowiltas.Tiles;
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.PlayerDrawLayer;
 
-#nullable disable
 namespace Fargowiltas.Projectiles.Explosives
 {
-  public class HalfInstaProj : ModProjectile
-  {
-    public virtual void SetStaticDefaults()
+    public class HalfInstaProj : ModProjectile
     {
-    }
-
-    public virtual void SetDefaults()
-    {
-      ((Entity) this.Projectile).width = 20;
-      ((Entity) this.Projectile).height = 36;
-      this.Projectile.aiStyle = 16;
-      this.Projectile.friendly = true;
-      this.Projectile.penetrate = -1;
-      this.Projectile.timeLeft = 170;
-    }
-
-    public virtual bool? CanDamage() => new bool?(false);
-
-    public virtual bool TileCollideStyle(
-      ref int width,
-      ref int height,
-      ref bool fallThrough,
-      ref Vector2 hitboxCenterFrac)
-    {
-      fallThrough = false;
-      return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
-    }
-
-    public virtual bool OnTileCollide(Vector2 oldVelocity)
-    {
-      this.Projectile.Kill();
-      return true;
-    }
-
-    public virtual void OnKill(int timeLeft)
-    {
-      Vector2 center = ((Entity) this.Projectile).Center;
-      SoundEngine.PlaySound(ref SoundID.Item14, new Vector2?(center), (SoundUpdateCallback) null);
-      if (Main.netMode == 1)
-        return;
-      int num = (int) (Main.rockLayer + ((double) (Main.maxTilesY - 200) - Main.rockLayer) / 2.0);
-      for (int index = -2; index <= 2; ++index)
-      {
-        for (int y = (int) (1.0 + (double) center.Y / 16.0); y <= num; ++y)
+        public override void SetStaticDefaults()
         {
-          int x = (int) ((double) index + (double) center.X / 16.0);
-          if (x >= 0 && x < Main.maxTilesX && y >= 0 && y < Main.maxTilesY && !Tile.op_Equality(((Tilemap) ref Main.tile)[x, y], (ArgumentException) null) && FargoGlobalProjectile.OkayToDestroyTileAt(x, y))
-          {
-            FargoGlobalTile.ClearEverything(x, y, false);
-            if (index == 0)
-              WorldGen.PlaceTile(x, y, 213, false, false, -1, 0);
-            NetMessage.SendTileSquare(-1, x, y, 1, (TileChangeType) 0);
-          }
+            // DisplayName.SetDefault("Half Instavator");
         }
-      }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 20;
+            Projectile.height = 36;
+            Projectile.aiStyle = 16;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 1;
+        }
+
+        public override bool? CanDamage()
+        {
+            return false;
+        }
+        public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+        {
+            fallThrough = false;
+
+            return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Projectile.Kill();
+            return true;
+        }
+
+        public override void OnKill(int timeLeft)
+        {
+            Vector2 position = Projectile.Center;
+            SoundEngine.PlaySound(SoundID.Item14, position);
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                return;
+            }
+
+            //cavern height plus halfway to hell
+            int yEndpoint = (int)(Main.rockLayer + (Main.maxTilesY - 200 - Main.rockLayer) / 2);
+
+            // Five across
+            for (int x = -2; x <= 2; x++)
+            {
+                for (int y = (int)(1 + position.Y / 16.0f); y <= yEndpoint; y++)
+                {
+                    int xPosition = (int)(x + position.X / 16.0f);
+
+                    if (xPosition < 0 || xPosition >= Main.maxTilesX || y < 0 || y >= Main.maxTilesY)
+                        continue;
+
+                    Tile tile = Main.tile[xPosition, y];
+
+                    if (tile == null)
+                        continue;
+
+                    if (!FargoGlobalProjectile.OkayToDestroyTileAt(xPosition, y))
+                        continue;
+
+                    FargoGlobalTile.ClearEverything(xPosition, y, false);
+
+                    if (x == 0)
+                    {
+                        WorldGen.PlaceTile(xPosition, y, TileID.Rope);
+                    }
+
+                    NetMessage.SendTileSquare(-1, xPosition, y, 1);
+                }
+            }
+        }
     }
-  }
 }

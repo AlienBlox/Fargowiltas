@@ -1,354 +1,620 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.FargoPlayer
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Fargowiltas.Common.Configs;
-using Fargowiltas.Items;
-using Fargowiltas.NPCs;
-using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.IO;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.GameContent.Events;
+using Terraria.DataStructures;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+using Fargowiltas.NPCs;
+using System;
+using System.Linq;
 using Terraria.ModLoader.IO;
+using Fargowiltas.Projectiles;
+using Fargowiltas.Items;
+using Terraria.GameContent.Events;
+using System.IO;
+using Fargowiltas.Common.Configs;
+using System.Runtime.InteropServices.JavaScript;
 
-#nullable disable
+////using Fargowiltas.Toggler;
+
 namespace Fargowiltas
 {
-  public class FargoPlayer : ModPlayer
-  {
-    public bool extractSpeed;
-    public bool HasDrawnDebuffLayer;
-    internal bool BattleCry;
-    internal bool CalmingCry;
-    internal int originalSelectedItem;
-    internal bool autoRevertSelectedItem;
-    public float luckPotionBoost;
-    public float ElementalAssemblerNearby;
-    public float StatSheetMaxAscentMultiplier;
-    public float StatSheetWingSpeed;
-    public bool? CanHover;
-    public int DeathFruitHealth;
-    public bool bigSuck;
-    internal Dictionary<string, bool> FirstDyeIngredients = new Dictionary<string, bool>();
-    private readonly string[] tags = new string[13]
+    public class FargoPlayer : ModPlayer
     {
-      "RedHusk",
-      "OrangeBloodroot",
-      "YellowMarigold",
-      "LimeKelp",
-      "GreenMushroom",
-      "TealMushroom",
-      "CyanHusk",
-      "SkyBlueFlower",
-      "BlueBerries",
-      "PurpleMucos",
-      "VioletHusk",
-      "PinkPricklyPear",
-      "BlackInk"
-    };
+        //        //public ToggleBackend Toggler = new ToggleBackend();
+        //        public Dictionary<string, bool> TogglesToSync = new Dictionary<string, bool>();
 
-    public virtual void SaveData(TagCompound tag)
-    {
-      string str = "FargoDyes" + this.Player.name;
-      List<string> list = new List<string>();
-      foreach (string tag1 in this.tags)
-      {
-        if (this.FirstDyeIngredients.TryGetValue(tag1, out bool _))
-          list.AddWithCondition<string>(tag1, this.FirstDyeIngredients[tag1]);
-        else
-          list.AddWithCondition<string>(tag1, false);
-      }
-      tag.Add(str, (object) list);
-      tag.Add("DeathFruitHealth", (object) this.DeathFruitHealth);
-      if (this.BattleCry)
-        tag.Add("FargoBattleCry" + this.Player.name, (object) true);
-      if (!this.CalmingCry)
-        return;
-      tag.Add("FargoCalmingCry" + this.Player.name, (object) true);
-    }
 
-    public virtual void LoadData(TagCompound tag)
-    {
-      string str = "FargoDyes" + this.Player.name;
-      IList<string> list = tag.GetList<string>(str);
-      foreach (string tag1 in this.tags)
-        this.FirstDyeIngredients[tag1] = list.Contains(tag1);
-      this.DeathFruitHealth = tag.GetInt("DeathFruitHealth");
-      this.BattleCry = tag.ContainsKey("FargoBattleCry" + this.Player.name);
-      this.CalmingCry = tag.ContainsKey("FargoCalmingCry" + this.Player.name);
-    }
 
-    public virtual void SyncPlayer(int toWho, int fromWho, bool newPlayer)
-    {
-      ModPacket packet = ((ModType) this).Mod.GetPacket(256);
-      ((BinaryWriter) packet).Write((byte) ((Entity) this.Player).whoAmI);
-      ((BinaryWriter) packet).Write((byte) this.DeathFruitHealth);
-      packet.Send(toWho, fromWho);
-    }
+        public bool extractSpeed;
+        public bool HasDrawnDebuffLayer;
+        internal bool BattleCry;
+        internal bool CalmingCry;
 
-    public void ReceivePlayerSync(BinaryReader reader)
-    {
-      this.DeathFruitHealth = (int) reader.ReadByte();
-    }
+        internal int originalSelectedItem;
+        internal bool autoRevertSelectedItem;
 
-    public virtual void CopyClientState(ModPlayer targetCopy)
-    {
-      ((FargoPlayer) targetCopy).DeathFruitHealth = this.DeathFruitHealth;
-    }
+        public float luckPotionBoost;
+        public float ElementalAssemblerNearby;
 
-    public virtual void SendClientChanges(ModPlayer clientPlayer)
-    {
-      if (this.DeathFruitHealth == ((FargoPlayer) clientPlayer).DeathFruitHealth)
-        return;
-      base.SyncPlayer(-1, Main.myPlayer, false);
-    }
+        public float StatSheetMaxAscentMultiplier;
+        public float StatSheetWingSpeed;
+        public bool? CanHover = null;
 
-    public virtual void ModifyStartingInventory(
-      IReadOnlyDictionary<string, List<Item>> itemsByMod,
-      bool mediumCoreDeath)
-    {
-      foreach (string tag in this.tags)
-        this.FirstDyeIngredients[tag] = false;
-    }
+        public int DeathFruitHealth;
+        public bool bigSuck;
 
-    public virtual void OnEnterWorld() => Fargowiltas.Items.Misc.BattleCry.SyncCry(this.Player);
+        public int StationSoundCooldown;
 
-    public virtual void ResetEffects()
-    {
-      this.extractSpeed = false;
-      this.HasDrawnDebuffLayer = false;
-      this.bigSuck = false;
-    }
+        internal Dictionary<string, bool> FirstDyeIngredients = [];
 
-    public virtual void ProcessTriggers(TriggersSet triggersSet)
-    {
-      if (Fargowiltas.Fargowiltas.HomeKey.JustPressed)
-        this.AutoUseMirror();
-      if (!Fargowiltas.Fargowiltas.StatKey.JustPressed)
-        return;
-      if (!Main.playerInventory)
-        Main.playerInventory = true;
-      Fargowiltas.Fargowiltas.UserInterfaceManager.ToggleStatSheet();
-    }
+        public bool[] ItemHasBeenOwned; // If you've owned this item type ever
+        public bool[] ItemHasBeenOwnedAtThirtyStack; // If you've owned this 30 of this item type ever
 
-    public virtual void PostUpdateBuffs()
-    {
-      if (FargoServerConfig.Instance.UnlimitedPotionBuffsOn120)
-      {
-        foreach (Item obj in this.Player.bank.item)
-          FargoGlobalItem.TryUnlimBuff(obj, this.Player);
-        foreach (Item obj in this.Player.bank2.item)
-          FargoGlobalItem.TryUnlimBuff(obj, this.Player);
-      }
-      if (!FargoServerConfig.Instance.PiggyBankAcc)
-        return;
-      foreach (Item obj in this.Player.bank.item)
-        FargoGlobalItem.TryPiggyBankAcc(obj, this.Player);
-      foreach (Item obj in this.Player.bank2.item)
-        FargoGlobalItem.TryPiggyBankAcc(obj, this.Player);
-    }
+        public int DeathCamTimer = 0;
+        public int SpectatePlayer = 0;
 
-    public virtual void PostUpdateEquips()
-    {
-      if (!Fargowiltas.Fargowiltas.SwarmActive)
-        return;
-      this.Player.buffImmune[37] = true;
-    }
-
-    public virtual void PostUpdateMiscEffects()
-    {
-      if ((double) this.ElementalAssemblerNearby > 0.0)
-      {
-        --this.ElementalAssemblerNearby;
-        this.Player.alchemyTable = true;
-      }
-      if (this.Player.equippedWings == null)
-        this.ResetStatSheetWings();
-      this.ForceBiomes();
-    }
-
-    public virtual void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
-    {
-      FargoServerConfig instance = FargoServerConfig.Instance;
-      if ((double) instance.EnemyDamage == 1.0 && (double) instance.BossDamage == 1.0)
-        return;
-      if (((double) instance.BossDamage <= (double) instance.EnemyDamage ? 0 : (npc.boss || npc.type == 13 || npc.type == 14 || npc.type == 15 ? 1 : (!instance.BossApplyToAllWhenAlive ? 0 : (FargoGlobalNPC.AnyBossAlive() ? 1 : 0)))) != 0)
-      {
-        ref StatModifier local = ref modifiers.FinalDamage;
-        local = StatModifier.op_Multiply(local, instance.BossDamage);
-      }
-      else
-      {
-        ref StatModifier local = ref modifiers.FinalDamage;
-        local = StatModifier.op_Multiply(local, instance.EnemyDamage);
-      }
-    }
-
-    public void ResetStatSheetWings()
-    {
-      this.StatSheetMaxAscentMultiplier = 0.0f;
-      this.StatSheetWingSpeed = 0.0f;
-      this.CanHover = new bool?();
-    }
-
-    private void ForceBiomes()
-    {
-      if (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.eaterBoss, 13) && (double) ((Entity) this.Player).Distance(((Entity) Main.npc[FargoGlobalNPC.eaterBoss]).Center) < 3000.0)
-        this.Player.ZoneCorrupt = true;
-      if (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.brainBoss, 266) && (double) ((Entity) this.Player).Distance(((Entity) Main.npc[FargoGlobalNPC.brainBoss]).Center) < 3000.0)
-        this.Player.ZoneCrimson = true;
-      if (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.plantBoss, 262) && (double) ((Entity) this.Player).Distance(((Entity) Main.npc[FargoGlobalNPC.plantBoss]).Center) < 3000.0 || FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.beeBoss, 222) && (double) ((Entity) this.Player).Distance(((Entity) Main.npc[FargoGlobalNPC.beeBoss]).Center) < 3000.0)
-        this.Player.ZoneJungle = true;
-      if (!FargoServerConfig.Instance.Fountains)
-        return;
-      switch (Main.SceneMetrics.ActiveFountainColor)
-      {
-        case 0:
-          this.Player.ZoneBeach = true;
-          break;
-        case 2:
-          this.Player.ZoneCorrupt = true;
-          break;
-        case 3:
-          this.Player.ZoneJungle = true;
-          break;
-        case 4:
-          if (!Main.hardMode)
-            break;
-          this.Player.ZoneHallow = true;
-          break;
-        case 5:
-          this.Player.ZoneSnow = true;
-          break;
-        case 6:
-        case 12:
-          this.Player.ZoneDesert = true;
-          if ((double) ((Entity) this.Player).Center.Y <= 3200.0)
-            break;
-          this.Player.ZoneUndergroundDesert = true;
-          break;
-        case 10:
-          this.Player.ZoneCrimson = true;
-          break;
-      }
-    }
-
-    public virtual void PostUpdate()
-    {
-      if (this.autoRevertSelectedItem && this.Player.itemTime == 0 && this.Player.itemAnimation == 0)
-      {
-        this.Player.selectedItem = this.originalSelectedItem;
-        this.autoRevertSelectedItem = false;
-      }
-      if (!FargoWorld.OverloadedSlimeRain || !Utils.NextBool(Main.rand, 20))
-        return;
-      this.SlimeRainSpawns();
-    }
-
-    public void SlimeRainSpawns()
-    {
-      int[] numArray = new int[12]
-      {
-        535,
-        537,
-        147,
-        184,
-        16,
-        204,
-        71,
-        225,
-        141,
-        81,
-        183,
-        138
-      };
-      int num1 = Main.rand.Next(50);
-      if (num1 != 0 && num1 < 20)
-      {
-        int num2 = numArray[Main.rand.Next(numArray.Length)];
-      }
-      Vector2 vector2 = new Vector2((float) ((int) ((Entity) this.Player).position.X + Main.rand.Next(-800, 800)), (float) ((int) ((Entity) this.Player).position.Y + Main.rand.Next(-800, -250)));
-    }
-
-    public virtual bool PreModifyLuck(ref float luck)
-    {
-      if (FargoWorld.Matsuri && !Main.IsItRaining && !Main.IsItStorming)
-      {
-        LanternNight.GenuineLanterns = true;
-        LanternNight.ManualLanterns = false;
-      }
-      return base.PreModifyLuck(ref luck);
-    }
-
-    public virtual void ModifyLuck(ref float luck)
-    {
-      luck += this.luckPotionBoost;
-      this.luckPotionBoost = 0.0f;
-    }
-
-    public void AutoUseMirror()
-    {
-      int index1 = -1;
-      int index2 = -1;
-      int index3 = -1;
-      for (int index4 = 0; index4 < this.Player.inventory.Length; ++index4)
-      {
-        switch (this.Player.inventory[index4].type)
+        private readonly string[] tags =
+        [
+            "RedHusk",
+            "OrangeBloodroot",
+            "YellowMarigold",
+            "LimeKelp",
+            "GreenMushroom",
+            "TealMushroom",
+            "CyanHusk",
+            "SkyBlueFlower",
+            "BlueBerries",
+            "PurpleMucos",
+            "VioletHusk",
+            "PinkPricklyPear",
+            "BlackInk"
+        ];
+        public override void Initialize()
         {
-          case 50:
-          case 3124:
-          case 3199:
-          case 5358:
-            index3 = index4;
-            break;
-          case 2350:
-            index2 = index4;
-            break;
-          case 4870:
-            index1 = index4;
-            break;
+            ItemHasBeenOwned = ItemID.Sets.Factory.CreateBoolSet(false);
+            ItemHasBeenOwnedAtThirtyStack = ItemID.Sets.Factory.CreateBoolSet(false);
         }
-      }
-      if (index1 != -1)
-        this.QuickUseItemAt(index1);
-      else if (index2 != -1)
-      {
-        this.QuickUseItemAt(index2);
-      }
-      else
-      {
-        if (index3 == -1)
-          return;
-        this.QuickUseItemAt(index3);
-      }
-    }
+        public override void SaveData(TagCompound tag)
+        {
+            string name = "FargoDyes" + Player.name;
+            List<string> dyes = [];
 
-    public virtual void ModifyMaxStats(out StatModifier health, out StatModifier mana)
-    {
-      ref StatModifier local = ref health;
-      StatModifier statModifier1 = StatModifier.Default;
-      statModifier1.Base = (float) -this.DeathFruitHealth;
-      StatModifier statModifier2 = statModifier1;
-      local = statModifier2;
-      mana = StatModifier.Default;
-    }
+            foreach (string tagString in tags)
+            {
 
-    public void QuickUseItemAt(int index, bool use = true)
-    {
-      if (this.autoRevertSelectedItem || this.Player.selectedItem == index || this.Player.inventory[index].type == 0)
-        return;
-      this.originalSelectedItem = this.Player.selectedItem;
-      this.autoRevertSelectedItem = true;
-      this.Player.selectedItem = index;
-      this.Player.controlUseItem = true;
-      if (!use || !CombinedHooks.CanUseItem(this.Player, this.Player.inventory[this.Player.selectedItem]) || ((Entity) this.Player).whoAmI != Main.myPlayer)
-        return;
-      this.Player.ItemCheck();
-    }
-  }
+                if (FirstDyeIngredients.TryGetValue(tagString, out bool value))
+                {
+                    dyes.AddWithCondition(tagString, FirstDyeIngredients[tagString]);
+                }
+                else
+                {
+                    dyes.AddWithCondition(tagString, false);
+                }
+            }
+
+            tag.Add(name, dyes);
+            tag.Add("DeathFruitHealth", DeathFruitHealth);
+
+            if (BattleCry)
+                tag.Add($"FargoBattleCry{Player.name}", true);
+
+            if (CalmingCry)
+                tag.Add($"FargoCalmingCry{Player.name}", true);
+
+            List<string> ownedItemsData = [];
+            for (int i = 0; i < ItemHasBeenOwned.Length; i++)
+            {
+                if (ItemHasBeenOwned[i])
+                {
+                    if (i >= ItemID.Count) // modded item, variable type, add name instead
+                    {
+                        if (ItemLoader.GetItem(i) is ModItem modItem && modItem != null)
+                            ownedItemsData.Add($"{modItem.FullName}");
+                    }
+                    else // vanilla item
+                    {
+                        ownedItemsData.Add($"{i}");
+                    }
+                }
+            }
+            tag.Add("OwnedItemsList", ownedItemsData);
+        }
+
+        //        public override void Initialize()
+        //        {
+        //            //Toggler.Load(this);
+        //        }
+        public override void LoadData(TagCompound tag)
+        {
+            string name = "FargoDyes" + Player.name;
+
+            IList<string> dyes = tag.GetList<string>(name);
+            foreach (string downedTag in tags)
+            {
+                FirstDyeIngredients[downedTag] = dyes.Contains(downedTag);
+            }
+
+            DeathFruitHealth = tag.GetInt("DeathFruitHealth");
+            BattleCry = tag.ContainsKey($"FargoBattleCry{Player.name}");
+            CalmingCry = tag.ContainsKey($"FargoCalmingCry{Player.name}");
+
+            ItemHasBeenOwned = ItemID.Sets.Factory.CreateBoolSet(false);
+            var ownedItemsData = tag.GetList<string>("OwnedItemsList");
+            foreach (var entry in ownedItemsData)
+            {
+                if (int.TryParse(entry, out int type) && type < ItemID.Count)
+                {
+                    ItemHasBeenOwned[type] = true;
+                }
+                else
+                {
+                    if (ModContent.TryFind<ModItem>(entry, out ModItem item))
+                        ItemHasBeenOwned[item.Type] = true;
+                }
+            }
+        }
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            ModPacket packet = Mod.GetPacket();
+            packet.Write((byte)9);
+            packet.Write((byte)Player.whoAmI);
+            packet.Write((byte)DeathFruitHealth);
+            packet.Send(toWho, fromWho);
+        }
+
+        // Called in ExampleMod.Networking.cs
+        public void ReceivePlayerSync(BinaryReader reader)
+        {
+            DeathFruitHealth = reader.ReadByte();
+        }
+
+        public override void CopyClientState(ModPlayer targetCopy)
+        {
+            FargoPlayer clone = (FargoPlayer)targetCopy;
+            clone.DeathFruitHealth = DeathFruitHealth;
+        }
+
+        public override void SendClientChanges(ModPlayer clientPlayer)
+        {
+            FargoPlayer clone = (FargoPlayer)clientPlayer;
+
+            if (DeathFruitHealth != clone.DeathFruitHealth)
+                SyncPlayer(toWho: -1, fromWho: Main.myPlayer, newPlayer: false);
+        }
+        public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
+        {
+            foreach (string tag in tags)
+            {
+                FirstDyeIngredients[tag] = false;
+            }
+        }
+
+        public override void OnEnterWorld()
+        {
+            Items.Misc.BattleCry.SyncCry(Player);
+        }
+
+        public override void ResetEffects()
+        {
+            extractSpeed = false;
+            HasDrawnDebuffLayer = false;
+            bigSuck = false;
+        }
+        public override void ProcessTriggers(TriggersSet triggersSet)
+        {
+
+            if (Fargowiltas.HomeKey.JustPressed)
+            {
+                AutoUseMirror();
+            }
+
+            if (Fargowiltas.StatKey.JustPressed)
+            {
+                if (!Main.playerInventory)
+                {
+                    Main.playerInventory = true;
+                }
+                Fargowiltas.UserInterfaceManager.ToggleStatSheet();
+            }
+        }
+
+        public override void PostUpdateBuffs()
+        {
+            if (FargoServerConfig.Instance.UnlimitedPotionBuffsOn120)
+            {
+                foreach (Item item in Player.bank.item)
+                {
+                    FargoGlobalItem.TryUnlimBuff(item, Player);
+                }
+
+                foreach (Item item in Player.bank2.item)
+                {
+                    FargoGlobalItem.TryUnlimBuff(item, Player);
+                }
+            }
+
+            if (FargoServerConfig.Instance.PiggyBankAcc || FargoServerConfig.Instance.ModdedPiggyBankAcc)
+            {
+                foreach (Item item in Player.bank.item)
+                {
+                    FargoGlobalItem.TryPiggyBankAcc(item, Player);
+                }
+
+                foreach (Item item in Player.bank2.item)
+                {
+                    FargoGlobalItem.TryPiggyBankAcc(item, Player);
+                }
+            }
+        }
+        public override void PostUpdateEquips()
+        {
+            /*
+            if (Fargowiltas.SwarmActive)
+            {
+                Player.buffImmune[BuffID.Horrified] = true;
+            }
+            */
+        }
+        public override void UpdateDead()
+        {
+            StationSoundCooldown = 0;
+            if (FargoClientConfig.Instance.MultiplayerDeathSpectate && Player.dead && Main.netMode != NetmodeID.SinglePlayer && Main.player.Any(p => p != null && !p.dead && !p.ghost))
+            {
+                Spectate();
+               
+            }
+        }
+        public void FindNewSpectateTarget() => SpectatePlayer = SpectatePlayer = Main.player.First(ValidSpectateTarget).whoAmI;
+        public bool ValidSpectateTarget(Player p) => p != null && !p.dead && !p.ghost;
+        public void Spectate()
+        {
+            if (SpectatePlayer < 0 || SpectatePlayer > Main.maxPlayers)
+                FindNewSpectateTarget();
+            if (SpectatePlayer < 0 || SpectatePlayer > Main.maxPlayers)
+                return;
+            Player spectatePlayer = Main.player[SpectatePlayer];
+            if (spectatePlayer == null || !spectatePlayer.active || spectatePlayer.dead || spectatePlayer.ghost)
+            {
+                FindNewSpectateTarget();
+                spectatePlayer = Main.player[SpectatePlayer];
+            }
+                
+            if (spectatePlayer == null || !spectatePlayer.active || spectatePlayer.dead || spectatePlayer.ghost)
+                return;
+
+            if (Main.mouseLeft && Main.mouseLeftRelease)
+            {
+                for (int i = 0; i < Main.maxPlayers + 1; i++)
+                {
+                    SpectatePlayer--;
+                    if (SpectatePlayer < 0)
+                        SpectatePlayer = Main.maxPlayers - 1;
+                    if (ValidSpectateTarget(Main.player[SpectatePlayer]))
+                        break;
+                }
+            }
+            else if (Main.mouseRight && Main.mouseRightRelease)
+            {
+                for (int i = 0; i < Main.maxPlayers + 1; i++)
+                {
+                    SpectatePlayer++;
+                    if (SpectatePlayer >= Main.maxPlayers)
+                        SpectatePlayer = 0;
+                    if (ValidSpectateTarget(Main.player[SpectatePlayer]))
+                        break;
+                }
+            }
+            spectatePlayer = Main.player[SpectatePlayer];
+
+            Vector2 spectatePos = spectatePlayer.Center;
+            if (Player.Center.Distance(spectatePos) > 2000)
+            {
+                DeathCamTimer++;
+                if (DeathCamTimer > 60)
+                {
+                    Player.Center = spectatePos + spectatePos.DirectionTo(Player.Center) * 1000;
+                    DeathCamTimer = 0;
+                }
+
+            }
+            else
+            {
+                DeathCamTimer++;
+                float lerp = DeathCamTimer / 200f;
+                lerp = MathHelper.Clamp(lerp, 0, 1);
+                Player.Center = Vector2.Lerp(Player.Center, spectatePos, lerp);
+            }
+        }
+        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+        {
+            FindNewSpectateTarget();
+        }
+        public override void PostUpdateMiscEffects()
+        {
+            if (ElementalAssemblerNearby > 0)
+            {
+                ElementalAssemblerNearby -= 1;
+                Player.alchemyTable = true;
+            }
+            if (StationSoundCooldown > 0)
+                StationSoundCooldown--;
+
+            if (Player.equippedWings == null)
+                ResetStatSheetWings();
+
+            ForceBiomes();
+        }
+        public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
+        {
+            #region Stat Sliders
+            FargoServerConfig config = FargoServerConfig.Instance;
+            if (config.EnemyDamage != 1 || config.BossDamage != 1)
+            {
+                bool boss = config.BossDamage > config.EnemyDamage && // only relevant if boss health is higher than enemy health
+                    (npc.boss || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsTail || (config.BossApplyToAllWhenAlive && FargoGlobalNPC.AnyBossAlive()));
+                if (boss)
+                    modifiers.FinalDamage *= config.BossDamage;
+                else
+                    modifiers.FinalDamage *= config.EnemyDamage;
+            }
+            #endregion
+        }
+        public void ResetStatSheetWings()
+        {
+            StatSheetMaxAscentMultiplier = 0;
+            StatSheetWingSpeed = 0;
+            CanHover = null;
+        }
+
+        private void ForceBiomes()
+        {
+            if (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.eaterBoss, NPCID.EaterofWorldsHead)
+                && Player.Distance(Main.npc[FargoGlobalNPC.eaterBoss].Center) < 3000)
+            {
+                Player.ZoneCorrupt = true;
+            }
+
+            if (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.brainBoss, NPCID.BrainofCthulhu)
+                && Player.Distance(Main.npc[FargoGlobalNPC.brainBoss].Center) < 3000)
+            {
+                Player.ZoneCrimson = true;
+            }
+
+            if ((FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.plantBoss, NPCID.Plantera)
+                && Player.Distance(Main.npc[FargoGlobalNPC.plantBoss].Center) < 3000)
+                || (FargoGlobalNPC.SpecificBossIsAlive(ref FargoGlobalNPC.beeBoss, NPCID.QueenBee)
+                && Player.Distance(Main.npc[FargoGlobalNPC.beeBoss].Center) < 3000))
+            {
+                Player.ZoneJungle = true;
+            }
+
+            if (FargoServerConfig.Instance.Fountains)
+            {
+                switch (Main.SceneMetrics.ActiveFountainColor)
+                {
+                    case -1: //no fountain active
+                        goto default;
+
+                    case 0: //pure water, ocean
+                        Player.ZoneBeach = true;
+                        break;
+
+                    case 2: //corrupt
+                        Player.ZoneCorrupt = true;
+                        break;
+
+                    case 3: //jungle
+                        Player.ZoneJungle = true;
+                        break;
+
+                    case 4: //hallow
+                        if (Main.hardMode)
+                            Player.ZoneHallow = true;
+                        break;
+
+                    case 5: //ice
+                        Player.ZoneSnow = true;
+                        break;
+
+                    case 6: //oasis
+                        goto case 12;
+
+                    case 8: //cavern
+                        goto default;
+
+                    case 9: //blood fountain
+                        goto default;
+
+                    case 10: //crimson
+                        Player.ZoneCrimson = true;
+                        break;
+
+                    case 12: //desert fountain
+                        Player.ZoneDesert = true;
+                        if (Player.Center.Y > 3200f)
+                            Player.ZoneUndergroundDesert = true;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public override void PostUpdate()
+        {
+            if (autoRevertSelectedItem)
+            {
+                if (Player.itemTime == 0 && Player.itemAnimation == 0)
+                {
+                    Player.selectedItem = originalSelectedItem;
+                    autoRevertSelectedItem = false;
+                }
+            }
+
+            if (FargoWorld.OverloadedSlimeRain && Main.rand.NextBool(20))
+            {
+                SlimeRainSpawns();
+            }
+        }
+
+        public void SlimeRainSpawns()
+        {
+            int type = NPCID.GreenSlime;
+
+            int[] slimes = [NPCID.SlimeSpiked, NPCID.SandSlime, NPCID.IceSlime, NPCID.SpikedIceSlime, NPCID.MotherSlime, NPCID.SpikedJungleSlime, NPCID.DungeonSlime, NPCID.UmbrellaSlime, NPCID.ToxicSludge, NPCID.CorruptSlime, NPCID.Crimslime, NPCID.IlluminantSlime];
+
+            int rand = Main.rand.Next(50);
+
+            if (rand == 0)
+            {
+                type = NPCID.Pinky;
+            }
+            else if (rand < 20)
+            {
+                type = slimes[Main.rand.Next(slimes.Length)];
+            }
+
+            Vector2 pos = new Vector2((int)Player.position.X + Main.rand.Next(-800, 800), (int)Player.position.Y + Main.rand.Next(-800, -250));
+
+            //Projectile.NewProjectile( pos, Vector2.Zero, ModContent.ProjectileType<SpawnProj>(), 0, 0, Main.myPlayer, type);
+        }
+
+        public override bool PreModifyLuck(ref float luck)
+        {
+            if (FargoWorld.Matsuri && !Main.IsItRaining && !Main.IsItStorming)
+            {
+                LanternNight.GenuineLanterns = true;
+                LanternNight.ManualLanterns = false;
+            }
+
+            return base.PreModifyLuck(ref luck);
+        }
+
+        public override void ModifyLuck(ref float luck)
+        {
+            luck += luckPotionBoost;
+
+            luckPotionBoost = 0; //look nowhere else works ok
+        }
+        public override void ModifyScreenPosition()
+        {
+            
+            if (FargoClientConfig.Instance.MultiplayerDeathSpectate && Main.LocalPlayer.dead && Main.netMode != NetmodeID.SinglePlayer &&  Main.player.Any(p => p != null && !p.dead && !p.ghost))
+            {
+                Main.screenPosition = Player.Center - (new Vector2(Main.screenWidth, Main.screenHeight) / 2);
+            }
+                
+            
+        }
+        public void AutoUseMirror()
+        {
+            int potionofReturn = -1;
+            int recallPotion = -1;
+            int magicMirror = -1;
+
+            for (int i = 0; i < Player.inventory.Length; i++)
+            {
+                switch (Player.inventory[i].type)
+                {
+                    case ItemID.PotionOfReturn:
+                        potionofReturn = i;
+                        break;
+
+                    case ItemID.RecallPotion:
+                        recallPotion = i;
+                        break;
+
+                    case ItemID.MagicMirror:
+                    case ItemID.IceMirror:
+                    case ItemID.CellPhone:
+                    case ItemID.Shellphone:
+                        magicMirror = i;
+                        break;
+                }
+            }
+
+            if (potionofReturn != -1)
+                QuickUseItemAt(potionofReturn);
+            else if (recallPotion != -1)
+                QuickUseItemAt(recallPotion);
+            else if (magicMirror != -1)
+                QuickUseItemAt(magicMirror);
+        }
+        public override void ModifyMaxStats(out StatModifier health, out StatModifier mana)
+        {
+            health = StatModifier.Default with { Base = -(DeathFruitHealth) };
+            mana = StatModifier.Default;
+        }
+
+        public void QuickUseItemAt(int index, bool use = true)
+        {
+            if (!autoRevertSelectedItem && Player.selectedItem != index && Player.inventory[index].type != ItemID.None)
+            {
+                originalSelectedItem = Player.selectedItem;
+                autoRevertSelectedItem = true;
+                Player.selectedItem = index;
+                Player.controlUseItem = true;
+                if (use && CombinedHooks.CanUseItem(Player, Player.inventory[Player.selectedItem]))
+                {
+                    if (Player.whoAmI == Main.myPlayer)
+                        Player.ItemCheck();
+                    //Player.ItemCheck(Main.myPlayer);
+                }
+            }
+        }
+
+        //        /*public override void clientClone(ModPlayer clientClone)
+        //        {
+        //            FargoPlayer modPlayer = clientClone as FargoPlayer;
+        //            modPlayer.Toggler = Toggler;
+        //        }*/
+
+        //        /*public void SyncToggle(string key)
+        //        {
+        //            if (!TogglesToSync.ContainsKey(key))
+        //                TogglesToSync.Add(key, player.GetToggle(key).ToggleBool);
+        //        }*/
+
+        //        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        //        {
+        //            foreach (KeyValuePair<string, bool> toggle in TogglesToSync)
+        //            {
+        //                ModPacket packet = mod.GetPacket();
+
+        //                packet.Write((byte)80);
+        //                packet.Write((byte)player.whoAmI);
+        //                packet.Write(toggle.Key);
+        //                packet.Write(toggle.Value);
+
+        //                packet.Send(toWho, fromWho);
+        //            }
+
+        //            TogglesToSync.Clear();
+        //        }
+
+        //        /*public override void SendClientChanges(ModPlayer clientPlayer)
+        //        {
+        //            FargoPlayer modPlayer = clientPlayer as FargoPlayer;
+        //            if (modPlayer.Toggler.Toggles != Toggler.Toggles)
+        //            {
+        //                ModPacket packet = mod.GetPacket();
+        //                packet.Write((byte)79);
+        //                packet.Write((byte)player.whoAmI);
+        //                packet.Write((byte)Toggler.Toggles.Count);
+
+        //                for (int i = 0; i < Toggler.Toggles.Count; i++)
+        //                {
+        //                    packet.Write(Toggler.Toggles.Values.ElementAt(i).ToggleBool);
+        //                }
+
+        //                packet.Send();
+        //            }
+        //        }*/
+        
+    }   
 }

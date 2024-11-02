@@ -1,37 +1,84 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Items.Tiles.DemonAltarSheet
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-#nullable disable
 namespace Fargowiltas.Items.Tiles
 {
-  public class DemonAltarSheet : ModTile
-  {
-    public virtual void SetStaticDefaults()
+    public class DemonAltarSheet : ModTile
     {
-      Main.tileLighted[(int) ((ModBlockType) this).Type] = true;
-      Main.tileFrameImportant[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
-      Main.tileNoAttach[(int) ((ModBlockType) this).Type] = true;
-      TileObjectData.newTile.CoordinateHeights = new int[2]
-      {
-        16,
-        16
-      };
-      TileObjectData.addTile((int) ((ModBlockType) this).Type);
-      this.AddMapEntry(new Color(200, 200, 200), ((ModBlockType) this).CreateMapEntryName());
-      TileID.Sets.DisableSmartCursor[(int) ((ModBlockType) this).Type] = true;
-      this.AdjTiles = new int[1]{ 26 };
+        public override void SetStaticDefaults()
+        {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+            Main.tileNoAttach[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = [16, 16];
+            TileObjectData.addTile(Type);
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Demon Altar");
+            AddMapEntry(new Color(200, 200, 200), name);
+            TileID.Sets.DisableSmartCursor[Type] = true;
+            //counts as
+            AdjTiles = [TileID.DemonAltar];
+        }
+
+        //public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        //{
+        //    r = 0.93f;
+        //    g = 0.11f;
+        //    b = 0.9f;
+        //}
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+        /*
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, ModContent.ItemType<DemonAltar>());
+        }
+        */
     }
 
-    public virtual void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
-  }
+    public class CrimsonAltarSheet : ModTile
+    {
+        public override void SetStaticDefaults()
+        {
+            Main.tileLighted[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+            Main.tileNoAttach[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = [16, 16];
+            TileObjectData.addTile(Type);
+            LocalizedText name = CreateMapEntryName();
+            // name.SetDefault("Crimson Altar");
+            AddMapEntry(new Color(200, 200, 200), name);
+            TileID.Sets.DisableSmartCursor[Type] = true;
+            //counts as
+            AdjTiles = [TileID.DemonAltar];
+        }
+
+        //public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        //{
+        //    r = 0.93f;
+        //    g = 0.11f;
+        //    b = 0.9f;
+        //}
+
+        public override void NumDust(int i, int j, bool fail, ref int num)
+        {
+            num = fail ? 1 : 3;
+        }
+        /*
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, ModContent.ItemType<CrimsonAltar>());
+        }
+        */
+    }
 }

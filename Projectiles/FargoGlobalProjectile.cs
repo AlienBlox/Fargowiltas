@@ -1,9 +1,3 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Fargowiltas.Projectiles.FargoGlobalProjectile
-// Assembly: Fargowiltas, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-// MVID: 0B0A4C12-991D-4E65-BD28-A3D99D016C3E
-// Assembly location: C:\Users\Alien\OneDrive\文档\My Games\Terraria\tModLoader\ModSources\AlienBloxMod\Libraries\Fargowiltas.dll
-
 using Fargowiltas.Common.Configs;
 using Fargowiltas.NPCs;
 using Microsoft.Xna.Framework;
@@ -12,203 +6,272 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.WorldBuilding;
+using static Terraria.ModLoader.ModContent;
 
-#nullable disable
 namespace Fargowiltas.Projectiles
 {
-  public class FargoGlobalProjectile : GlobalProjectile
-  {
-    private bool firstTick = true;
-    public bool lowRender;
-    public static HashSet<int> CannotDestroyTileTypes = new HashSet<int>();
-    public static HashSet<int> CannotDestroyWallTypes = new HashSet<int>();
-    public static HashSet<Rectangle> CannotDestroyRectangle = new HashSet<Rectangle>();
-    public float DamageMultiplier = 1f;
-
-    public virtual bool InstancePerEntity => true;
-
-    public virtual void SetDefaults(Projectile projectile)
+    public class FargoGlobalProjectile : GlobalProjectile
     {
-      if (!projectile.friendly)
-        return;
-      this.lowRender = true;
-    }
+        public override bool InstancePerEntity => true;
+        private bool firstTick = true;
+        public bool lowRender;
 
-    public virtual void OnSpawn(Projectile projectile, IEntitySource source)
-    {
-      FargoServerConfig instance = FargoServerConfig.Instance;
-      if ((double) instance.EnemyDamage != 1.0 || (double) instance.BossDamage != 1.0)
-      {
-        FargoGlobalProjectile globalProjectile;
-        this.DamageMultiplier = (!(source is EntitySource_Parent entitySourceParent1) || !(entitySourceParent1.Entity is NPC entity1) || (double) instance.BossDamage <= (double) instance.EnemyDamage ? 0 : (entity1.boss || entity1.type == 13 || entity1.type == 14 || entity1.type == 15 ? 1 : (!instance.BossApplyToAllWhenAlive ? 0 : (FargoGlobalNPC.AnyBossAlive() ? 1 : 0)))) == 0 ? (!(source is EntitySource_Parent entitySourceParent2) || !(entitySourceParent2.Entity is Projectile entity2) || !entity2.TryGetGlobalProjectile<FargoGlobalProjectile>(ref globalProjectile) || (double) globalProjectile.DamageMultiplier <= (double) instance.EnemyDamage ? instance.EnemyDamage : globalProjectile.DamageMultiplier) : instance.BossDamage;
-      }
-      if (!projectile.bobber || projectile.owner != Main.myPlayer || !FargoServerConfig.Instance.ExtraLures || !(source is EntitySource_ItemUse))
-        return;
-      int number;
-      switch (Main.player[Main.myPlayer].HeldItem.type)
-      {
-        case 2292:
-        case 2293:
-        case 2421:
-        case 4325:
-        case 4442:
-          number = 2;
-          break;
-        case 2294:
-        case 2422:
-          number = 5;
-          break;
-        case 2295:
-        case 2296:
-          number = 3;
-          break;
-        default:
-          number = 1;
-          break;
-      }
-      if (Main.player[projectile.owner].HasBuff(121))
-        ++number;
-      if (number <= 1)
-        return;
-      FargoGlobalProjectile.SplitProj(projectile, number);
-    }
+        public static HashSet<Rectangle> CannotDestroyRectangle = [];
 
-    public virtual bool PreAI(Projectile projectile)
-    {
-      if (projectile.type == 525 && FargoServerConfig.Instance.StalkerMoneyTrough)
-      {
-        Player player = Main.player[projectile.owner];
-        float num = Vector2.Distance(((Entity) projectile).Center, ((Entity) player).Center);
-        if ((double) num > 3000.0)
-          ((Entity) projectile).Center = ((Entity) player).Top;
-        else if (Vector2.op_Inequality(((Entity) projectile).Center, ((Entity) player).Center))
+        public float DamageMultiplier = 1;
+
+        public override void SetDefaults(Projectile projectile)
         {
-          Vector2 vector2 = Vector2.op_Division(Vector2.op_Subtraction(Vector2.op_Addition(((Entity) player).Center, Vector2.op_Multiply(Vector2.op_Multiply(((Entity) projectile).DirectionFrom(((Entity) player).Center), 3f), 16f)), ((Entity) projectile).Center), (double) num < 48.0 ? 30f : 60f);
-          Projectile projectile1 = projectile;
-          ((Entity) projectile1).position = Vector2.op_Addition(((Entity) projectile1).position, vector2);
+            //if (projectile.CountsAsClass(DamageClass.Summon) || projectile.minion || projectile.sentry || projectile.minionSlots > 0 || ProjectileID.Sets.MinionShot[projectile.type] || ProjectileID.Sets.SentryShot[projectile.type])
+            //{
+            //    if (!ProjectileID.Sets.IsAWhip[projectile.type])
+            //        lowRender = true;
+            //}
+
+            //switch (projectile.type)
+            //{
+            //    case ProjectileID.FlowerPetal:
+            //    case ProjectileID.HallowStar:
+            //    case ProjectileID.RainbowFront:
+            //    case ProjectileID.RainbowBack:
+            //        lowRender = true;
+            //        break;
+
+            //    default:
+            //        break;
+            //}
+
+            if (projectile.friendly)
+                lowRender = true;
         }
-        if (projectile.timeLeft < 2 && projectile.timeLeft > 0)
-          projectile.timeLeft = 2;
-      }
-      if (this.firstTick)
-      {
-        this.firstTick = false;
-        if (projectile.owner != Main.myPlayer && !projectile.hostile && !projectile.trap && projectile.friendly)
-          this.lowRender = true;
-      }
-      if (projectile.bobber && ((Entity) projectile).lavaWet && FargoServerConfig.Instance.FasterLavaFishing && (double) projectile.ai[0] == 0.0 && (double) projectile.ai[1] == 0.0 && (double) projectile.localAI[1] < 600.0)
-        ++projectile.localAI[1];
-      return true;
-    }
-
-    public virtual void OnKill(Projectile projectile, int timeLeft)
-    {
-      if (projectile.type != 525 || !FargoServerConfig.Instance.StalkerMoneyTrough)
-        return;
-      foreach (Projectile projectile1 in ((IEnumerable<Projectile>) Main.projectile).Where<Projectile>((Func<Projectile, bool>) (p => ((Entity) p).active && p.type == projectile.type && p.owner == projectile.owner)))
-        projectile1.timeLeft = 0;
-    }
-
-    public virtual void ModifyHitPlayer(
-      Projectile projectile,
-      Player target,
-      ref Player.HurtModifiers modifiers)
-    {
-      ref StatModifier local = ref modifiers.FinalDamage;
-      local = StatModifier.op_Multiply(local, this.DamageMultiplier);
-    }
-
-    public static void SplitProj(Projectile projectile, int number)
-    {
-      double num1 = 0.3 / (double) number;
-      for (int index1 = 0; index1 < number / 2; ++index1)
-      {
-        for (int index2 = 0; index2 < 2; ++index2)
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
-          int num2 = index2 == 0 ? 1 : -1;
-          Projectile projectile1 = FargoGlobalProjectile.NewProjectileDirectSafe(((Entity) projectile).GetSource_FromThis((string) null), ((Entity) projectile).Center, Utils.RotatedBy(((Entity) projectile).velocity, (double) num2 * num1 * (double) (index1 + 1), new Vector2()), projectile.type, projectile.damage, projectile.knockBack, projectile.owner, projectile.ai[0], projectile.ai[1]);
-          if (projectile1 != null)
-          {
-            projectile1.friendly = true;
-            projectile1.GetGlobalProjectile<FargoGlobalProjectile>().firstTick = false;
-          }
+            FargoServerConfig config = FargoServerConfig.Instance;
+            if (config.EnemyDamage != 1 || config.BossDamage != 1)
+            {
+                bool boss = source is EntitySource_Parent parent && parent.Entity is NPC npc && config.BossDamage > config.EnemyDamage && // only relevant if boss health is higher than enemy health
+                (npc.boss || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsTail || (config.BossApplyToAllWhenAlive && FargoGlobalNPC.AnyBossAlive()));
+                if (boss)
+                    DamageMultiplier = config.BossDamage;
+                else
+                {
+                    if (source is EntitySource_Parent parentt && parentt.Entity is Projectile parentProj && parentProj.TryGetGlobalProjectile(out FargoGlobalProjectile parentFGP) && parentFGP.DamageMultiplier > config.EnemyDamage)
+                        DamageMultiplier = parentFGP.DamageMultiplier;
+                    else
+                        DamageMultiplier = config.EnemyDamage;
+                }
+            }
+                
+            if (projectile.bobber && projectile.owner == Main.myPlayer && FargoServerConfig.Instance.ExtraLures && source is EntitySource_ItemUse)
+            {
+                int split = 1;
+                int itemType = Main.player[Main.myPlayer].HeldItem.type;
+
+                //check held item type for fishing rods instead of projectile, since bobber projectiles are overridden by the Bobber items
+                switch (itemType)
+                {
+                    case ItemID.GoldenFishingRod:
+                    case ItemID.HotlineFishingHook:
+                        split = 5;
+                        break;
+                    case ItemID.SittingDucksFishingRod:
+                    case ItemID.MechanicsRod:
+                        split = 3;
+                        break;
+                    case ItemID.ScarabFishingRod:
+                    case ItemID.FiberglassFishingPole:
+                    case ItemID.BloodFishingRod:
+                    case ItemID.Fleshcatcher:
+                    case ItemID.FisherofSouls:
+                        split = 2;
+                        break;
+                    default:
+                        split = 1;
+                        break;
+                }
+
+
+                if (Main.player[projectile.owner].HasBuff(BuffID.Fishing))
+                    split++;
+
+                if (split > 1)
+                    SplitProj(projectile, split);
+            }
         }
-      }
-      if (number % 2 != 0)
-        return;
-      ((Entity) projectile).active = false;
-    }
 
-    public static Projectile NewProjectileDirectSafe(
-      IEntitySource source,
-      Vector2 pos,
-      Vector2 vel,
-      int type,
-      int damage,
-      float knockback,
-      int owner = 255,
-      float ai0 = 0.0f,
-      float ai1 = 0.0f)
-    {
-      int index = Projectile.NewProjectile(source, pos, vel, type, damage, knockback, owner, ai0, ai1, 0.0f);
-      return index >= Main.maxProjectiles ? (Projectile) null : Main.projectile[index];
-    }
+        public override bool PreAI(Projectile projectile)
+        {
+            if (projectile.type == ProjectileID.FlyingPiggyBank && FargoServerConfig.Instance.StalkerMoneyTrough)
+            {
+                Player player = Main.player[projectile.owner];
+                float dist = Vector2.Distance(projectile.Center, player.Center);
 
-    public virtual Color? GetAlpha(Projectile projectile, Color lightColor)
-    {
-      if (!this.lowRender || projectile.hostile || (double) FargoClientConfig.Instance.TransparentFriendlyProjectiles >= 1.0)
-        return base.GetAlpha(projectile, lightColor);
-      Color? alpha = (Color?) projectile.ModProjectile?.GetAlpha(lightColor);
-      if (alpha.HasValue)
-        return new Color?(Color.op_Multiply(alpha.Value, FargoClientConfig.Instance.TransparentFriendlyProjectiles));
-      lightColor = Color.op_Multiply(lightColor, projectile.Opacity * FargoClientConfig.Instance.TransparentFriendlyProjectiles);
-      return new Color?(lightColor);
-    }
+                if (dist > 3000)
+                {
+                    projectile.Center = player.Top;
+                }
+                else if (projectile.Center != player.Center)
+                {
+                    Vector2 velocity = (player.Center + projectile.DirectionFrom(player.Center) * 3 * 16 - projectile.Center) / (dist < 3f * 16 ? 30f : 60f);
+                    projectile.position += velocity;
+                }
 
-    public static bool OkayToDestroyTile(Tile tile)
-    {
-      if (Tile.op_Equality(tile, (ArgumentException) null))
-        return false;
-      int num1 = NPC.downedBoss3 ? 0 : (((Tile) ref tile).TileType == (ushort) 41 || ((Tile) ref tile).TileType == (ushort) 43 || ((Tile) ref tile).TileType == (ushort) 44 || ((Tile) ref tile).WallType == (ushort) 94 || ((Tile) ref tile).WallType == (ushort) 95 || ((Tile) ref tile).WallType == (ushort) 7 || ((Tile) ref tile).WallType == (ushort) 98 || ((Tile) ref tile).WallType == (ushort) 99 || ((Tile) ref tile).WallType == (ushort) 8 || ((Tile) ref tile).WallType == (ushort) 96 || ((Tile) ref tile).WallType == (ushort) 97 ? 1 : (((Tile) ref tile).WallType == (ushort) 9 ? 1 : 0));
-      bool flag1 = (((Tile) ref tile).TileType == (ushort) 107 || ((Tile) ref tile).TileType == (ushort) 221 || ((Tile) ref tile).TileType == (ushort) 108 || ((Tile) ref tile).TileType == (ushort) 222 || ((Tile) ref tile).TileType == (ushort) 111 || ((Tile) ref tile).TileType == (ushort) 223) && !NPC.downedMechBossAny;
-      bool flag2 = ((Tile) ref tile).TileType == (ushort) 211 && (!NPC.downedMechBoss1 || !NPC.downedMechBoss2 || !NPC.downedMechBoss3);
-      bool flag3 = (((Tile) ref tile).TileType == (ushort) 226 || ((Tile) ref tile).WallType == (ushort) 87) && !NPC.downedGolemBoss;
-      bool flag4 = false;
-      Mod mod;
-      if (Terraria.ModLoader.ModLoader.TryGetMod("CalamityMod", ref mod))
-      {
-        ModTile modTile1;
-        mod.TryFind<ModTile>("AbyssGravel", ref modTile1);
-        ModTile modTile2;
-        mod.TryFind<ModTile>("Voidstone", ref modTile2);
-        flag4 = (int) ((Tile) ref tile).TileType == (int) ((ModBlockType) modTile1).Type || (int) ((Tile) ref tile).TileType == (int) ((ModBlockType) modTile2).Type;
-      }
-      int num2 = flag1 ? 1 : 0;
-      return (num1 | num2 | (flag2 ? 1 : 0) | (flag3 ? 1 : 0) | (flag4 ? 1 : 0)) == 0 && !FargoGlobalProjectile.TileBelongsToMagicStorage(tile) && !FargoGlobalProjectile.CannotDestroyTileTypes.Contains((int) ((Tile) ref tile).TileType) && !FargoGlobalProjectile.CannotDestroyWallTypes.Contains((int) ((Tile) ref tile).WallType);
-    }
+                if (projectile.timeLeft < 2 && projectile.timeLeft > 0)
+                    projectile.timeLeft = 2;
+            }
 
-    public static bool OkayToDestroyTileAt(int x, int y)
-    {
-      Tile tile = ((Tilemap) ref Main.tile)[x, y];
-      if (Tile.op_Equality(tile, (ArgumentException) null))
-        return false;
-      foreach (Rectangle rectangle in FargoGlobalProjectile.CannotDestroyRectangle)
-      {
-        if (((Rectangle) ref rectangle).Contains(x * 16, y * 16))
-          return false;
-      }
-      return FargoGlobalProjectile.OkayToDestroyTile(tile);
-    }
+            if (firstTick)
+            {
+                firstTick = false;
 
-    public static bool TileIsLiterallyAir(Tile tile)
-    {
-      return ((Tile) ref tile).TileType == (ushort) 0 && ((Tile) ref tile).WallType == (ushort) 0 && ((Tile) ref tile).LiquidAmount == (byte) 0 && ((Tile) ref tile).TileFrameX == (short) 0 && ((Tile) ref tile).TileFrameY == (short) 0;
-    }
+                if (projectile.owner != Main.myPlayer && !projectile.hostile && !projectile.trap && projectile.friendly)
+                    lowRender = true;
+            }
 
-    public static bool TileBelongsToMagicStorage(Tile tile)
-    {
-      return Fargowiltas.Fargowiltas.ModLoaded["MagicStorage"] && ((ModType) TileLoader.GetTile((int) ((Tile) ref tile).TileType))?.Mod == Terraria.ModLoader.ModLoader.GetMod("MagicStorage");
+            if (projectile.bobber && projectile.lavaWet && FargoServerConfig.Instance.FasterLavaFishing)
+            {
+                if (projectile.ai[0] == 0 && projectile.ai[1] == 0 && projectile.localAI[1] < 600)
+                    projectile.localAI[1]++;
+            }
+
+            if (Fargowiltas.SwarmActive && projectile.hostile && projectile.damage > 0 && projectile.damage < Fargowiltas.SwarmMinDamage)
+                projectile.damage = Fargowiltas.SwarmMinDamage;
+
+            return true;
+        }
+
+        public override void OnKill(Projectile projectile, int timeLeft)
+        {
+            if (projectile.type == ProjectileID.FlyingPiggyBank && FargoServerConfig.Instance.StalkerMoneyTrough)
+            {
+                //functionally, this makes money trough toggle the piggy bank on/off
+                foreach (Projectile p in Main.projectile.Where(p => p.active && p.type == projectile.type && p.owner == projectile.owner))
+                    p.timeLeft = 0;
+            }
+        }
+
+        public override void ModifyHitPlayer(Projectile projectile, Player target, ref Player.HurtModifiers modifiers)
+        {
+            modifiers.FinalDamage *= DamageMultiplier;
+        }
+
+        public static void SplitProj(Projectile projectile, int number)
+        {
+            Projectile split;
+
+            double spread = 0.3 / number;
+
+            for (int i = 0; i < number / 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    int factor = (j == 0) ? 1 : -1;
+                    split = NewProjectileDirectSafe(projectile.GetSource_FromThis(), projectile.Center, projectile.velocity.RotatedBy(factor * spread * (i + 1)), projectile.type, projectile.damage, projectile.knockBack, projectile.owner, projectile.ai[0], projectile.ai[1]);
+
+                    if (split != null)
+                    {
+                        split.friendly = true;
+                        split.GetGlobalProjectile<FargoGlobalProjectile>().firstTick = false;
+                    }
+                }
+            }
+
+            if (number % 2 == 0)
+            {
+                projectile.active = false;
+            }
+        }
+
+        public static Projectile NewProjectileDirectSafe(IEntitySource source, Vector2 pos, Vector2 vel, int type, int damage, float knockback, int owner = 255, float ai0 = 0f, float ai1 = 0f)
+        {
+            int p = Projectile.NewProjectile(source, pos, vel, type, damage, knockback, owner, ai0, ai1);
+            return (p < Main.maxProjectiles) ? Main.projectile[p] : null;
+        }
+        public override Color? GetAlpha(Projectile projectile, Color lightColor)
+        {
+            if (lowRender && !projectile.hostile && FargoClientConfig.Instance.TransparentFriendlyProjectiles < 1)
+            {
+                
+                
+                Color? color = projectile.ModProjectile?.GetAlpha(lightColor);
+                if (color != null)
+                {
+                    return color.Value * FargoClientConfig.Instance.TransparentFriendlyProjectiles;
+                }
+                lightColor *= projectile.Opacity * FargoClientConfig.Instance.TransparentFriendlyProjectiles;
+                return lightColor;
+
+            }
+
+            return base.GetAlpha(projectile, lightColor);
+        }
+        public static bool OkayToDestroyTile(Tile tile)
+        {
+            if (tile == null)
+            {
+                return false;
+            }
+            bool noDungeon = !NPC.downedBoss3 && (FargoSets.Walls.DungeonWall[tile.WallType] || FargoSets.Tiles.DungeonTile[tile.TileType]);
+
+            bool noHMOre = FargoSets.Tiles.HardmodeOre[tile.TileType] && !NPC.downedMechBossAny;
+            bool noChloro = tile.TileType == TileID.Chlorophyte && !(NPC.downedMechBoss1 && NPC.downedMechBoss2 && NPC.downedMechBoss3);
+            bool noLihzahrd = (tile.TileType == TileID.LihzahrdBrick || tile.WallType == WallID.LihzahrdBrickUnsafe) && !NPC.downedGolemBoss;
+            bool noAbyss = false;
+
+            if (ModLoader.TryGetMod("CalamityMod", out Mod calamity))
+            {
+                if (calamity.TryFind("AbyssGravel", out ModTile gravel) && calamity.TryFind("Voidstone", out ModTile voidstone))
+                    noAbyss = tile.TileType == gravel.Type || tile.TileType == voidstone.Type;
+            }
+
+            if (noDungeon || noHMOre || noChloro || noLihzahrd || noAbyss || TileBelongsToMagicStorage(tile) ||
+                FargoSets.Tiles.InstaCannotDestroy[tile.TileType] ||
+                FargoSets.Walls.InstaCannotDestroy[tile.WallType])
+                return false;
+
+            return true;
+        }
+        public static bool OkayToDestroyTileAt(int x, int y, bool bypassVanillaCanPlace = false) // Testing for blocks that should not be destroyed
+        {
+            if (!WorldGen.InWorld(x, y))
+                return false;
+            Tile tile = Main.tile[x, y];
+            if (tile == null)
+            {
+                return false;
+            }
+            if (CannotDestroyRectangle != null && CannotDestroyRectangle.Count != 0)
+            {
+                foreach (Rectangle rect in CannotDestroyRectangle)
+                {
+                    if (rect.Contains(x * 16, y * 16))
+                    {
+                        return false;
+                    }
+                }
+            }
+            Rectangle area = new(x, y, 3, 3);
+            if (!FargoServerConfig.Instance.SafeTerraformers)
+                bypassVanillaCanPlace = true;
+            if (!bypassVanillaCanPlace && GenVars.structures != null && !GenVars.structures.CanPlace(area))
+            {
+                return false;
+            }
+            
+            return OkayToDestroyTile(tile);
+        }
+
+        public static bool TileIsLiterallyAir(Tile tile)
+        {
+            return tile.TileType == 0 && tile.WallType == 0 && tile.LiquidAmount == 0 /*&& tile.sTileHeader == 0 && tile.bTileHeader == 0 && tile.bTileHeader2 == 0 && tile.bTileHeader3 == 0*/ && tile.TileFrameX == 0 && tile.TileFrameY == 0;
+        }
+
+        public static bool TileBelongsToMagicStorage(Tile tile)
+        {
+            return Fargowiltas.ModLoaded["MagicStorage"] && TileLoader.GetTile(tile.TileType)?.Mod == ModLoader.GetMod("MagicStorage");
+        }
     }
-  }
 }
